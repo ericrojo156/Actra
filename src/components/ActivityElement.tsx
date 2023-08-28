@@ -1,9 +1,13 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import * as ColorPalette from '../ColorPalette';
+
 export interface Activity {
   id: string;
   name: string;
+  subactivitiesIds: string[];
+  intervalsIds: string[];
+  currentlyActiveIntervalId: string | null;
 }
 
 export function ActivityElement({item: activity}: {item: Activity}) {

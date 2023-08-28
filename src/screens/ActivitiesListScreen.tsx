@@ -1,28 +1,20 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
-import {uuidv4} from '../utils/uuid';
 import {Activity, ActivityElement} from '../components/ActivityElement';
+import useActivities from '../activity/useActivities';
 
 export function ActivitiesListScreen() {
-  const data: Activity[] = useMemo(
-    () =>
-      Array.from({length: 100}, (_, index) => ({
-        id: uuidv4(),
-        name: `Item ${index}`,
-      })),
-    [],
-  );
-
+  const activities: Activity[] = useActivities();
   return (
     <View style={styles.activitiesListContainer}>
       <FlatList
-        data={data}
+        data={activities}
         renderItem={ActivityElement}
         keyExtractor={item => item.id.toString()}
-        initialNumToRender={10} // Number of items to render initially
-        windowSize={5} // Number of items to keep in memory around the currently visible area
+        initialNumToRender={10}
+        windowSize={5}
         getItemLayout={(data, index) => ({
-          length: 100, // Height of each item
+          length: 100,
           offset: 50 * index,
           index,
         })}
