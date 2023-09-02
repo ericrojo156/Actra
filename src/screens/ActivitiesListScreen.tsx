@@ -3,7 +3,7 @@ import {View, FlatList, StyleSheet, LayoutAnimation} from 'react-native';
 import {Activity, ActivityElement} from '../components/ActivityElement';
 import useActivities from '../activity/useActivities';
 
-function useLayoutAnimation() {
+function useLayoutAnimation(onCompleteAnimation: () => void) {
   const layoutAnimConfig = useMemo(
     () => ({
       duration: 100,
@@ -13,7 +13,7 @@ function useLayoutAnimation() {
     }),
     [],
   );
-  LayoutAnimation.configureNext(layoutAnimConfig);
+  LayoutAnimation.configureNext(layoutAnimConfig, onCompleteAnimation);
 }
 
 export function ActivitiesListScreen() {
@@ -25,7 +25,11 @@ export function ActivitiesListScreen() {
     (id: string) => currentlyExpandedActivity === id,
     [currentlyExpandedActivity],
   );
-  useLayoutAnimation();
+  const [activityUndergoingAnimation, setActivityUndergoingAnimation] =
+    useState<string | null>(null);
+  useLayoutAnimation(() => {
+    setActivityUndergoingAnimation(null);
+  });
   return (
     <View style={styles.activitiesListContainer}>
       <FlatList
@@ -33,9 +37,11 @@ export function ActivitiesListScreen() {
         renderItem={({item}) => (
           <ActivityElement
             isExpanded={isExpanded(item.id)}
-            setIsExpanded={(shouldExpand: boolean) =>
-              setCurrentlyExpandedActivity(shouldExpand ? item.id : null)
-            }
+            setIsExpanded={(shouldExpand: boolean) => {
+              setCurrentlyExpandedActivity(shouldExpand ? item.id : null);
+              setActivityUndergoingAnimation(item.id);
+            }}
+            isExpandingAnimation={activityUndergoingAnimation === item.id}
             {...item}
           />
         )}

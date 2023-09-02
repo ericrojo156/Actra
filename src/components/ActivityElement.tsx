@@ -21,9 +21,10 @@ export interface Activity {
 export interface ExpandableActivityProps extends Activity {
   isExpanded: boolean;
   setIsExpanded: (shouldExpand: boolean) => void;
+  isExpandingAnimation: boolean;
 }
 
-function ActivityOptionsMenuBar(_props: Activity) {
+function ActivityOptionsMenuBar(_props: ExpandedSectionProps) {
   return (
     <View style={{...styles.container, ...styles.activityOptionsMenuBar}}>
       <DeleteOption />
@@ -34,14 +35,15 @@ function ActivityOptionsMenuBar(_props: Activity) {
   );
 }
 
-interface ExpandedSectionProps extends Activity {}
+interface ExpandedSectionProps extends Activity {
+  isExpandingAnimation: boolean;
+}
 
 function ExpandedSection(props: ExpandedSectionProps) {
-  const {subactivitiesIds} = props;
+  const {isExpandingAnimation} = props;
   return (
     <View style={styles.expandedSection}>
-      <ActivityOptionsMenuBar {...props} />
-      {subactivitiesIds}
+      {!isExpandingAnimation ? <ActivityOptionsMenuBar {...props} /> : null}
     </View>
   );
 }
