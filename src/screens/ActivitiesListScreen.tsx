@@ -1,7 +1,20 @@
-import React, {useCallback, useState} from 'react';
-import {View, FlatList, StyleSheet} from 'react-native';
+import React, {useCallback, useMemo, useState} from 'react';
+import {View, FlatList, StyleSheet, LayoutAnimation} from 'react-native';
 import {Activity, ActivityElement} from '../components/ActivityElement';
 import useActivities from '../activity/useActivities';
+
+function useLayoutAnimation() {
+  const layoutAnimConfig = useMemo(
+    () => ({
+      duration: 100,
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    }),
+    [],
+  );
+  LayoutAnimation.configureNext(layoutAnimConfig);
+}
 
 export function ActivitiesListScreen() {
   const activities: Activity[] = useActivities();
@@ -12,6 +25,7 @@ export function ActivitiesListScreen() {
     (id: string) => currentlyExpandedActivity === id,
     [currentlyExpandedActivity],
   );
+  useLayoutAnimation();
   return (
     <View style={styles.activitiesListContainer}>
       <FlatList

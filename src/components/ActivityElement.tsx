@@ -34,7 +34,9 @@ function ActivityOptionsMenuBar(_props: Activity) {
   );
 }
 
-function ExpandedSection(props: Activity) {
+interface ExpandedSectionProps extends Activity {}
+
+function ExpandedSection(props: ExpandedSectionProps) {
   const {subactivitiesIds} = props;
   return (
     <View style={styles.expandedSection}>
