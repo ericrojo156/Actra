@@ -6,6 +6,7 @@ import DeleteOption from './optionsMenu/DeleteOption';
 import EditOption from './optionsMenu/EditOption';
 import HistoryOption from './optionsMenu/HistoryOption';
 import JoinOption from './optionsMenu/JoinOption';
+import useActivities from '../activity/useActivities';
 
 const ELEMENT_HEIGHT = 70;
 const ELEMENT_WIDTH = 350;
@@ -24,13 +25,20 @@ export interface ExpandableActivityProps extends Activity {
   isExpandingAnimation: boolean;
 }
 
-function ActivityOptionsMenuBar(_props: ExpandedSectionProps) {
+function ActivityOptionsMenuBar(props: ExpandedSectionProps) {
+  const {id} = props;
+  const {
+    onDeleteActivityOption,
+    onJoinActivityOption,
+    onEditActivityOption,
+    onHistoryActivityOption,
+  } = useActivities();
   return (
     <View style={{...styles.container, ...styles.activityOptionsMenuBar}}>
-      <DeleteOption />
-      <JoinOption />
-      <EditOption />
-      <HistoryOption />
+      <DeleteOption onPress={() => onDeleteActivityOption(id)} />
+      <JoinOption onPress={() => onJoinActivityOption(id)} />
+      <EditOption onPress={() => onEditActivityOption(id)} />
+      <HistoryOption onPress={() => onHistoryActivityOption(id)} />
     </View>
   );
 }

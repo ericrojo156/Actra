@@ -1,6 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {View, FlatList, StyleSheet, LayoutAnimation} from 'react-native';
-import {Activity, ActivityElement} from '../components/ActivityElement';
+import {ActivityElement} from '../components/ActivityElement';
 import useActivities from '../activity/useActivities';
 
 function useLayoutAnimation(onCompleteAnimation: () => void) {
@@ -17,7 +17,7 @@ function useLayoutAnimation(onCompleteAnimation: () => void) {
 }
 
 export function ActivitiesListScreen() {
-  const activities: Activity[] = useActivities();
+  const {activities} = useActivities();
   const [currentlyExpandedActivity, setCurrentlyExpandedActivity] = useState<
     string | null
   >(null);
