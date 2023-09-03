@@ -64,6 +64,4 @@ yarn-error.log
 
 # testing
 /coverage
-android
-ios
 .vscode/.react
