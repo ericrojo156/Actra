@@ -51,14 +51,14 @@ function ExpandedSection(props: ExpandedSectionProps) {
 export function ActivityElement(props: ExpandableActivityProps) {
   const {name, isExpanded, setIsExpanded} = props;
   return (
-    <View style={styles.activityElementContainer}>
-      <CustomPressable
-        onPress={() => setIsExpanded(!isExpanded)}
-        style={{...styles.container, ...styles.activityElement}}>
+    <CustomPressable
+      onPress={() => setIsExpanded(!isExpanded)}
+      style={styles.activityElementContainer}>
+      <View style={{...styles.container, ...styles.activityElement}}>
         <Text style={styles.textStyle}>{name}</Text>
-      </CustomPressable>
+      </View>
       {isExpanded && <ExpandedSection {...props} />}
-    </View>
+    </CustomPressable>
   );
 }
 

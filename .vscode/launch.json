@@ -6,7 +6,8 @@
             "request": "launch",
             "type": "reactnative",
             "cwd": "${workspaceFolder}",
-            "platform": "ios"
+            "platform": "ios",
+            "target": "iPhone 13"
         }
     ]
 }

@@ -14,7 +14,7 @@ interface ActraFunctionProps {
   children?: any;
 }
 
-function PressableControl(props: ActraFunctionProps) {
+function PressableIcon(props: ActraFunctionProps) {
   const {label, style, onPress = () => {}, iconName, children} = props;
   const content = children ?? (
     <MaterialCommunityIcons
@@ -45,4 +45,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PressableControl;
+export default PressableIcon;

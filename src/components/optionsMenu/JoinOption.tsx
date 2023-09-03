@@ -1,11 +1,11 @@
 import React from 'react';
-import PressableControl from '../PressableIcon';
+import PressableIcon from '../PressableIcon';
 import {OptionProps} from './types';
 
 function JoinOption(props: OptionProps) {
   const {style, onPress} = props;
   return (
-    <PressableControl
+    <PressableIcon
       style={style}
       iconName="axis-z-arrow"
       label={'dict.Join'}

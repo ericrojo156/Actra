@@ -17,7 +17,11 @@ export default function useActivities(): Activity[] {
   const [activities, setActivities] = useState<Activity[]>([]);
   useEffect(() => {
     (async () => {
-      setActivities(await getActivities());
+      try {
+        setActivities(await getActivities());
+      } catch (e) {
+        console.log(e);
+      }
     })();
   }, []);
   return activities;
