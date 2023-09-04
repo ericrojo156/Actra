@@ -5,7 +5,7 @@ const DEFAULT_ACTIVE_SCALE = 0.95;
 
 interface PressableProps {
   activeScale?: number;
-  onPress: (event?: any) => void;
+  onPress?: (event?: any) => void;
   onPressIn?: (event?: any) => void;
   renderElement?: () => ReactElement;
   children?: any;
@@ -16,7 +16,7 @@ function Pressable(props: PressableProps) {
   const {
     activeScale,
     children,
-    onPress,
+    onPress = () => {},
     onPressIn = () => {},
     renderElement,
     style,

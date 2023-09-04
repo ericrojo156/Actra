@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import * as ColorPalette from '../ColorPalette';
 import CustomPressable from './Pressable';
@@ -6,10 +6,18 @@ import DeleteOption from './optionsMenu/DeleteOption';
 import EditOption from './optionsMenu/EditOption';
 import HistoryOption from './optionsMenu/HistoryOption';
 import JoinOption from './optionsMenu/JoinOption';
-import useActivities from '../activity/useActivities';
+import {useActivityOptionCallbacks} from '../activity/useActivities';
+import {commonStyles} from '../styles';
+import {
+  ActivitiesList,
+  SPACE_BETWEEN_ELEMENTS,
+} from '../screens/ActivitiesListScreen';
+import PressableIcon, {ACTRA_FUNCTION_OPTION_ICON_SIZE} from './PressableIcon';
+import {IdProp} from '../types';
 
-const ELEMENT_HEIGHT = 70;
-const ELEMENT_WIDTH = 350;
+export const ELEMENT_HEIGHT = 70;
+export const STANDARD_ELEMENT_WIDTH = 350;
+export const SUBACTIVITY_LEVEL_WIDTH_DECREMENT = 20;
 
 export interface Activity {
   id: string;
@@ -20,21 +28,27 @@ export interface Activity {
 }
 
 export interface ExpandableActivityProps extends Activity {
-  isExpanded: boolean;
+  isExpanded: (id: string) => boolean;
   setIsExpanded: (shouldExpand: boolean) => void;
-  isExpandingAnimation: boolean;
+  getActivityById: (id: string) => Activity | null;
+  width?: number;
 }
 
-function ActivityOptionsMenuBar(props: ExpandedSectionProps) {
-  const {id} = props;
+function ActivityOptionsMenuBar(props: ExpandableActivityProps) {
+  const {id, width} = props;
   const {
     onDeleteActivityOption,
     onJoinActivityOption,
     onEditActivityOption,
     onHistoryActivityOption,
-  } = useActivities();
+  } = useActivityOptionCallbacks();
   return (
-    <View style={{...styles.container, ...styles.activityOptionsMenuBar}}>
+    <View
+      style={{
+        ...commonStyles.container,
+        ...styles.activityOptionsMenuBar,
+        width,
+      }}>
       <DeleteOption onPress={() => onDeleteActivityOption(id)} />
       <JoinOption onPress={() => onJoinActivityOption(id)} />
       <EditOption onPress={() => onEditActivityOption(id)} />
@@ -43,60 +57,119 @@ function ActivityOptionsMenuBar(props: ExpandedSectionProps) {
   );
 }
 
-interface ExpandedSectionProps extends Activity {
-  isExpandingAnimation: boolean;
+interface AddSubactivityProps extends IdProp {
+  id: string;
+  width?: number;
 }
 
-function ExpandedSection(props: ExpandedSectionProps) {
-  const {isExpandingAnimation} = props;
+function AddSubactivityContainer(props: AddSubactivityProps) {
+  const {width = STANDARD_ELEMENT_WIDTH} = props;
   return (
-    <View style={styles.expandedSection}>
-      {!isExpandingAnimation ? <ActivityOptionsMenuBar {...props} /> : null}
-    </View>
+    <PressableIcon
+      label={'dict.AddSubactivity'}
+      iconName="plus"
+      style={{
+        ...styles.roundedElementBorder,
+        ...styles.addSubactivityOptionContainer,
+        ...styles.activityElement,
+        width: width - SUBACTIVITY_LEVEL_WIDTH_DECREMENT,
+      }}
+    />
+  );
+}
+
+function ExpandedSection(props: ExpandableActivityProps) {
+  const {
+    id,
+    subactivitiesIds,
+    getActivityById,
+    width = STANDARD_ELEMENT_WIDTH,
+  } = props;
+  const subactivities: Activity[] = useMemo(() => {
+    return subactivitiesIds
+      .map(getActivityById)
+      .filter(result => result !== null) as Activity[];
+  }, [subactivitiesIds, getActivityById]);
+  return (
+    <CustomPressable
+      style={{...commonStyles.container, ...styles.expandedSection}}>
+      <ActivityOptionsMenuBar {...props} />
+      <View
+        style={{
+          ...commonStyles.container,
+          transform: [{translateY: -30}],
+        }}>
+        {subactivities.length > 0 && (
+          <>
+            <ActivitiesList
+              getActivityById={getActivityById}
+              activities={subactivities}
+              width={width - SUBACTIVITY_LEVEL_WIDTH_DECREMENT}
+            />
+            <View style={{marginBottom: SPACE_BETWEEN_ELEMENTS * 2}} />
+          </>
+        )}
+      </View>
+      <AddSubactivityContainer id={id} width={width} />
+    </CustomPressable>
   );
 }
 
 export function ActivityElement(props: ExpandableActivityProps) {
-  const {name, isExpanded, setIsExpanded} = props;
+  const {
+    id,
+    name,
+    isExpanded,
+    setIsExpanded,
+    width = STANDARD_ELEMENT_WIDTH,
+  } = props;
   return (
     <CustomPressable
-      onPress={() => setIsExpanded(!isExpanded)}
-      style={styles.activityElementContainer}>
-      <View style={{...styles.container, ...styles.activityElement}}>
-        <Text style={styles.textStyle}>{name}</Text>
+      onPress={() => setIsExpanded(!isExpanded(id))}
+      style={{
+        ...styles.roundedElementBorder,
+        ...styles.expandableActivityElement,
+        width,
+      }}>
+      <View
+        style={{...commonStyles.container, ...styles.activityElement, width}}>
+        <Text style={{...commonStyles.textStyle, ...styles.textStyle}}>
+          {name}
+        </Text>
       </View>
-      {isExpanded && <ExpandedSection {...props} />}
+      <>{isExpanded(id) && <ExpandedSection {...props} />}</>
     </CustomPressable>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  activityElementContainer: {
+  roundedElementBorder: {
     borderWidth: 1,
     borderColor: ColorPalette.SoftBlack_RGBASerialized,
     borderRadius: 10,
-    marginTop: 5,
+  },
+  expandableActivityElement: {
     backgroundColor: ColorPalette.activityDefaultColor_RGBSerialized,
   },
   activityElement: {
-    width: ELEMENT_WIDTH,
+    width: STANDARD_ELEMENT_WIDTH,
     height: ELEMENT_HEIGHT,
   },
   textStyle: {
     fontSize: 20,
-    color: ColorPalette.OffWhite_RGBSerialized,
   },
   expandedSection: {
-    height: 100,
+    paddingBottom: 10,
   },
   activityOptionsMenuBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: ELEMENT_WIDTH,
+    height: ACTRA_FUNCTION_OPTION_ICON_SIZE * 2,
+    width: STANDARD_ELEMENT_WIDTH,
+  },
+  addSubactivityOptionContainer: {
+    borderColor: ColorPalette.OffWhite_RGBSerialized,
+    borderStyle: 'dashed',
+    backgroundColor: 'rgba(255,255,255,0.1)',
   },
 });

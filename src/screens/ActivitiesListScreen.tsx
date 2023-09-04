@@ -1,9 +1,16 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {View, FlatList, StyleSheet, LayoutAnimation} from 'react-native';
-import {ActivityElement} from '../components/ActivityElement';
-import useActivities from '../activity/useActivities';
+import {
+  Activity,
+  ActivityElement,
+  ELEMENT_HEIGHT,
+  STANDARD_ELEMENT_WIDTH,
+} from '../components/ActivityElement';
+import useActivities, {GetActivityById} from '../activity/useActivities';
 
-function useLayoutAnimation(onCompleteAnimation: () => void) {
+export const SPACE_BETWEEN_ELEMENTS = 5;
+
+function useLayoutAnimation() {
   const layoutAnimConfig = useMemo(
     () => ({
       duration: 100,
@@ -13,11 +20,17 @@ function useLayoutAnimation(onCompleteAnimation: () => void) {
     }),
     [],
   );
-  LayoutAnimation.configureNext(layoutAnimConfig, onCompleteAnimation);
+  LayoutAnimation.configureNext(layoutAnimConfig);
 }
 
-export function ActivitiesListScreen() {
-  const {activities} = useActivities();
+interface ActivitiesListProps {
+  activities: Activity[];
+  getActivityById: GetActivityById;
+  width?: number;
+}
+
+export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
+  const {getActivityById, activities, width = STANDARD_ELEMENT_WIDTH} = props;
   const [currentlyExpandedActivity, setCurrentlyExpandedActivity] = useState<
     string | null
   >(null);
@@ -25,36 +38,49 @@ export function ActivitiesListScreen() {
     (id: string) => currentlyExpandedActivity === id,
     [currentlyExpandedActivity],
   );
-  const [activityUndergoingAnimation, setActivityUndergoingAnimation] =
-    useState<string | null>(null);
-  useLayoutAnimation(() => {
-    setActivityUndergoingAnimation(null);
-  });
+
+  useLayoutAnimation();
   return (
     <View style={styles.activitiesListContainer}>
       <FlatList
         data={activities}
         renderItem={({item}) => (
-          <ActivityElement
-            isExpanded={isExpanded(item.id)}
-            setIsExpanded={(shouldExpand: boolean) => {
-              setCurrentlyExpandedActivity(shouldExpand ? item.id : null);
-              setActivityUndergoingAnimation(item.id);
-            }}
-            isExpandingAnimation={activityUndergoingAnimation === item.id}
-            {...item}
-          />
+          <>
+            <ActivityElement
+              getActivityById={getActivityById}
+              isExpanded={isExpanded}
+              setIsExpanded={(shouldExpand: boolean) => {
+                setCurrentlyExpandedActivity(shouldExpand ? item.id : null);
+              }}
+              {...item}
+              width={width}
+            />
+            <View style={{marginTop: SPACE_BETWEEN_ELEMENTS}} />
+          </>
         )}
         keyExtractor={item => item.id.toString()}
-        initialNumToRender={10}
+        initialNumToRender={20}
         windowSize={5}
         getItemLayout={(data, index) => ({
           length: 100,
-          offset: 50 * index,
+          offset: ELEMENT_HEIGHT * index,
           index,
         })}
       />
     </View>
+  );
+});
+
+function ActivitiesListScreen() {
+  const {activities, getActivityById} = useActivities();
+  return (
+    <>
+      <View style={{marginTop: '10%'}} />
+      <ActivitiesList
+        activities={activities}
+        getActivityById={getActivityById}
+      />
+    </>
   );
 }
 
@@ -62,7 +88,8 @@ const styles = StyleSheet.create({
   activitiesListContainer: {
     display: 'flex',
     alignItems: 'center',
-    marginTop: '10%',
     height: '90%',
   },
 });
+
+export default React.memo(ActivitiesListScreen);

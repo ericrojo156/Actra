@@ -1,8 +1,9 @@
 import React from 'react';
-import {StyleSheet, Text, GestureResponderEvent} from 'react-native';
+import {Text, GestureResponderEvent, StyleSheet} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as ColorPalette from '../ColorPalette';
 import Pressable from './Pressable';
+import {commonStyles} from '../styles';
 
 export const ACTRA_FUNCTION_OPTION_ICON_SIZE = 40;
 
@@ -26,23 +27,16 @@ function PressableIcon(props: ActraFunctionProps) {
   return (
     <Pressable
       activeScale={0.85}
-      style={{...styles.container, ...style}}
+      style={{...commonStyles.container, ...styles.iconContainer, ...style}}
       onPress={onPress}>
       {content}
-      <Text style={styles.textStyle}>{label}</Text>
+      <Text style={commonStyles.textStyle}>{label}</Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  textStyle: {
-    color: ColorPalette.OffWhite_RGBSerialized,
-  },
+  iconContainer: {},
 });
 
 export default PressableIcon;

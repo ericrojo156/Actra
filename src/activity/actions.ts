@@ -5,6 +5,7 @@ export const JOIN_ACTIVITY_OPTION_INVOKED = 'JOIN_ACTIVITY_OPTION_INVOKED';
 export const EDIT_ACTIVITY_OPTION_INVOKED = 'EDIT_ACTIVITY_OPTION_INVOKED';
 export const HISTORY_ACTIVITY_OPTION_INVOKED =
   'HISTORY_ACTIVITY_OPTION_INVOKED';
+export const ADD_SUBACTIVITY_OPTION_INVOKED = 'ADD_SUBACTIVITY_OPTION_INVOKED';
 
 export interface IdAction extends BaseAction {
   payload: string;
@@ -34,6 +35,13 @@ export function editActivityOptionInvoked(id: string): IdAction {
 export function historyActivityOptionInvoked(id: string): IdAction {
   return {
     type: HISTORY_ACTIVITY_OPTION_INVOKED,
+    payload: id,
+  };
+}
+
+export function addSubactivityOptionInvoked(id: string): IdAction {
+  return {
+    type: ADD_SUBACTIVITY_OPTION_INVOKED,
     payload: id,
   };
 }
