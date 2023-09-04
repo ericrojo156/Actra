@@ -62,8 +62,9 @@ interface AddSubactivityProps extends IdProp {
   width?: number;
 }
 
-function AddSubactivityContainer(props: AddSubactivityProps) {
-  const {width = STANDARD_ELEMENT_WIDTH} = props;
+function AddSubactivityOption(props: AddSubactivityProps) {
+  const {id, width = STANDARD_ELEMENT_WIDTH} = props;
+  const {onAddSubactivityOption} = useActivityOptionCallbacks();
   return (
     <PressableIcon
       label={'dict.AddSubactivity'}
@@ -74,6 +75,7 @@ function AddSubactivityContainer(props: AddSubactivityProps) {
         ...styles.activityElement,
         width: width - SUBACTIVITY_LEVEL_WIDTH_DECREMENT,
       }}
+      onPress={() => onAddSubactivityOption(id)}
     />
   );
 }
@@ -110,7 +112,7 @@ function ExpandedSection(props: ExpandableActivityProps) {
           </>
         )}
       </View>
-      <AddSubactivityContainer id={id} width={width} />
+      <AddSubactivityOption id={id} width={width} />
     </CustomPressable>
   );
 }
