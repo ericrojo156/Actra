@@ -7,6 +7,7 @@ import {
   STANDARD_ELEMENT_WIDTH,
 } from '../components/ActivityElement';
 import useActivities, {GetActivityById} from '../activity/useActivities';
+import GradientBackground from './GradientBackground';
 
 export const SPACE_BETWEEN_ELEMENTS = 5;
 
@@ -74,13 +75,13 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
 function ActivitiesListScreen() {
   const {activities, getActivityById} = useActivities();
   return (
-    <>
+    <GradientBackground>
       <View style={{marginTop: '10%'}} />
       <ActivitiesList
         activities={activities}
         getActivityById={getActivityById}
       />
-    </>
+    </GradientBackground>
   );
 }
 

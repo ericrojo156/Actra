@@ -1,17 +1,17 @@
 import {
-  DELETE_ACTIVITY_OPTION_INVOKED,
   JOIN_ACTIVITY_OPTION_INVOKED,
   EDIT_ACTIVITY_OPTION_INVOKED,
   HISTORY_ACTIVITY_OPTION_INVOKED,
   IdAction,
   ADD_SUBACTIVITY_OPTION_INVOKED,
+  DELETE_ACTIVITY,
 } from './actions';
 import {takeLatest} from 'redux-saga/effects';
 
 function* deleteActivitySaga(action: IdAction) {
   try {
     const id = action.payload;
-    console.log(`delete activity ${id}`);
+    console.log(`deleted activity: ${id}`);
   } catch (error) {
     console.log(`delete activity saga error: ${error}`);
   }
@@ -51,7 +51,7 @@ function* addSubactivityOptionInvokedSaga(action: IdAction) {
 }
 
 export default function* rootSaga() {
-  yield takeLatest(DELETE_ACTIVITY_OPTION_INVOKED, deleteActivitySaga);
+  yield takeLatest(DELETE_ACTIVITY, deleteActivitySaga);
   yield takeLatest(JOIN_ACTIVITY_OPTION_INVOKED, joinActivitySaga);
   yield takeLatest(EDIT_ACTIVITY_OPTION_INVOKED, editActivitySaga);
   yield takeLatest(HISTORY_ACTIVITY_OPTION_INVOKED, historyActivitySaga);

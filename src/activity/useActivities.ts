@@ -1,9 +1,11 @@
 import {useEffect, useCallback, useState, useMemo} from 'react';
+import {ActionSheetIOS} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {Activity} from '../components/ActivityElement';
 import {uuidv4} from '../utils/uuid';
 import {
   addSubactivityOptionInvoked,
+  deleteActivity,
   deleteActivityOptionInvoked,
   editActivityOptionInvoked,
   historyActivityOptionInvoked,
@@ -15,6 +17,21 @@ export function useActivityOptionCallbacks() {
   const onDeleteActivityOption = useCallback(
     (id: string) => {
       dispatch(deleteActivityOptionInvoked(id));
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ['dict.Cancel', 'dict.DeleteActivity'],
+          destructiveButtonIndex: 1,
+          cancelButtonIndex: 0,
+          userInterfaceStyle: 'dark',
+        },
+        buttonIndex => {
+          if (buttonIndex === 0) {
+            // cancel action
+          } else if (buttonIndex === 1) {
+            dispatch(deleteActivity(id));
+          }
+        },
+      );
     },
     [dispatch],
   );
