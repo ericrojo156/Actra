@@ -1,5 +1,5 @@
-import React, {useCallback, useMemo, useState} from 'react';
-import {View, FlatList, StyleSheet, LayoutAnimation} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {Modal, View, FlatList, StyleSheet, LayoutAnimation} from 'react-native';
 import {
   Activity,
   ActivityElement,
@@ -8,6 +8,7 @@ import {
 } from '../components/ActivityElement';
 import useActivities, {GetActivityById} from '../activity/useActivities';
 import GradientBackground from './GradientBackground';
+import {SelectActivities} from '../modalContent/SelectActivities';
 
 export const SPACE_BETWEEN_ELEMENTS = 5;
 
@@ -39,7 +40,6 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
     (id: string) => currentlyExpandedActivity === id,
     [currentlyExpandedActivity],
   );
-
   useLayoutAnimation();
   return (
     <View style={styles.activitiesListContainer}>
@@ -74,8 +74,23 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
 
 function ActivitiesListScreen() {
   const {activities, getActivityById} = useActivities();
+  const [modalIsVisible, setModalIsVisible] = useState(false);
+  useEffect(() => {
+    setTimeout(() => {
+      setModalIsVisible(true);
+    }, 1000);
+  }, []);
   return (
     <GradientBackground>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalIsVisible}
+        onRequestClose={() => {
+          setModalIsVisible(!modalIsVisible);
+        }}>
+        <SelectActivities headerText="dict.SelectActivities" />
+      </Modal>
       <View style={{marginTop: '10%'}} />
       <ActivitiesList
         activities={activities}

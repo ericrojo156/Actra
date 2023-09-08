@@ -11,4 +11,8 @@ export const commonStyles = StyleSheet.create({
   textStyle: {
     color: ColorPalette.OffWhite_RGBSerialized,
   },
+  headerTextStyle: {
+    fontSize: 30,
+    color: ColorPalette.OffWhite_RGBSerialized,
+  },
 });

@@ -22,7 +22,11 @@ let store = configureStore({
 
 sagaMiddleware.run(activitiesSagas);
 
-const RootStack = createStackNavigator();
+export type RootStackParamsList = {
+  ActivitiesListScreen: {};
+};
+
+const RootStack = createStackNavigator<RootStackParamsList>();
 
 function App(): JSX.Element {
   return (

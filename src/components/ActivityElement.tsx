@@ -6,7 +6,7 @@ import DeleteOption from './optionsMenu/DeleteOption';
 import EditOption from './optionsMenu/EditOption';
 import HistoryOption from './optionsMenu/HistoryOption';
 import JoinOption from './optionsMenu/JoinOption';
-import {useActivityOptionCallbacks} from '../activity/useActivities';
+import useActivityOptionCallbacks from '../activity/useActivityOptionsActions';
 import {commonStyles} from '../styles';
 import {
   ActivitiesList,
