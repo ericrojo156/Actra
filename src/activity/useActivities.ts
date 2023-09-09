@@ -1,5 +1,6 @@
 import {useEffect, useCallback, useState, useMemo} from 'react';
 import {Activity} from '../components/ActivityElement';
+import * as ColorPalette from '../ColorPalette';
 import {uuidv4} from '../utils/uuid';
 
 async function getMockActivities(): Promise<Activity[]> {
@@ -9,6 +10,7 @@ async function getMockActivities(): Promise<Activity[]> {
     subactivitiesIds: [],
     intervalsIds: [],
     currentlyActiveIntervalId: null,
+    color: ColorPalette.activityDefaultColor,
   }));
   const subactivitiesIds = [
     uuidv4(),
@@ -29,6 +31,7 @@ async function getMockActivities(): Promise<Activity[]> {
       subactivitiesIds: [],
       intervalsIds: [],
       currentlyActiveIntervalId: null,
+      color: ColorPalette.activityDefaultColor,
     });
   });
   const activityWithSubactivities = {
@@ -37,6 +40,7 @@ async function getMockActivities(): Promise<Activity[]> {
     subactivitiesIds,
     intervalsIds: [],
     currentlyActiveIntervalId: null,
+    color: ColorPalette.activityDefaultColor,
   };
   return [activityWithSubactivities, ...activities];
 }

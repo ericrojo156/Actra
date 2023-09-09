@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, StyleProp, ViewStyle} from 'react-native';
 import * as ColorPalette from '../ColorPalette';
 import CustomPressable from './Pressable';
 import DeleteOption from './optionsMenu/DeleteOption';
@@ -14,6 +14,7 @@ import {
 } from '../screens/ActivitiesListScreen';
 import PressableIcon, {ACTRA_FUNCTION_OPTION_ICON_SIZE} from './PressableIcon';
 import {IdProp} from '../types';
+import * as ColorProcessor from '../ColorProcessor';
 
 export const ELEMENT_HEIGHT = 70;
 export const STANDARD_ELEMENT_WIDTH = 350;
@@ -22,6 +23,7 @@ export const SUBACTIVITY_LEVEL_WIDTH_DECREMENT = 20;
 export interface Activity {
   id: string;
   name: string;
+  color?: ColorPalette.Color;
   subactivitiesIds: string[];
   intervalsIds: string[];
   currentlyActiveIntervalId: string | null;
@@ -121,9 +123,20 @@ function ExpandedSection(props: ExpandableActivityProps) {
 }
 
 export function ActivityElement(props: ActivityElementProps) {
-  const {name, width} = props;
+  const {name, width, color} = props;
+  let activityStyle: StyleProp<ViewStyle> = {
+    ...commonStyles.container,
+    ...styles.activityElement,
+    width,
+  };
+  if (color) {
+    activityStyle = {
+      ...activityStyle,
+      backgroundColor: ColorProcessor.serialize(color),
+    };
+  }
   return (
-    <View style={{...commonStyles.container, ...styles.activityElement, width}}>
+    <View style={activityStyle}>
       <Text style={{...commonStyles.textStyle, ...styles.textStyle}}>
         {name}
       </Text>
@@ -132,7 +145,17 @@ export function ActivityElement(props: ActivityElementProps) {
 }
 
 export function ExpandedActivityElement(props: ExpandableActivityProps) {
-  const {id, isExpanded, setIsExpanded, width = STANDARD_ELEMENT_WIDTH} = props;
+  const {
+    id,
+    isExpanded,
+    setIsExpanded,
+    width = STANDARD_ELEMENT_WIDTH,
+    color,
+  } = props;
+  const activityProps = {
+    ...props,
+    color: undefined,
+  };
   return (
     <CustomPressable
       onPress={() => setIsExpanded(!isExpanded(id))}
@@ -140,14 +163,15 @@ export function ExpandedActivityElement(props: ExpandableActivityProps) {
         ...styles.roundedElementBorder,
         ...styles.expandableActivityElement,
         width,
+        backgroundColor: ColorProcessor.serialize(color),
       }}>
-      <ActivityElement {...props} />
+      <ActivityElement {...activityProps} />
       <>{isExpanded(id) && <ExpandedSection {...props} />}</>
     </CustomPressable>
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   roundedElementBorder: {
     borderWidth: 1,
     borderColor: ColorPalette.SoftBlack_RGBASerialized,

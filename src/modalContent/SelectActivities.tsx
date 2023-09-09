@@ -17,6 +17,8 @@ import {
 } from '../components/ActivityElement';
 import {SPACE_BETWEEN_ELEMENTS} from '../screens/ActivitiesListScreen';
 import useActivities from '../activity/useActivities';
+import {styles as activityStyles} from '../components/ActivityElement';
+import * as ColorProcessor from '../ColorProcessor';
 
 export interface SelectActivitiesProps {
   headerText: string;
@@ -38,19 +40,32 @@ function SelectionList<T extends SelectableItem>(props: SelectionListProps<T>) {
     [data],
   );
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const addSelectedId = useCallback(
+  const toggleSelection = useCallback(
     (id: string) => {
       const updatedSet = new Set(selectedIds);
-      updatedSet.add(id);
+      if (!updatedSet.has(id)) {
+        updatedSet.add(id);
+      } else {
+        updatedSet.delete(id);
+      }
       setSelectedIds(updatedSet);
     },
     [selectedIds],
   );
+  const isSelected = useCallback(
+    (id: string) => selectedIds.has(id),
+    [selectedIds],
+  );
   const renderItem = ({item}: ListRenderItemInfo<T>) => (
-    <Pressable onPress={() => addSelectedId(item.id)}>
-      {renderInnerItem(dataMap.get(item.id) ?? null)}
+    <View
+      style={
+        isSelected(item.id) ? styles.selectedStyle : styles.unselectedStyle
+      }>
+      <Pressable onPress={() => toggleSelection(item.id)}>
+        {renderInnerItem(dataMap.get(item.id) ?? null)}
+      </Pressable>
       <View style={{marginTop: SPACE_BETWEEN_ELEMENTS}} />
-    </Pressable>
+    </View>
   );
   return (
     <>
@@ -60,11 +75,14 @@ function SelectionList<T extends SelectableItem>(props: SelectionListProps<T>) {
         keyExtractor={item => item.id.toString()}
         initialNumToRender={20}
         windowSize={5}
-        getItemLayout={(data, index) => ({
+        getItemLayout={(_data, index) => ({
           length: 100,
           offset: ELEMENT_HEIGHT * index,
           index,
         })}
+        contentContainerStyle={{
+          alignItems: 'center',
+        }}
       />
     </>
   );
@@ -76,11 +94,17 @@ export function SelectActivities(props: SelectActivitiesProps) {
   const renderInnerItem = (activity: Activity | null) => {
     if (activity) {
       return (
-        <ActivityElement
-          {...activity}
-          width={STANDARD_ELEMENT_WIDTH}
-          getActivityById={getActivityById}
-        />
+        <View
+          style={{
+            ...activityStyles.roundedElementBorder,
+            backgroundColor: ColorProcessor.serialize(activity.color),
+          }}>
+          <ActivityElement
+            {...activity}
+            getActivityById={getActivityById}
+            color={undefined}
+          />
+        </View>
       );
     }
     return null;
@@ -92,7 +116,7 @@ export function SelectActivities(props: SelectActivitiesProps) {
         <Text
           style={{
             ...commonStyles.headerTextStyle,
-            ...style.headerStyle,
+            ...styles.headerStyle,
           }}>
           {headerText}
         </Text>
@@ -102,10 +126,16 @@ export function SelectActivities(props: SelectActivitiesProps) {
   );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   headerStyle: {
     display: 'flex',
     alignSelf: 'center',
     fontSize: 20,
+  },
+  selectedStyle: {
+    width: STANDARD_ELEMENT_WIDTH - 20,
+  },
+  unselectedStyle: {
+    width: STANDARD_ELEMENT_WIDTH,
   },
 });
