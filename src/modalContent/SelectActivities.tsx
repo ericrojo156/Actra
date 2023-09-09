@@ -30,7 +30,10 @@ interface SelectableItem {
 
 interface SelectionListProps<T extends SelectableItem> {
   data: T[];
-  renderInnerItem: (props: T | null) => ReactElement | null;
+  renderInnerItem: (
+    props: T | null,
+    isSelected: boolean,
+  ) => ReactElement | null;
 }
 
 function SelectionList<T extends SelectableItem>(props: SelectionListProps<T>) {
@@ -62,7 +65,7 @@ function SelectionList<T extends SelectableItem>(props: SelectionListProps<T>) {
         isSelected(item.id) ? styles.selectedStyle : styles.unselectedStyle
       }>
       <Pressable onPress={() => toggleSelection(item.id)}>
-        {renderInnerItem(dataMap.get(item.id) ?? null)}
+        {renderInnerItem(dataMap.get(item.id) ?? null, isSelected(item.id))}
       </Pressable>
       <View style={{marginTop: SPACE_BETWEEN_ELEMENTS}} />
     </View>
@@ -91,13 +94,17 @@ function SelectionList<T extends SelectableItem>(props: SelectionListProps<T>) {
 export function SelectActivities(props: SelectActivitiesProps) {
   const {headerText} = props;
   const {activities, getActivityById} = useActivities();
-  const renderInnerItem = (activity: Activity | null) => {
+  const renderInnerItem = (activity: Activity | null, isSelected: boolean) => {
     if (activity) {
       return (
         <View
           style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
             ...activityStyles.roundedElementBorder,
             backgroundColor: ColorProcessor.serialize(activity.color),
+            ...(isSelected ? styles.selectedActivityStyle : {}),
           }}>
           <ActivityElement
             {...activity}
@@ -131,6 +138,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignSelf: 'center',
     fontSize: 20,
+  },
+  selectedActivityStyle: {
+    borderColor: 'white',
+    borderWidth: 3,
   },
   selectedStyle: {
     width: STANDARD_ELEMENT_WIDTH - 20,
