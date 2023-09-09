@@ -2,8 +2,8 @@ export interface Color {
   red: number;
   green: number;
   blue: number;
-  alpha: number;
-  lightenValue: number;
+  alpha?: number;
+  lightenValue?: number;
 }
 
 export const SoftBlack: Color = {

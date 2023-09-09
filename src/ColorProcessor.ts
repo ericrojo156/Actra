@@ -17,17 +17,26 @@ export function saturatingAddition(
 export function computeGradientColor(color: Color): string {
   let lightenValue =
     Number.isInteger(color.lightenValue) &&
-    color.lightenValue > 0 &&
-    color.lightenValue <= 255
+    (color.lightenValue ?? 0) > 0 &&
+    (color.lightenValue ?? 0) <= 255
       ? color.lightenValue
       : 0;
   return `rgba(${saturatingAddition(
     color.red,
-    lightenValue,
+    lightenValue ?? 0,
     255,
   )}, ${saturatingAddition(
     color.green,
-    lightenValue,
+    lightenValue ?? 0,
     255,
-  )}, ${saturatingAddition(color.blue, lightenValue, 255)}, 1)`;
+  )}, ${saturatingAddition(color.blue, lightenValue ?? 0, 255)}, 1)`;
+}
+
+export function serialize(color?: Color): string {
+  if (!color) {
+    return 'rgba(0, 0, 0, 0)';
+  }
+  return `rgba(${color.red}, ${color.green}, ${color.blue}, ${
+    color.alpha ?? 1
+  })`;
 }
