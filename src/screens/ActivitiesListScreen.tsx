@@ -2,8 +2,8 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Modal, View, FlatList, StyleSheet, LayoutAnimation} from 'react-native';
 import {
   Activity,
-  ActivityElement,
   ELEMENT_HEIGHT,
+  ExpandedActivityElement,
   STANDARD_ELEMENT_WIDTH,
 } from '../components/ActivityElement';
 import useActivities, {GetActivityById} from '../activity/useActivities';
@@ -47,7 +47,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
         data={activities}
         renderItem={({item}) => (
           <>
-            <ActivityElement
+            <ExpandedActivityElement
               getActivityById={getActivityById}
               isExpanded={isExpanded}
               setIsExpanded={(shouldExpand: boolean) => {
@@ -77,7 +77,7 @@ function ActivitiesListScreen() {
   const [modalIsVisible, setModalIsVisible] = useState(false);
   useEffect(() => {
     setTimeout(() => {
-      setModalIsVisible(true);
+      // setModalIsVisible(true);
     }, 1000);
   }, []);
   return (

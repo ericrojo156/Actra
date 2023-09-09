@@ -27,11 +27,14 @@ export interface Activity {
   currentlyActiveIntervalId: string | null;
 }
 
-export interface ExpandableActivityProps extends Activity {
+export interface ActivityElementProps extends Activity {
+  width?: number;
+  getActivityById: (id: string) => Activity | null;
+}
+
+export interface ExpandableActivityProps extends ActivityElementProps {
   isExpanded: (id: string) => boolean;
   setIsExpanded: (shouldExpand: boolean) => void;
-  getActivityById: (id: string) => Activity | null;
-  width?: number;
 }
 
 function ActivityOptionsMenuBar(props: ExpandableActivityProps) {
@@ -117,14 +120,19 @@ function ExpandedSection(props: ExpandableActivityProps) {
   );
 }
 
-export function ActivityElement(props: ExpandableActivityProps) {
-  const {
-    id,
-    name,
-    isExpanded,
-    setIsExpanded,
-    width = STANDARD_ELEMENT_WIDTH,
-  } = props;
+export function ActivityElement(props: ActivityElementProps) {
+  const {name, width} = props;
+  return (
+    <View style={{...commonStyles.container, ...styles.activityElement, width}}>
+      <Text style={{...commonStyles.textStyle, ...styles.textStyle}}>
+        {name}
+      </Text>
+    </View>
+  );
+}
+
+export function ExpandedActivityElement(props: ExpandableActivityProps) {
+  const {id, isExpanded, setIsExpanded, width = STANDARD_ELEMENT_WIDTH} = props;
   return (
     <CustomPressable
       onPress={() => setIsExpanded(!isExpanded(id))}
@@ -133,12 +141,7 @@ export function ActivityElement(props: ExpandableActivityProps) {
         ...styles.expandableActivityElement,
         width,
       }}>
-      <View
-        style={{...commonStyles.container, ...styles.activityElement, width}}>
-        <Text style={{...commonStyles.textStyle, ...styles.textStyle}}>
-          {name}
-        </Text>
-      </View>
+      <ActivityElement {...props} />
       <>{isExpanded(id) && <ExpandedSection {...props} />}</>
     </CustomPressable>
   );

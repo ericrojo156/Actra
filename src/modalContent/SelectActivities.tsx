@@ -1,9 +1,20 @@
-import React, {useCallback, useMemo, useState} from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import React, {ReactElement, useCallback, useMemo, useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ListRenderItemInfo,
+} from 'react-native';
 import GradientBackground from '../screens/GradientBackground';
 import {commonStyles} from '../styles';
 import Pressable from '../components/Pressable';
-import {ELEMENT_HEIGHT} from '../components/ActivityElement';
+import {
+  Activity,
+  ActivityElement,
+  ELEMENT_HEIGHT,
+  STANDARD_ELEMENT_WIDTH,
+} from '../components/ActivityElement';
 import {SPACE_BETWEEN_ELEMENTS} from '../screens/ActivitiesListScreen';
 import useActivities from '../activity/useActivities';
 
@@ -17,11 +28,12 @@ interface SelectableItem {
 
 interface SelectionListProps<T extends SelectableItem> {
   data: T[];
+  renderInnerItem: (props: T | null) => ReactElement | null;
 }
 
 function SelectionList<T extends SelectableItem>(props: SelectionListProps<T>) {
-  const {data} = props;
-  const childrenMap = useMemo(
+  const {data, renderInnerItem} = props;
+  const dataMap: Map<string, T> = useMemo(
     () => new Map(data?.map(child => [child.id, child]) ?? []),
     [data],
   );
@@ -34,9 +46,9 @@ function SelectionList<T extends SelectableItem>(props: SelectionListProps<T>) {
     },
     [selectedIds],
   );
-  const renderItem = (item: T) => (
+  const renderItem = ({item}: ListRenderItemInfo<T>) => (
     <Pressable onPress={() => addSelectedId(item.id)}>
-      <Text>{JSON.stringify(childrenMap.get(item.id))}</Text>
+      {renderInnerItem(dataMap.get(item.id) ?? null)}
       <View style={{marginTop: SPACE_BETWEEN_ELEMENTS}} />
     </Pressable>
   );
@@ -60,7 +72,19 @@ function SelectionList<T extends SelectableItem>(props: SelectionListProps<T>) {
 
 export function SelectActivities(props: SelectActivitiesProps) {
   const {headerText} = props;
-  const {activities} = useActivities();
+  const {activities, getActivityById} = useActivities();
+  const renderInnerItem = (activity: Activity | null) => {
+    if (activity) {
+      return (
+        <ActivityElement
+          {...activity}
+          width={STANDARD_ELEMENT_WIDTH}
+          getActivityById={getActivityById}
+        />
+      );
+    }
+    return null;
+  };
   return (
     <GradientBackground>
       <View>
@@ -73,7 +97,7 @@ export function SelectActivities(props: SelectActivitiesProps) {
           {headerText}
         </Text>
       </View>
-      <SelectionList data={activities} />
+      <SelectionList data={activities} renderInnerItem={renderInnerItem} />
     </GradientBackground>
   );
 }
