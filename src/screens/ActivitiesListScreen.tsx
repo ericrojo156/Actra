@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {Modal, View, FlatList, StyleSheet, LayoutAnimation} from 'react-native';
 import {
   Activity,
@@ -8,7 +8,7 @@ import {
 } from '../components/ActivityElement';
 import useActivities, {GetActivityById} from '../activity/useActivities';
 import GradientBackground from './GradientBackground';
-import {ModalContent, ModalType, useModal} from '../components/Modal';
+import {ModalContent, useModal} from '../modal/Modal';
 
 export const SPACE_BETWEEN_ELEMENTS = 5;
 
@@ -74,12 +74,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
 
 function ActivitiesListScreen() {
   const {activities, getActivityById} = useActivities();
-  const {activeModal, setActiveModal} = useModal();
-  useEffect(() => {
-    setTimeout(() => {
-      setActiveModal(ModalType.JOIN_ACTIVITIES);
-    }, 1000);
-  }, [setActiveModal]);
+  const {activeModal, closeModal} = useModal();
   return (
     <GradientBackground>
       <Modal
@@ -87,7 +82,7 @@ function ActivitiesListScreen() {
         transparent={true}
         visible={activeModal !== null}
         onRequestClose={() => {
-          setActiveModal(null);
+          closeModal();
         }}>
         <ModalContent activeModal={activeModal} />
       </Modal>

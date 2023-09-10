@@ -1,19 +1,19 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import GradientBackground from '../screens/GradientBackground';
-import {commonStyles} from '../commonStyles';
-import CustomPressable from '../components/Pressable';
+import useActivities from '../../activity/useActivities';
+import {commonStyles} from '../../commonStyles';
 import {
   Activity,
   ActivityElement,
   ELEMENT_HEIGHT,
-} from '../components/ActivityElement';
-import useActivities from '../activity/useActivities';
-import * as ColorProcessor from '../ColorProcessor';
-import * as ColorPalette from '../ColorPalette';
-import {SelectionList} from '../components/SelectionList';
-import {SPACE_BETWEEN_ELEMENTS} from '../screens/ActivitiesListScreen';
-import {Language, useTranslation} from '../hooks/useTranslation';
+} from '../../components/ActivityElement';
+import CustomPressable from '../../components/Pressable';
+import {SelectionList} from '../../components/SelectionList';
+import {useTranslation} from '../../internationalization/useTranslation';
+import {SPACE_BETWEEN_ELEMENTS} from '../../screens/ActivitiesListScreen';
+import GradientBackground from '../../screens/GradientBackground';
+import * as ColorPalette from '../../ColorPalette';
+import * as ColorProcessor from '../../ColorProcessor';
 
 export interface SelectActivitiesProps {
   headerText: string;
@@ -27,7 +27,7 @@ export function SelectActivities(props: SelectActivitiesProps) {
   const {headerText, onConfirmSelection} = props;
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const {activities, getActivityById} = useActivities();
-  const {translate} = useTranslation(Language.ENGLISH);
+  const {translate} = useTranslation();
   const renderInnerItem = (activity: Activity | null, isSelected: boolean) => {
     if (activity) {
       return (

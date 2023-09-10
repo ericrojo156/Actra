@@ -1,4 +1,6 @@
 import {useCallback} from 'react';
+import {useSelector} from 'react-redux';
+import {ApplicationState} from '../redux/rootReducer';
 
 export enum Language {
   ENGLISH,
@@ -23,7 +25,10 @@ const languages = new Map<Language, LanguageDict>([
   [Language.ENGLISH, englishDict],
 ]);
 
-export function useTranslation(language: Language) {
+export function useTranslation() {
+  const language = useSelector(
+    (state: ApplicationState) => state.internationalization.language,
+  );
   const translate = useCallback(
     (phrase: string) => languages.get(language)?.get(phrase) ?? phrase,
     [language],

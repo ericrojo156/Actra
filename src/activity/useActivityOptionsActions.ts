@@ -9,15 +9,15 @@ import {
   historyActivityOptionInvoked,
   addSubactivityOptionInvoked,
 } from './actions';
-import {useTranslation, Language} from '../hooks/useTranslation';
-import {openSelectionModal, SELECTION_TYPE} from '../components/SelectionList';
+import {useTranslation} from '../internationalization/useTranslation';
+import {useSelectionModal, SELECTION_TYPE} from '../components/SelectionList';
 
 export function joinActivities(ids: string[]) {
   console.log(`join activities: ${ids}`);
 }
 
 export default function useActivityOptionCallbacks() {
-  const {translate} = useTranslation(Language.ENGLISH);
+  const {translate} = useTranslation();
   const dispatch = useDispatch();
   const onDeleteActivityOption = useCallback(
     (id: string) => {
@@ -40,17 +40,18 @@ export default function useActivityOptionCallbacks() {
     },
     [dispatch, translate],
   );
+  const {openJoinActivitiesModal} = useSelectionModal();
   const onJoinActivityOption = useCallback(
     (id: string) => {
       dispatch(joinActivityOptionInvoked(id));
-      openSelectionModal({
+      openJoinActivitiesModal({
         id,
         selectionType: SELECTION_TYPE.MULTI_SELECT,
         onConfirm: (selectedItems: string[]) =>
           joinActivities([id, ...selectedItems]),
       });
     },
-    [dispatch],
+    [dispatch, openJoinActivitiesModal],
   );
   const onEditActivityOption = useCallback(
     (id: string) => {

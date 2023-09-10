@@ -4,6 +4,25 @@ import {SPACE_BETWEEN_ELEMENTS} from '../screens/ActivitiesListScreen';
 import {ELEMENT_HEIGHT, STANDARD_ELEMENT_WIDTH} from './ActivityElement';
 import * as ColorPalette from '../ColorPalette';
 import CustomPressable from './Pressable';
+import {useDispatch} from 'react-redux';
+import {joinActivitiesModalOpened} from '../modal/modalActions';
+
+export function useSelectionModal() {
+  const dispatch = useDispatch();
+  const openJoinActivitiesModal = useCallback(
+    (params: SelectionModalParams) => {
+      dispatch(
+        joinActivitiesModalOpened({
+          params,
+        }),
+      );
+    },
+    [dispatch],
+  );
+  return {
+    openJoinActivitiesModal,
+  };
+}
 
 export enum SELECTION_TYPE {
   MULTI_SELECT,
@@ -14,7 +33,6 @@ export interface SelectionModalParams {
   selectionType: SELECTION_TYPE.MULTI_SELECT;
   onConfirm: (selectedItems: string[]) => void;
 }
-export function openSelectionModal(_params: SelectionModalParams) {}
 
 export interface SelectableItem {
   id: string;

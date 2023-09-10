@@ -10,7 +10,7 @@ import activitiesSagas from './src/activity/activitySagas';
 import {NavigationContainer} from '@react-navigation/native';
 import * as ColorPalette from './src/ColorPalette';
 import ActivityListScreen from './src/screens/ActivitiesListScreen';
-import {Language, useTranslation} from './src/hooks/useTranslation';
+import {useTranslation} from './src/internationalization/useTranslation';
 
 enableMapSet();
 
@@ -29,28 +29,34 @@ export type RootStackParamsList = {
 
 const RootStack = createStackNavigator<RootStackParamsList>();
 
+function Screens() {
+  const {translate} = useTranslation();
+  return (
+    <NavigationContainer>
+      <StatusBar
+        barStyle="light-content" // Set barStyle to 'light-content'
+        translucent={true}
+      />
+      <RootStack.Navigator
+        screenOptions={{
+          headerTransparent: true,
+          headerBackTitle: translate('Back'),
+          headerTintColor: ColorPalette.OffWhite_RGBSerialized,
+        }}>
+        <RootStack.Screen
+          name="ActivitiesListScreen"
+          component={ActivityListScreen}
+          options={{headerShown: false}}
+        />
+      </RootStack.Navigator>
+    </NavigationContainer>
+  );
+}
+
 function App(): JSX.Element {
-  const {translate} = useTranslation(Language.ENGLISH);
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <StatusBar
-          barStyle="light-content" // Set barStyle to 'light-content'
-          translucent={true}
-        />
-        <RootStack.Navigator
-          screenOptions={{
-            headerTransparent: true,
-            headerBackTitle: translate('Back'),
-            headerTintColor: ColorPalette.OffWhite_RGBSerialized,
-          }}>
-          <RootStack.Screen
-            name="ActivitiesListScreen"
-            component={ActivityListScreen}
-            options={{headerShown: false}}
-          />
-        </RootStack.Navigator>
-      </NavigationContainer>
+      <Screens />
     </Provider>
   );
 }
