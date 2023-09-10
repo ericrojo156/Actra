@@ -15,4 +15,9 @@ export const commonStyles = StyleSheet.create({
     fontSize: 30,
     color: ColorPalette.OffWhite_RGBSerialized,
   },
+  roundedElementBorder: {
+    borderWidth: 1,
+    borderColor: ColorPalette.SoftBlack_RGBASerialized,
+    borderRadius: 10,
+  },
 });

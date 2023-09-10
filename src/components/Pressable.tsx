@@ -12,7 +12,7 @@ interface PressableProps {
   style?: any;
 }
 
-function Pressable(props: PressableProps) {
+function CustomPressable(props: PressableProps) {
   const {
     activeScale,
     children,
@@ -33,4 +33,4 @@ function Pressable(props: PressableProps) {
   );
 }
 
-export default Pressable;
+export default CustomPressable;

@@ -9,6 +9,8 @@ import {
 import useActivities, {GetActivityById} from '../activity/useActivities';
 import GradientBackground from './GradientBackground';
 import {SelectActivities} from '../modalContent/SelectActivities';
+import {joinActivities} from '../activity/useActivityOptionsActions';
+import {Language, useTranslation} from '../hooks/useTranslation';
 
 export const SPACE_BETWEEN_ELEMENTS = 5;
 
@@ -72,6 +74,18 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
   );
 });
 
+function JoinActivities() {
+  const {translate} = useTranslation(Language.ENGLISH);
+  const headerText1 = translate('Select-Activities');
+  const headerText2 = translate('to-Join');
+  return (
+    <SelectActivities
+      headerText={`${headerText1} ${headerText2}`}
+      onConfirmSelection={joinActivities}
+    />
+  );
+}
+
 function ActivitiesListScreen() {
   const {activities, getActivityById} = useActivities();
   const [modalIsVisible, setModalIsVisible] = useState(true);
@@ -89,7 +103,7 @@ function ActivitiesListScreen() {
         onRequestClose={() => {
           setModalIsVisible(!modalIsVisible);
         }}>
-        <SelectActivities />
+        <JoinActivities />
       </Modal>
       <View style={{marginTop: '10%'}} />
       <ActivitiesList

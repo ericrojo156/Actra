@@ -3,6 +3,7 @@ import {StyleSheet} from 'react-native';
 import * as ColorPalette from '../ColorPalette';
 import {computeGradientColor} from '../ColorProcessor';
 import LinearGradient from 'react-native-linear-gradient';
+import {commonStyles} from '../commonStyles';
 
 interface GradientBackgroundProps {
   invert?: boolean;
@@ -29,7 +30,7 @@ export default function GradientBackground(
     <LinearGradient
       {...horizontalStartToEnd}
       colors={colors}
-      style={[styles.backgroundContainer]}>
+      style={{...styles.backgroundContainer, ...commonStyles.container}}>
       {children}
     </LinearGradient>
   );

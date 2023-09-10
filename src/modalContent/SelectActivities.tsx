@@ -1,100 +1,34 @@
-import React, {ReactElement, useCallback, useMemo, useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  ListRenderItemInfo,
-} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 import GradientBackground from '../screens/GradientBackground';
-import {commonStyles} from '../styles';
-import Pressable from '../components/Pressable';
+import {commonStyles} from '../commonStyles';
+import CustomPressable from '../components/Pressable';
 import {
   Activity,
   ActivityElement,
   ELEMENT_HEIGHT,
   STANDARD_ELEMENT_WIDTH,
 } from '../components/ActivityElement';
-import {SPACE_BETWEEN_ELEMENTS} from '../screens/ActivitiesListScreen';
 import useActivities from '../activity/useActivities';
-import {styles as activityStyles} from '../components/ActivityElement';
 import * as ColorProcessor from '../ColorProcessor';
 import * as ColorPalette from '../ColorPalette';
-import {useTranslation, Language} from '../hooks/useTranslation';
+import {SelectionList} from '../components/SelectionList';
+import {SPACE_BETWEEN_ELEMENTS} from '../screens/ActivitiesListScreen';
+import {Language, useTranslation} from '../hooks/useTranslation';
 
 export interface SelectActivitiesProps {
   headerText: string;
 }
 
-interface SelectableItem {
-  id: string;
+export interface SelectActivitiesProps {
+  onConfirmSelection: (selectedIds: Array<string>) => void;
 }
 
-interface SelectionListProps<T extends SelectableItem> {
-  data: T[];
-  renderInnerItem: (
-    props: T | null,
-    isSelected: boolean,
-  ) => ReactElement | null;
-}
-
-function SelectionList<T extends SelectableItem>(props: SelectionListProps<T>) {
-  const {data, renderInnerItem} = props;
-  const dataMap: Map<string, T> = useMemo(
-    () => new Map(data?.map(child => [child.id, child]) ?? []),
-    [data],
-  );
+export function SelectActivities(props: SelectActivitiesProps) {
+  const {headerText, onConfirmSelection} = props;
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const toggleSelection = useCallback(
-    (id: string) => {
-      const updatedSet = new Set(selectedIds);
-      if (!updatedSet.has(id)) {
-        updatedSet.add(id);
-      } else {
-        updatedSet.delete(id);
-      }
-      setSelectedIds(updatedSet);
-    },
-    [selectedIds],
-  );
-  const isSelected = useCallback(
-    (id: string) => selectedIds.has(id),
-    [selectedIds],
-  );
-  const renderItem = ({item}: ListRenderItemInfo<T>) => (
-    <View
-      style={
-        isSelected(item.id) ? styles.selectedStyle : styles.unselectedStyle
-      }>
-      <Pressable onPress={() => toggleSelection(item.id)}>
-        {renderInnerItem(dataMap.get(item.id) ?? null, isSelected(item.id))}
-      </Pressable>
-      <View style={{marginTop: SPACE_BETWEEN_ELEMENTS}} />
-    </View>
-  );
-  return (
-    <>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-        initialNumToRender={20}
-        windowSize={5}
-        getItemLayout={(_data, index) => ({
-          length: 100,
-          offset: ELEMENT_HEIGHT * index,
-          index,
-        })}
-        contentContainerStyle={{
-          alignItems: 'center',
-        }}
-      />
-    </>
-  );
-}
-
-export function SelectActivities() {
   const {activities, getActivityById} = useActivities();
+  const {translate} = useTranslation(Language.ENGLISH);
   const renderInnerItem = (activity: Activity | null, isSelected: boolean) => {
     if (activity) {
       return (
@@ -103,7 +37,7 @@ export function SelectActivities() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            ...activityStyles.roundedElementBorder,
+            ...commonStyles.roundedElementBorder,
             backgroundColor: ColorProcessor.serialize(activity.color),
             ...(isSelected ? styles.selectedActivityStyle : {}),
           }}>
@@ -117,16 +51,13 @@ export function SelectActivities() {
     }
     return null;
   };
-  const {translate} = useTranslation(Language.ENGLISH);
-  const headerText1 = translate('Select-Activities');
-  const headerText2 = translate('to-Join');
   return (
     <GradientBackground>
       <View
         style={{
           flexDirection: 'row',
           justifyContent: 'center',
-          marginTop: 40,
+          marginTop: 50,
           marginBottom: 10,
         }}>
         <Text
@@ -134,18 +65,23 @@ export function SelectActivities() {
             ...commonStyles.headerTextStyle,
             ...styles.headerStyle,
           }}>
-          {headerText1}
-        </Text>
-        <Text>''</Text>
-        <Text
-          style={{
-            ...commonStyles.headerTextStyle,
-            ...styles.headerStyle,
-          }}>
-          {headerText2}
+          {headerText}
         </Text>
       </View>
-      <SelectionList data={activities} renderInnerItem={renderInnerItem} />
+      <SelectionList
+        selectedIds={selectedIds}
+        setSelectedIds={setSelectedIds}
+        data={activities}
+        renderInnerItem={renderInnerItem}
+      />
+      <CustomPressable
+        style={{...commonStyles.roundedElementBorder, ...styles.confirmButton}}
+        onPress={() => onConfirmSelection([...selectedIds.values()])}>
+        <Text style={{...commonStyles.textStyle, ...styles.confirmButtonText}}>
+          {translate('Combine-Activities')}
+        </Text>
+      </CustomPressable>
+      <View style={{marginBottom: 50}} />
     </GradientBackground>
   );
 }
@@ -160,10 +96,17 @@ const styles = StyleSheet.create({
     borderColor: ColorPalette.OffWhite_RGBSerialized,
     borderWidth: 3,
   },
-  selectedStyle: {
-    width: STANDARD_ELEMENT_WIDTH - 20,
+  confirmButtonText: {
+    fontSize: 20,
   },
-  unselectedStyle: {
-    width: STANDARD_ELEMENT_WIDTH,
+  confirmButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: ELEMENT_HEIGHT,
+
+    backgroundColor: ColorPalette.actionColorSerialized,
+    marginTop: SPACE_BETWEEN_ELEMENTS,
+    marginBottom: SPACE_BETWEEN_ELEMENTS,
+    paddingHorizontal: 20,
   },
 });

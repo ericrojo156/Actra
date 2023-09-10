@@ -12,7 +12,7 @@ import {
 import {SELECTION_TYPE, openSelectionModal} from '../components/modal';
 import {useTranslation, Language} from '../hooks/useTranslation';
 
-function joinActivities(ids: string[]) {
+export function joinActivities(ids: string[]) {
   console.log(`join activities: ${ids}`);
 }
 

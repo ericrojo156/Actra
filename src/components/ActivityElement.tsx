@@ -7,7 +7,7 @@ import EditOption from './optionsMenu/EditOption';
 import HistoryOption from './optionsMenu/HistoryOption';
 import JoinOption from './optionsMenu/JoinOption';
 import useActivityOptionCallbacks from '../activity/useActivityOptionsActions';
-import {commonStyles} from '../styles';
+import {commonStyles} from '../commonStyles';
 import {
   ActivitiesList,
   SPACE_BETWEEN_ELEMENTS,
@@ -77,7 +77,7 @@ function AddSubactivityOption(props: AddSubactivityProps) {
       label={translate('Add-Subactivity')}
       iconName="plus"
       style={{
-        ...styles.roundedElementBorder,
+        ...commonStyles.roundedElementBorder,
         ...styles.addSubactivityOptionContainer,
         ...styles.activityElement,
         width: width - SUBACTIVITY_LEVEL_WIDTH_DECREMENT,
@@ -162,7 +162,7 @@ export function ExpandedActivityElement(props: ExpandableActivityProps) {
     <CustomPressable
       onPress={() => setIsExpanded(!isExpanded(id))}
       style={{
-        ...styles.roundedElementBorder,
+        ...commonStyles.roundedElementBorder,
         ...styles.expandableActivityElement,
         width,
         backgroundColor: ColorProcessor.serialize(color),
@@ -174,11 +174,6 @@ export function ExpandedActivityElement(props: ExpandableActivityProps) {
 }
 
 export const styles = StyleSheet.create({
-  roundedElementBorder: {
-    borderWidth: 1,
-    borderColor: ColorPalette.SoftBlack_RGBASerialized,
-    borderRadius: 10,
-  },
   expandableActivityElement: {
     backgroundColor: ColorPalette.activityDefaultColor_RGBSerialized,
   },
