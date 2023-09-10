@@ -19,6 +19,7 @@ import {SPACE_BETWEEN_ELEMENTS} from '../screens/ActivitiesListScreen';
 import useActivities from '../activity/useActivities';
 import {styles as activityStyles} from '../components/ActivityElement';
 import * as ColorProcessor from '../ColorProcessor';
+import * as ColorPalette from '../ColorPalette';
 
 export interface SelectActivitiesProps {
   headerText: string;
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   selectedActivityStyle: {
-    borderColor: 'white',
+    borderColor: ColorPalette.OffWhite_RGBSerialized,
     borderWidth: 3,
   },
   selectedStyle: {
