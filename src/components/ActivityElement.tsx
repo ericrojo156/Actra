@@ -15,6 +15,7 @@ import {
 import PressableIcon, {ACTRA_FUNCTION_OPTION_ICON_SIZE} from './PressableIcon';
 import {IdProp} from '../types';
 import * as ColorProcessor from '../ColorProcessor';
+import {Language, useTranslation} from '../hooks/useTranslation';
 
 export const ELEMENT_HEIGHT = 70;
 export const STANDARD_ELEMENT_WIDTH = 350;
@@ -70,9 +71,10 @@ interface AddSubactivityProps extends IdProp {
 function AddSubactivityOption(props: AddSubactivityProps) {
   const {id, width = STANDARD_ELEMENT_WIDTH} = props;
   const {onAddSubactivityOption} = useActivityOptionCallbacks();
+  const {translate} = useTranslation(Language.ENGLISH);
   return (
     <PressableIcon
-      label={'dict.AddSubactivity'}
+      label={translate('Add-Subactivity')}
       iconName="plus"
       style={{
         ...styles.roundedElementBorder,

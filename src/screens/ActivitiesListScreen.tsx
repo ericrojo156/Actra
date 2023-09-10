@@ -74,7 +74,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
 
 function ActivitiesListScreen() {
   const {activities, getActivityById} = useActivities();
-  const [modalIsVisible, setModalIsVisible] = useState(false);
+  const [modalIsVisible, setModalIsVisible] = useState(true);
   useEffect(() => {
     setTimeout(() => {
       // setModalIsVisible(true);
@@ -89,7 +89,7 @@ function ActivitiesListScreen() {
         onRequestClose={() => {
           setModalIsVisible(!modalIsVisible);
         }}>
-        <SelectActivities headerText="dict.SelectActivities" />
+        <SelectActivities />
       </Modal>
       <View style={{marginTop: '10%'}} />
       <ActivitiesList

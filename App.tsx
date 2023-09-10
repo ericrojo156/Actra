@@ -10,6 +10,7 @@ import activitiesSagas from './src/activity/activitySagas';
 import {NavigationContainer} from '@react-navigation/native';
 import * as ColorPalette from './src/ColorPalette';
 import ActivityListScreen from './src/screens/ActivitiesListScreen';
+import {Language, useTranslation} from './src/hooks/useTranslation';
 
 enableMapSet();
 
@@ -29,6 +30,7 @@ export type RootStackParamsList = {
 const RootStack = createStackNavigator<RootStackParamsList>();
 
 function App(): JSX.Element {
+  const {translate} = useTranslation(Language.ENGLISH);
   return (
     <Provider store={store}>
       <NavigationContainer>
@@ -39,7 +41,7 @@ function App(): JSX.Element {
         <RootStack.Navigator
           screenOptions={{
             headerTransparent: true,
-            headerBackTitle: 'dict.Back',
+            headerBackTitle: translate('Back'),
             headerTintColor: ColorPalette.OffWhite_RGBSerialized,
           }}>
           <RootStack.Screen

@@ -20,6 +20,7 @@ import useActivities from '../activity/useActivities';
 import {styles as activityStyles} from '../components/ActivityElement';
 import * as ColorProcessor from '../ColorProcessor';
 import * as ColorPalette from '../ColorPalette';
+import {useTranslation, Language} from '../hooks/useTranslation';
 
 export interface SelectActivitiesProps {
   headerText: string;
@@ -92,8 +93,7 @@ function SelectionList<T extends SelectableItem>(props: SelectionListProps<T>) {
   );
 }
 
-export function SelectActivities(props: SelectActivitiesProps) {
-  const {headerText} = props;
+export function SelectActivities() {
   const {activities, getActivityById} = useActivities();
   const renderInnerItem = (activity: Activity | null, isSelected: boolean) => {
     if (activity) {
@@ -117,16 +117,32 @@ export function SelectActivities(props: SelectActivitiesProps) {
     }
     return null;
   };
+  const {translate} = useTranslation(Language.ENGLISH);
+  const headerText1 = translate('Select-Activities');
+  const headerText2 = translate('to-Join');
   return (
     <GradientBackground>
-      <View>
-        <View style={{marginTop: 100}} />
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          marginTop: 40,
+          marginBottom: 10,
+        }}>
         <Text
           style={{
             ...commonStyles.headerTextStyle,
             ...styles.headerStyle,
           }}>
-          {headerText}
+          {headerText1}
+        </Text>
+        <Text>''</Text>
+        <Text
+          style={{
+            ...commonStyles.headerTextStyle,
+            ...styles.headerStyle,
+          }}>
+          {headerText2}
         </Text>
       </View>
       <SelectionList data={activities} renderInnerItem={renderInnerItem} />
@@ -138,7 +154,7 @@ const styles = StyleSheet.create({
   headerStyle: {
     display: 'flex',
     alignSelf: 'center',
-    fontSize: 20,
+    fontSize: 25,
   },
   selectedActivityStyle: {
     borderColor: ColorPalette.OffWhite_RGBSerialized,

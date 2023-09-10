@@ -10,19 +10,21 @@ import {
   addSubactivityOptionInvoked,
 } from './actions';
 import {SELECTION_TYPE, openSelectionModal} from '../components/modal';
+import {useTranslation, Language} from '../hooks/useTranslation';
 
 function joinActivities(ids: string[]) {
   console.log(`join activities: ${ids}`);
 }
 
 export default function useActivityOptionCallbacks() {
+  const {translate} = useTranslation(Language.ENGLISH);
   const dispatch = useDispatch();
   const onDeleteActivityOption = useCallback(
     (id: string) => {
       dispatch(deleteActivityOptionInvoked(id));
       ActionSheetIOS.showActionSheetWithOptions(
         {
-          options: ['dict.Cancel', 'dict.DeleteActivity'],
+          options: [translate('Cancel'), translate('Delete-Activity')],
           destructiveButtonIndex: 1,
           cancelButtonIndex: 0,
           userInterfaceStyle: 'dark',
@@ -36,7 +38,7 @@ export default function useActivityOptionCallbacks() {
         },
       );
     },
-    [dispatch],
+    [dispatch, translate],
   );
   const onJoinActivityOption = useCallback(
     (id: string) => {
