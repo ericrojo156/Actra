@@ -1,72 +1,7 @@
 import {useEffect, useCallback, useState, useMemo} from 'react';
-import {ActionSheetIOS} from 'react-native';
-import {useDispatch} from 'react-redux';
 import {Activity} from '../components/ActivityElement';
+import * as ColorPalette from '../ColorPalette';
 import {uuidv4} from '../utils/uuid';
-import {
-  addSubactivityOptionInvoked,
-  deleteActivity,
-  deleteActivityOptionInvoked,
-  editActivityOptionInvoked,
-  historyActivityOptionInvoked,
-  joinActivityOptionInvoked,
-} from './actions';
-
-export function useActivityOptionCallbacks() {
-  const dispatch = useDispatch();
-  const onDeleteActivityOption = useCallback(
-    (id: string) => {
-      dispatch(deleteActivityOptionInvoked(id));
-      ActionSheetIOS.showActionSheetWithOptions(
-        {
-          options: ['dict.Cancel', 'dict.DeleteActivity'],
-          destructiveButtonIndex: 1,
-          cancelButtonIndex: 0,
-          userInterfaceStyle: 'dark',
-        },
-        buttonIndex => {
-          if (buttonIndex === 0) {
-            // cancel action
-          } else if (buttonIndex === 1) {
-            dispatch(deleteActivity(id));
-          }
-        },
-      );
-    },
-    [dispatch],
-  );
-  const onJoinActivityOption = useCallback(
-    (id: string) => {
-      dispatch(joinActivityOptionInvoked(id));
-    },
-    [dispatch],
-  );
-  const onEditActivityOption = useCallback(
-    (id: string) => {
-      dispatch(editActivityOptionInvoked(id));
-    },
-    [dispatch],
-  );
-  const onHistoryActivityOption = useCallback(
-    (id: string) => {
-      dispatch(historyActivityOptionInvoked(id));
-    },
-    [dispatch],
-  );
-  const onAddSubactivityOption = useCallback(
-    (id: string) => {
-      dispatch(addSubactivityOptionInvoked(id));
-    },
-    [dispatch],
-  );
-  return {
-    onDeleteActivityOption,
-    onJoinActivityOption,
-    onEditActivityOption,
-    onHistoryActivityOption,
-    onAddSubactivityOption,
-  };
-}
 
 async function getMockActivities(): Promise<Activity[]> {
   const activities: Activity[] = Array.from({length: 100}, (_, index) => ({
@@ -75,6 +10,7 @@ async function getMockActivities(): Promise<Activity[]> {
     subactivitiesIds: [],
     intervalsIds: [],
     currentlyActiveIntervalId: null,
+    color: ColorPalette.activityDefaultColor,
   }));
   const subactivitiesIds = [
     uuidv4(),
@@ -95,6 +31,7 @@ async function getMockActivities(): Promise<Activity[]> {
       subactivitiesIds: [],
       intervalsIds: [],
       currentlyActiveIntervalId: null,
+      color: ColorPalette.activityDefaultColor,
     });
   });
   const activityWithSubactivities = {
@@ -103,6 +40,7 @@ async function getMockActivities(): Promise<Activity[]> {
     subactivitiesIds,
     intervalsIds: [],
     currentlyActiveIntervalId: null,
+    color: ColorPalette.activityDefaultColor,
   };
   return [activityWithSubactivities, ...activities];
 }

@@ -1,13 +1,14 @@
-import React, {useCallback, useMemo, useState} from 'react';
-import {View, FlatList, StyleSheet, LayoutAnimation} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {Modal, View, FlatList, StyleSheet, LayoutAnimation} from 'react-native';
 import {
   Activity,
-  ActivityElement,
   ELEMENT_HEIGHT,
+  ExpandedActivityElement,
   STANDARD_ELEMENT_WIDTH,
 } from '../components/ActivityElement';
 import useActivities, {GetActivityById} from '../activity/useActivities';
 import GradientBackground from './GradientBackground';
+import {ModalContent, ModalType, useModal} from '../components/Modal';
 
 export const SPACE_BETWEEN_ELEMENTS = 5;
 
@@ -39,7 +40,6 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
     (id: string) => currentlyExpandedActivity === id,
     [currentlyExpandedActivity],
   );
-
   useLayoutAnimation();
   return (
     <View style={styles.activitiesListContainer}>
@@ -47,7 +47,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
         data={activities}
         renderItem={({item}) => (
           <>
-            <ActivityElement
+            <ExpandedActivityElement
               getActivityById={getActivityById}
               isExpanded={isExpanded}
               setIsExpanded={(shouldExpand: boolean) => {
@@ -74,8 +74,23 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
 
 function ActivitiesListScreen() {
   const {activities, getActivityById} = useActivities();
+  const {activeModal, setActiveModal} = useModal();
+  useEffect(() => {
+    setTimeout(() => {
+      setActiveModal(ModalType.JOIN_ACTIVITIES);
+    }, 1000);
+  }, [setActiveModal]);
   return (
     <GradientBackground>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={activeModal !== null}
+        onRequestClose={() => {
+          setActiveModal(null);
+        }}>
+        <ModalContent activeModal={activeModal} />
+      </Modal>
       <View style={{marginTop: '10%'}} />
       <ActivitiesList
         activities={activities}

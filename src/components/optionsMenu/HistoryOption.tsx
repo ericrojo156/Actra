@@ -1,14 +1,16 @@
 import React from 'react';
 import PressableIcon from '../PressableIcon';
 import {OptionProps} from './types';
+import {useTranslation, Language} from '../../hooks/useTranslation';
 
 function HistoryOption(props: OptionProps) {
   const {style, onPress} = props;
+  const {translate} = useTranslation(Language.ENGLISH);
   return (
     <PressableIcon
       style={style}
       iconName="book-open-variant"
-      label={'dict.History'}
+      label={translate('History')}
       onPress={onPress}
     />
   );

@@ -1,19 +1,21 @@
 import React, {useMemo} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, StyleProp, ViewStyle} from 'react-native';
 import * as ColorPalette from '../ColorPalette';
 import CustomPressable from './Pressable';
 import DeleteOption from './optionsMenu/DeleteOption';
 import EditOption from './optionsMenu/EditOption';
 import HistoryOption from './optionsMenu/HistoryOption';
 import JoinOption from './optionsMenu/JoinOption';
-import {useActivityOptionCallbacks} from '../activity/useActivities';
-import {commonStyles} from '../styles';
+import useActivityOptionCallbacks from '../activity/useActivityOptionsActions';
+import {commonStyles} from '../commonStyles';
 import {
   ActivitiesList,
   SPACE_BETWEEN_ELEMENTS,
 } from '../screens/ActivitiesListScreen';
 import PressableIcon, {ACTRA_FUNCTION_OPTION_ICON_SIZE} from './PressableIcon';
 import {IdProp} from '../types';
+import * as ColorProcessor from '../ColorProcessor';
+import {Language, useTranslation} from '../hooks/useTranslation';
 
 export const ELEMENT_HEIGHT = 70;
 export const STANDARD_ELEMENT_WIDTH = 350;
@@ -22,16 +24,20 @@ export const SUBACTIVITY_LEVEL_WIDTH_DECREMENT = 20;
 export interface Activity {
   id: string;
   name: string;
+  color?: ColorPalette.Color;
   subactivitiesIds: string[];
   intervalsIds: string[];
   currentlyActiveIntervalId: string | null;
 }
 
-export interface ExpandableActivityProps extends Activity {
+export interface ActivityElementProps extends Activity {
+  width?: number;
+  getActivityById: (id: string) => Activity | null;
+}
+
+export interface ExpandableActivityProps extends ActivityElementProps {
   isExpanded: (id: string) => boolean;
   setIsExpanded: (shouldExpand: boolean) => void;
-  getActivityById: (id: string) => Activity | null;
-  width?: number;
 }
 
 function ActivityOptionsMenuBar(props: ExpandableActivityProps) {
@@ -65,12 +71,13 @@ interface AddSubactivityProps extends IdProp {
 function AddSubactivityOption(props: AddSubactivityProps) {
   const {id, width = STANDARD_ELEMENT_WIDTH} = props;
   const {onAddSubactivityOption} = useActivityOptionCallbacks();
+  const {translate} = useTranslation(Language.ENGLISH);
   return (
     <PressableIcon
-      label={'dict.AddSubactivity'}
+      label={translate('Add-Subactivity')}
       iconName="plus"
       style={{
-        ...styles.roundedElementBorder,
+        ...commonStyles.roundedElementBorder,
         ...styles.addSubactivityOptionContainer,
         ...styles.activityElement,
         width: width - SUBACTIVITY_LEVEL_WIDTH_DECREMENT,
@@ -117,39 +124,56 @@ function ExpandedSection(props: ExpandableActivityProps) {
   );
 }
 
-export function ActivityElement(props: ExpandableActivityProps) {
+export function ActivityElement(props: ActivityElementProps) {
+  const {name, width, color} = props;
+  let activityStyle: StyleProp<ViewStyle> = {
+    ...commonStyles.container,
+    ...styles.activityElement,
+    width,
+  };
+  if (color) {
+    activityStyle = {
+      ...activityStyle,
+      backgroundColor: ColorProcessor.serialize(color),
+    };
+  }
+  return (
+    <View style={activityStyle}>
+      <Text style={{...commonStyles.textStyle, ...styles.textStyle}}>
+        {name}
+      </Text>
+    </View>
+  );
+}
+
+export function ExpandedActivityElement(props: ExpandableActivityProps) {
   const {
     id,
-    name,
     isExpanded,
     setIsExpanded,
     width = STANDARD_ELEMENT_WIDTH,
+    color,
   } = props;
+  const activityProps = {
+    ...props,
+    color: undefined,
+  };
   return (
     <CustomPressable
       onPress={() => setIsExpanded(!isExpanded(id))}
       style={{
-        ...styles.roundedElementBorder,
+        ...commonStyles.roundedElementBorder,
         ...styles.expandableActivityElement,
         width,
+        backgroundColor: ColorProcessor.serialize(color),
       }}>
-      <View
-        style={{...commonStyles.container, ...styles.activityElement, width}}>
-        <Text style={{...commonStyles.textStyle, ...styles.textStyle}}>
-          {name}
-        </Text>
-      </View>
+      <ActivityElement {...activityProps} />
       <>{isExpanded(id) && <ExpandedSection {...props} />}</>
     </CustomPressable>
   );
 }
 
-const styles = StyleSheet.create({
-  roundedElementBorder: {
-    borderWidth: 1,
-    borderColor: ColorPalette.SoftBlack_RGBASerialized,
-    borderRadius: 10,
-  },
+export const styles = StyleSheet.create({
   expandableActivityElement: {
     backgroundColor: ColorPalette.activityDefaultColor_RGBSerialized,
   },
