@@ -9,8 +9,8 @@ import {
   historyActivityOptionInvoked,
   addSubactivityOptionInvoked,
 } from './actions';
-import {SELECTION_TYPE, openSelectionModal} from '../components/modal';
 import {useTranslation, Language} from '../hooks/useTranslation';
+import {openSelectionModal, SELECTION_TYPE} from '../components/SelectionList';
 
 export function joinActivities(ids: string[]) {
   console.log(`join activities: ${ids}`);

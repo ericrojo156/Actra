@@ -8,9 +8,7 @@ import {
 } from '../components/ActivityElement';
 import useActivities, {GetActivityById} from '../activity/useActivities';
 import GradientBackground from './GradientBackground';
-import {SelectActivities} from '../modalContent/SelectActivities';
-import {joinActivities} from '../activity/useActivityOptionsActions';
-import {Language, useTranslation} from '../hooks/useTranslation';
+import {ModalContent, ModalType, useModal} from '../components/Modal';
 
 export const SPACE_BETWEEN_ELEMENTS = 5;
 
@@ -74,36 +72,24 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
   );
 });
 
-function JoinActivities() {
-  const {translate} = useTranslation(Language.ENGLISH);
-  const headerText1 = translate('Select-Activities');
-  const headerText2 = translate('to-Join');
-  return (
-    <SelectActivities
-      headerText={`${headerText1} ${headerText2}`}
-      onConfirmSelection={joinActivities}
-    />
-  );
-}
-
 function ActivitiesListScreen() {
   const {activities, getActivityById} = useActivities();
-  const [modalIsVisible, setModalIsVisible] = useState(true);
+  const {activeModal, setActiveModal} = useModal();
   useEffect(() => {
     setTimeout(() => {
-      // setModalIsVisible(true);
+      setActiveModal(ModalType.JOIN_ACTIVITIES);
     }, 1000);
-  }, []);
+  }, [setActiveModal]);
   return (
     <GradientBackground>
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalIsVisible}
+        visible={activeModal !== null}
         onRequestClose={() => {
-          setModalIsVisible(!modalIsVisible);
+          setActiveModal(null);
         }}>
-        <JoinActivities />
+        <ModalContent activeModal={activeModal} />
       </Modal>
       <View style={{marginTop: '10%'}} />
       <ActivitiesList

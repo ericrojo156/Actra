@@ -7,7 +7,6 @@ import {
   Activity,
   ActivityElement,
   ELEMENT_HEIGHT,
-  STANDARD_ELEMENT_WIDTH,
 } from '../components/ActivityElement';
 import useActivities from '../activity/useActivities';
 import * as ColorProcessor from '../ColorProcessor';

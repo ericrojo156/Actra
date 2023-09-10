@@ -5,6 +5,17 @@ import {ELEMENT_HEIGHT, STANDARD_ELEMENT_WIDTH} from './ActivityElement';
 import * as ColorPalette from '../ColorPalette';
 import CustomPressable from './Pressable';
 
+export enum SELECTION_TYPE {
+  MULTI_SELECT,
+  SINGLE_SELECT,
+}
+export interface SelectionModalParams {
+  id: string;
+  selectionType: SELECTION_TYPE.MULTI_SELECT;
+  onConfirm: (selectedItems: string[]) => void;
+}
+export function openSelectionModal(_params: SelectionModalParams) {}
+
 export interface SelectableItem {
   id: string;
 }
