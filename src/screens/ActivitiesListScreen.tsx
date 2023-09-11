@@ -1,5 +1,12 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {Modal, View, FlatList, StyleSheet, LayoutAnimation} from 'react-native';
+import {
+  Modal,
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  LayoutAnimation,
+} from 'react-native';
 import {
   Activity,
   ELEMENT_HEIGHT,
@@ -9,6 +16,8 @@ import {
 import useActivities, {GetActivityById} from '../activity/useActivities';
 import GradientBackground from './GradientBackground';
 import {ModalContent, useModal} from '../modal/Modal';
+import {commonStyles} from '../commonStyles';
+import {useTranslation} from '../internationalization/useTranslation';
 
 export const SPACE_BETWEEN_ELEMENTS = 5;
 
@@ -75,6 +84,8 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
 function ActivitiesListScreen() {
   const {activities, getActivityById} = useActivities();
   const {activeModal, closeModal} = useModal();
+  const {translate} = useTranslation();
+  const headerText = translate('Activities');
   return (
     <GradientBackground>
       <Modal
@@ -87,6 +98,13 @@ function ActivitiesListScreen() {
         <ModalContent activeModal={activeModal} />
       </Modal>
       <View style={{marginTop: '10%'}} />
+      <Text
+        style={{
+          ...commonStyles.headerTextStyle,
+        }}>
+        {headerText}
+      </Text>
+      <View style={{marginBottom: SPACE_BETWEEN_ELEMENTS}} />
       <ActivitiesList
         activities={activities}
         getActivityById={getActivityById}

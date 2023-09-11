@@ -9,6 +9,7 @@ export enum Language {
 type LanguageDict = Map<string, string>;
 
 const englishDict: LanguageDict = new Map<string, string>([
+  ['Activities', 'Activities'],
   ['Add-Subactivity', 'Add Subactivity'],
   ['Back', 'Back'],
   ['Delete-Activity', 'Delete Activity'],
