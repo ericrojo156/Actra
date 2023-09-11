@@ -1,17 +1,19 @@
 import {View, Text, TextInput, StyleSheet} from 'react-native';
-
 import useActivities from '../../activity/useActivities';
 import {IdProp} from '../../types';
-
 import React from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import CustomPressable from '../../components/Pressable';
 import {useTranslation} from '../../internationalization/useTranslation';
 import GradientBackground from '../../screens/GradientBackground';
+import {commonStyles} from '../../commonStyles';
+import * as ColorPalette from '../../ColorPalette';
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
+  name: Yup.string()
+    .required('Name is required')
+    .max(100, 'Name must be no more than 100 characters long'),
 });
 
 export function EditActivity(props: IdProp) {
@@ -21,17 +23,18 @@ export function EditActivity(props: IdProp) {
   const name = activity?.name ?? '';
   const {translate} = useTranslation();
   const confirmationText = translate('Save');
+  const headerText = translate('Edit-Activity');
   return (
     <GradientBackground>
       <Formik
         initialValues={{name: activity?.name ?? ''}}
         validationSchema={validationSchema}
         onSubmit={values => {
-          // Handle form submission here (e.g., save the updated name)
           console.log('Form submitted with values:', values);
         }}>
         {({handleChange, handleBlur, handleSubmit, values, errors}) => (
-          <View>
+          <View style={{...commonStyles.container, ...styles.container}}>
+            <Text style={commonStyles.headerTextStyle}>{headerText}</Text>
             <TextInput
               onChangeText={handleChange('name')}
               onBlur={handleBlur('name')}
@@ -40,9 +43,8 @@ export function EditActivity(props: IdProp) {
               style={styles.input}
             />
             {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
-
-            <CustomPressable onPress={handleSubmit}>
-              <Text>{confirmationText}</Text>
+            <CustomPressable style={styles.saveButton} onPress={handleSubmit}>
+              <Text style={styles.buttonTextStyle}>{confirmationText}</Text>
             </CustomPressable>
           </View>
         )}
@@ -53,16 +55,16 @@ export function EditActivity(props: IdProp) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
-    marginTop: 20,
+    justifyContent: 'space-around',
   },
   input: {
     borderBottomWidth: 1,
-    borderColor: '#ccc',
+    borderColor: ColorPalette.OffWhite_RGBSerialized,
     marginBottom: 10,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    fontSize: 16,
+    fontSize: 30,
+    color: ColorPalette.OffWhite_RGBSerialized,
   },
   errorText: {
     color: 'red',
@@ -70,11 +72,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   saveButton: {
-    backgroundColor: '#007AFF',
-    color: 'white',
-    fontSize: 18,
+    backgroundColor: ColorPalette.actionColorSerialized,
     padding: 12,
     borderRadius: 5,
     textAlign: 'center',
+  },
+  buttonTextStyle: {
+    fontSize: 25,
+    color: ColorPalette.OffWhite_RGBSerialized,
   },
 });

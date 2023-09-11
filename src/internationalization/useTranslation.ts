@@ -21,6 +21,7 @@ const englishDict: LanguageDict = new Map<string, string>([
   ['Select-Activities', 'Select Activities'],
   ['Combine-Activities', 'Combine Activities'],
   ['Save', 'Save'],
+  ['Edit-Activity', 'Edit Activity'],
 ]);
 
 const languages = new Map<Language, LanguageDict>([
