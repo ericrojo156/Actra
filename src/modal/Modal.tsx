@@ -10,7 +10,7 @@ import {
   modalClosed,
 } from './modalActions';
 import {SelectionModalParams} from '../components/SelectionList';
-import {EditActivity} from './content/EditActivity';
+import {EditActivity} from '../screens/EditActivity';
 import {IdProp} from '../types';
 
 export type ActiveModalState = ModalType | null;

@@ -1,6 +1,6 @@
 import {ReactElement, useMemo, useCallback} from 'react';
 import {ListRenderItemInfo, View, FlatList, StyleSheet} from 'react-native';
-import {SPACE_BETWEEN_ELEMENTS} from '../screens/ActivitiesListScreen';
+import {SPACE_BETWEEN_ELEMENTS} from '../screens/MainScreen';
 import {ELEMENT_HEIGHT, STANDARD_ELEMENT_WIDTH} from './ActivityElement';
 import * as ColorPalette from '../ColorPalette';
 import CustomPressable from './Pressable';

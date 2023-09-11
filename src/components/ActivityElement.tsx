@@ -8,10 +8,7 @@ import HistoryOption from './optionsMenu/HistoryOption';
 import JoinOption from './optionsMenu/JoinOption';
 import useActivityOptionCallbacks from '../activity/useActivityOptionsActions';
 import {commonStyles} from '../commonStyles';
-import {
-  ActivitiesList,
-  SPACE_BETWEEN_ELEMENTS,
-} from '../screens/ActivitiesListScreen';
+import {ActivitiesList, SPACE_BETWEEN_ELEMENTS} from '../screens/MainScreen';
 import PressableIcon, {ACTRA_FUNCTION_OPTION_ICON_SIZE} from './PressableIcon';
 import {IdProp} from '../types';
 import * as ColorProcessor from '../ColorProcessor';

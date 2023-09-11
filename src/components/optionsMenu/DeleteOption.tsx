@@ -1,7 +1,7 @@
 import React from 'react';
 import PressableIcon from '../PressableIcon';
 import {OptionProps} from './types';
-import {useTranslation, Language} from '../../internationalization/useTranslation';
+import {useTranslation} from '../../internationalization/useTranslation';
 
 function DeleteOption(props: OptionProps) {
   const {style, onPress} = props;

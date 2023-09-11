@@ -9,7 +9,7 @@ import {configureStore} from '@reduxjs/toolkit';
 import activitiesSagas from './src/activity/activitySagas';
 import {NavigationContainer} from '@react-navigation/native';
 import * as ColorPalette from './src/ColorPalette';
-import ActivityListScreen from './src/screens/ActivitiesListScreen';
+import ActivityListScreen from './src/screens/MainScreen';
 import {useTranslation} from './src/internationalization/useTranslation';
 import {useActivitiesFetch} from './src/activity/useActivities';
 
@@ -35,10 +35,7 @@ function Screens() {
   const {translate} = useTranslation();
   return (
     <NavigationContainer>
-      <StatusBar
-        barStyle="light-content" // Set barStyle to 'light-content'
-        translucent={true}
-      />
+      <StatusBar barStyle="light-content" translucent={true} />
       <RootStack.Navigator
         screenOptions={{
           headerTransparent: true,

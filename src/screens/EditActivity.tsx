@@ -1,16 +1,16 @@
 import {View, Text, TextInput, StyleSheet} from 'react-native';
-import useActivities from '../../activity/useActivities';
-import {IdProp} from '../../types';
+import useActivities from '../activity/useActivities';
+import {IdProp} from '../types';
 import React from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import CustomPressable from '../../components/Pressable';
-import {useTranslation} from '../../internationalization/useTranslation';
-import GradientBackground from '../../screens/GradientBackground';
-import {commonStyles} from '../../commonStyles';
-import * as ColorPalette from '../../ColorPalette';
+import CustomPressable from '../components/Pressable';
+import {useTranslation} from '../internationalization/useTranslation';
+import GradientBackground from './GradientBackground';
+import {commonStyles} from '../commonStyles';
+import * as ColorPalette from '../ColorPalette';
 import {useDispatch} from 'react-redux';
-import {modalClosed} from '../modalActions';
+import {modalClosed} from '../modal/modalActions';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()

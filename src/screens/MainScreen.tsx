@@ -87,7 +87,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
   );
 });
 
-function ActivitiesListScreen() {
+function MainScreen() {
   const {activities, getActivity} = useActivities();
   const {activeModal, params, closeModal} = useModal();
   const {translate} = useTranslation();
@@ -129,4 +129,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(ActivitiesListScreen);
+export default React.memo(MainScreen);
