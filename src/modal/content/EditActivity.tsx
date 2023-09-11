@@ -11,12 +11,7 @@ import {useTranslation} from '../../internationalization/useTranslation';
 import GradientBackground from '../../screens/GradientBackground';
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .required('Name is required')
-    .test('isAlpha', 'Name must contain only letters', function (value) {
-      // Custom validation function to check if 'value' contains only letters
-      return /^[A-Za-z]+$/.test(value);
-    }),
+  name: Yup.string().required('Name is required'),
 });
 
 export function EditActivity(props: IdProp) {
