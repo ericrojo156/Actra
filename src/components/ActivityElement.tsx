@@ -115,7 +115,7 @@ function ExpandedSection(props: ExpandableActivityProps) {
               activities={subactivities}
               width={width - SUBACTIVITY_LEVEL_WIDTH_DECREMENT}
             />
-            <View style={{marginBottom: SPACE_BETWEEN_ELEMENTS * 2}} />
+            <View style={{marginBottom: SPACE_BETWEEN_ELEMENTS * 6}} />
           </>
         )}
       </View>

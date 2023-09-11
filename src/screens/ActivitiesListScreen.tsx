@@ -37,7 +37,7 @@ function useLayoutAnimation() {
 interface ActivitiesListProps {
   activities: Activity[];
   getActivity: GetActivity;
-  customStyle: any;
+  customStyle?: any;
   width?: number;
 }
 
@@ -46,7 +46,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
     getActivity,
     activities,
     width = STANDARD_ELEMENT_WIDTH,
-    customStyle,
+    customStyle = {},
   } = props;
   const [currentlyExpandedActivity, setCurrentlyExpandedActivity] = useState<
     string | null

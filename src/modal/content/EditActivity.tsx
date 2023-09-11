@@ -9,6 +9,8 @@ import {useTranslation} from '../../internationalization/useTranslation';
 import GradientBackground from '../../screens/GradientBackground';
 import {commonStyles} from '../../commonStyles';
 import * as ColorPalette from '../../ColorPalette';
+import {useDispatch} from 'react-redux';
+import {modalClosed} from '../modalActions';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -24,6 +26,7 @@ export function EditActivity(props: IdProp) {
   const {translate} = useTranslation();
   const confirmationText = translate('Save');
   const headerText = translate('Edit-Activity');
+  const dispatch = useDispatch();
   return (
     <GradientBackground>
       <Formik
@@ -31,6 +34,7 @@ export function EditActivity(props: IdProp) {
         validationSchema={validationSchema}
         onSubmit={values => {
           console.log('Form submitted with values:', values);
+          dispatch(modalClosed());
         }}>
         {({handleChange, handleBlur, handleSubmit, values, errors}) => (
           <View style={{...commonStyles.container, ...styles.container}}>
