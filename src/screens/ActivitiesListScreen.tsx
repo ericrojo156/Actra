@@ -13,7 +13,7 @@ import {
   ExpandedActivityElement,
   STANDARD_ELEMENT_WIDTH,
 } from '../components/ActivityElement';
-import useActivities, {GetActivityById} from '../activity/useActivities';
+import useActivities, {GetActivity} from '../activity/useActivities';
 import GradientBackground from './GradientBackground';
 import {ModalContent, useModal} from '../modal/Modal';
 import {commonStyles} from '../commonStyles';
@@ -36,12 +36,18 @@ function useLayoutAnimation() {
 
 interface ActivitiesListProps {
   activities: Activity[];
-  getActivityById: GetActivityById;
+  getActivity: GetActivity;
+  customStyle: any;
   width?: number;
 }
 
 export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
-  const {getActivityById, activities, width = STANDARD_ELEMENT_WIDTH} = props;
+  const {
+    getActivity,
+    activities,
+    width = STANDARD_ELEMENT_WIDTH,
+    customStyle,
+  } = props;
   const [currentlyExpandedActivity, setCurrentlyExpandedActivity] = useState<
     string | null
   >(null);
@@ -51,13 +57,13 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
   );
   useLayoutAnimation();
   return (
-    <View style={styles.activitiesListContainer}>
+    <View style={{...styles.activitiesListContainer, ...customStyle}}>
       <FlatList
         data={activities}
         renderItem={({item}) => (
           <>
             <ExpandedActivityElement
-              getActivityById={getActivityById}
+              getActivity={getActivity}
               isExpanded={isExpanded}
               setIsExpanded={(shouldExpand: boolean) => {
                 setCurrentlyExpandedActivity(shouldExpand ? item.id : null);
@@ -82,8 +88,8 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
 });
 
 function ActivitiesListScreen() {
-  const {activities, getActivityById} = useActivities();
-  const {activeModal, closeModal} = useModal();
+  const {activities, getActivity} = useActivities();
+  const {activeModal, params, closeModal} = useModal();
   const {translate} = useTranslation();
   const headerText = translate('Activities');
   return (
@@ -95,7 +101,7 @@ function ActivitiesListScreen() {
         onRequestClose={() => {
           closeModal();
         }}>
-        <ModalContent activeModal={activeModal} />
+        <ModalContent params={params} activeModal={activeModal} />
       </Modal>
       <View style={{marginTop: '10%'}} />
       <Text
@@ -106,9 +112,11 @@ function ActivitiesListScreen() {
       </Text>
       <View style={{marginBottom: SPACE_BETWEEN_ELEMENTS}} />
       <ActivitiesList
+        customStyle={styles.activitiesListContainer}
         activities={activities}
-        getActivityById={getActivityById}
+        getActivity={getActivity}
       />
+      <View style={{marginBottom: 40}} />
     </GradientBackground>
   );
 }
@@ -117,7 +125,7 @@ const styles = StyleSheet.create({
   activitiesListContainer: {
     display: 'flex',
     alignItems: 'center',
-    height: '90%',
+    height: '85%',
   },
 });
 

@@ -1,16 +1,10 @@
 import {useCallback} from 'react';
 import {ActionSheetIOS} from 'react-native';
 import {useDispatch} from 'react-redux';
-import {
-  deleteActivityOptionInvoked,
-  deleteActivity,
-  joinActivityOptionInvoked,
-  editActivityOptionInvoked,
-  historyActivityOptionInvoked,
-  addSubactivityOptionInvoked,
-} from './actions';
 import {useTranslation} from '../internationalization/useTranslation';
 import {useSelectionModal, SELECTION_TYPE} from '../components/SelectionList';
+import {editActivityModalOpened} from '../modal/modalActions';
+import useActivities from './useActivities';
 
 export function joinActivities(ids: string[]) {
   console.log(`join activities: ${ids}`);
@@ -19,9 +13,9 @@ export function joinActivities(ids: string[]) {
 export default function useActivityOptionCallbacks() {
   const {translate} = useTranslation();
   const dispatch = useDispatch();
+  const {deleteActivity} = useActivities();
   const onDeleteActivityOption = useCallback(
     (id: string) => {
-      dispatch(deleteActivityOptionInvoked(id));
       ActionSheetIOS.showActionSheetWithOptions(
         {
           options: [translate('Cancel'), translate('Delete-Activity')],
@@ -33,17 +27,16 @@ export default function useActivityOptionCallbacks() {
           if (buttonIndex === 0) {
             // cancel action
           } else if (buttonIndex === 1) {
-            dispatch(deleteActivity(id));
+            deleteActivity(id);
           }
         },
       );
     },
-    [dispatch, translate],
+    [deleteActivity, translate],
   );
   const {openJoinActivitiesModal} = useSelectionModal();
   const onJoinActivityOption = useCallback(
     (id: string) => {
-      dispatch(joinActivityOptionInvoked(id));
       openJoinActivitiesModal({
         id,
         selectionType: SELECTION_TYPE.MULTI_SELECT,
@@ -51,26 +44,20 @@ export default function useActivityOptionCallbacks() {
           joinActivities([id, ...selectedItems]),
       });
     },
-    [dispatch, openJoinActivitiesModal],
+    [openJoinActivitiesModal],
   );
   const onEditActivityOption = useCallback(
     (id: string) => {
-      dispatch(editActivityOptionInvoked(id));
+      dispatch(editActivityModalOpened({params: {id}}));
     },
     [dispatch],
   );
-  const onHistoryActivityOption = useCallback(
-    (id: string) => {
-      dispatch(historyActivityOptionInvoked(id));
-    },
-    [dispatch],
-  );
-  const onAddSubactivityOption = useCallback(
-    (id: string) => {
-      dispatch(addSubactivityOptionInvoked(id));
-    },
-    [dispatch],
-  );
+  const onHistoryActivityOption = useCallback((id: string) => {
+    console.log(`get history: ${id}`);
+  }, []);
+  const onAddSubactivityOption = useCallback((id: string) => {
+    console.log(`add subactivity: ${id}`);
+  }, []);
   return {
     onDeleteActivityOption,
     onJoinActivityOption,

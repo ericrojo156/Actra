@@ -5,7 +5,7 @@ import {
   IdAction,
   ADD_SUBACTIVITY_OPTION_INVOKED,
   DELETE_ACTIVITY,
-} from './actions';
+} from '../redux/actions';
 import {takeLatest} from 'redux-saga/effects';
 
 function* deleteActivitySaga(action: IdAction) {

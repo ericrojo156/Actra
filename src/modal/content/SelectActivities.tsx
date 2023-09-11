@@ -26,7 +26,7 @@ export interface SelectActivitiesProps {
 export function SelectActivities(props: SelectActivitiesProps) {
   const {headerText, onConfirmSelection} = props;
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const {activities, getActivityById} = useActivities();
+  const {activities, getActivity} = useActivities();
   const {translate} = useTranslation();
   const renderInnerItem = (activity: Activity | null, isSelected: boolean) => {
     if (activity) {
@@ -42,7 +42,7 @@ export function SelectActivities(props: SelectActivitiesProps) {
           }}>
           <ActivityElement
             {...activity}
-            getActivityById={getActivityById}
+            getActivity={getActivity}
             color={undefined}
           />
         </View>

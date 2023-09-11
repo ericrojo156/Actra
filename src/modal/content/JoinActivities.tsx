@@ -1,15 +1,21 @@
+import {useDispatch} from 'react-redux';
 import {joinActivities} from '../../activity/useActivityOptionsActions';
 import {useTranslation} from '../../internationalization/useTranslation';
 import {SelectActivities} from './SelectActivities';
+import {modalClosed} from '../modalActions';
 
 export function JoinActivities() {
   const {translate} = useTranslation();
   const headerText1 = translate('Select-Activities');
   const headerText2 = translate('to-Join');
+  const dispatch = useDispatch();
   return (
     <SelectActivities
       headerText={`${headerText1} ${headerText2}`}
-      onConfirmSelection={joinActivities}
+      onConfirmSelection={(ids: string[]) => {
+        joinActivities(ids);
+        dispatch(modalClosed());
+      }}
     />
   );
 }

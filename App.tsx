@@ -11,6 +11,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import * as ColorPalette from './src/ColorPalette';
 import ActivityListScreen from './src/screens/ActivitiesListScreen';
 import {useTranslation} from './src/internationalization/useTranslation';
+import {useActivitiesFetch} from './src/activity/useActivities';
 
 enableMapSet();
 
@@ -30,6 +31,7 @@ export type RootStackParamsList = {
 const RootStack = createStackNavigator<RootStackParamsList>();
 
 function Screens() {
+  useActivitiesFetch();
   const {translate} = useTranslation();
   return (
     <NavigationContainer>

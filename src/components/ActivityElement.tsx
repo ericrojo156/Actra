@@ -15,7 +15,7 @@ import {
 import PressableIcon, {ACTRA_FUNCTION_OPTION_ICON_SIZE} from './PressableIcon';
 import {IdProp} from '../types';
 import * as ColorProcessor from '../ColorProcessor';
-import {Language, useTranslation} from '../internationalization/useTranslation';
+import {useTranslation} from '../internationalization/useTranslation';
 
 export const ELEMENT_HEIGHT = 70;
 export const STANDARD_ELEMENT_WIDTH = 350;
@@ -32,7 +32,7 @@ export interface Activity {
 
 export interface ActivityElementProps extends Activity {
   width?: number;
-  getActivityById: (id: string) => Activity | null;
+  getActivity: (id: string) => Activity | null;
 }
 
 export interface ExpandableActivityProps extends ActivityElementProps {
@@ -91,14 +91,14 @@ function ExpandedSection(props: ExpandableActivityProps) {
   const {
     id,
     subactivitiesIds,
-    getActivityById,
+    getActivity,
     width = STANDARD_ELEMENT_WIDTH,
   } = props;
   const subactivities: Activity[] = useMemo(() => {
     return subactivitiesIds
-      .map(getActivityById)
+      .map(getActivity)
       .filter(result => result !== null) as Activity[];
-  }, [subactivitiesIds, getActivityById]);
+  }, [subactivitiesIds, getActivity]);
   return (
     <CustomPressable
       style={{...commonStyles.container, ...styles.expandedSection}}>
@@ -111,7 +111,7 @@ function ExpandedSection(props: ExpandableActivityProps) {
         {subactivities.length > 0 && (
           <>
             <ActivitiesList
-              getActivityById={getActivityById}
+              getActivity={getActivity}
               activities={subactivities}
               width={width - SUBACTIVITY_LEVEL_WIDTH_DECREMENT}
             />
