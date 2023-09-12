@@ -1,5 +1,4 @@
 import React, {useCallback} from 'react';
-import {JoinActivities} from './content/JoinActivities';
 import {useDispatch, useSelector} from 'react-redux';
 import {ApplicationState} from '../redux/rootReducer';
 import {ModalType} from './modalReducer';
@@ -11,6 +10,7 @@ import {
 } from './modalActions';
 import {SelectionModalParams} from '../components/SelectionList';
 import {EditActivity} from '../screens/EditActivity';
+import {JoinActivities} from '../screens/JoinActivities';
 import {IdProp} from '../types';
 
 export type ActiveModalState = ModalType | null;

@@ -1,19 +1,15 @@
+import GradientBackground from './GradientBackground';
+import * as ColorPalette from '../ColorPalette';
+import * as ColorProcessor from '../ColorProcessor';
+import useActivities from '../activity/useActivities';
 import {useState} from 'react';
+import {useTranslation} from '../internationalization/useTranslation';
 import {View, Text, StyleSheet} from 'react-native';
-import useActivities from '../../activity/useActivities';
-import {commonStyles} from '../../commonStyles';
-import {
-  Activity,
-  ActivityElement,
-  ELEMENT_HEIGHT,
-} from '../../components/ActivityElement';
-import CustomPressable from '../../components/Pressable';
-import {SelectionList} from '../../components/SelectionList';
-import {useTranslation} from '../../internationalization/useTranslation';
-import {SPACE_BETWEEN_ELEMENTS} from '../../screens/ActivitiesListScreen';
-import GradientBackground from '../../screens/GradientBackground';
-import * as ColorPalette from '../../ColorPalette';
-import * as ColorProcessor from '../../ColorProcessor';
+import {Activity, ActivityElement} from '../activity/ActivityElement';
+import {commonStyles} from '../commonStyles';
+import CustomPressable from '../components/Pressable';
+import {SelectionList} from '../components/SelectionList';
+import {ELEMENT_HEIGHT, SPACE_BETWEEN_ELEMENTS} from '../constants';
 
 export interface SelectActivitiesProps {
   headerText: string;

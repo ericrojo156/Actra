@@ -1,19 +1,19 @@
 import React from 'react';
-import PressableIcon from '../PressableIcon';
+import PressableIcon from '../../components/PressableIcon';
 import {OptionProps} from './types';
 import {useTranslation} from '../../internationalization/useTranslation';
 
-function HistoryOption(props: OptionProps) {
+function JoinOption(props: OptionProps) {
   const {style, onPress} = props;
   const {translate} = useTranslation();
   return (
     <PressableIcon
       style={style}
-      iconName="book-open-variant"
-      label={translate('History')}
+      iconName="axis-z-arrow"
+      label={translate('Join')}
       onPress={onPress}
     />
   );
 }
 
-export default HistoryOption;
+export default JoinOption;

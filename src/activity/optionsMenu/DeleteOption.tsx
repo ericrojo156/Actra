@@ -1,5 +1,5 @@
 import React from 'react';
-import PressableIcon from '../PressableIcon';
+import PressableIcon from '../../components/PressableIcon';
 import {OptionProps} from './types';
 import {useTranslation} from '../../internationalization/useTranslation';
 

@@ -1,8 +1,8 @@
 import {useDispatch} from 'react-redux';
-import {joinActivities} from '../../activity/useActivityOptionsActions';
-import {useTranslation} from '../../internationalization/useTranslation';
+import {joinActivities} from '../activity/useActivityOptionsActions';
+import {useTranslation} from '../internationalization/useTranslation';
+import {modalClosed} from '../modal/modalActions';
 import {SelectActivities} from './SelectActivities';
-import {modalClosed} from '../modalActions';
 
 export function JoinActivities() {
   const {translate} = useTranslation();

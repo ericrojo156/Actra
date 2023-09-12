@@ -1,4 +1,4 @@
-import {Activity} from '../components/ActivityElement';
+import {Activity} from './ActivityElement';
 
 export interface ActivityState {
   activities: Map<string, Activity>;

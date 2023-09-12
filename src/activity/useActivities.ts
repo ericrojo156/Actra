@@ -1,5 +1,5 @@
 import {useEffect, useCallback} from 'react';
-import {Activity} from '../components/ActivityElement';
+import {Activity} from './ActivityElement';
 import * as ColorPalette from '../ColorPalette';
 import {uuidv4} from '../utils/uuid';
 import {ApplicationState} from '../redux/rootReducer';
