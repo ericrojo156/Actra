@@ -5,6 +5,7 @@ import {useTranslation} from '../internationalization/useTranslation';
 import {useSelectionModal, SELECTION_TYPE} from '../components/SelectionList';
 import {editActivityModalOpened} from '../modal/modalActions';
 import useActivities from './useActivities';
+import {useNavigation} from '@react-navigation/native';
 
 export function joinActivities(ids: string[]) {
   console.log(`join activities: ${ids}`);
@@ -14,6 +15,7 @@ export default function useActivityOptionCallbacks() {
   const {translate} = useTranslation();
   const dispatch = useDispatch();
   const {deleteActivity} = useActivities();
+  const navigation = useNavigation();
   const onDeleteActivityOption = useCallback(
     (id: string) => {
       ActionSheetIOS.showActionSheetWithOptions(
@@ -52,9 +54,13 @@ export default function useActivityOptionCallbacks() {
     },
     [dispatch],
   );
-  const onHistoryActivityOption = useCallback((id: string) => {
-    console.log(`get history: ${id}`);
-  }, []);
+  const onHistoryActivityOption = useCallback(
+    (id: string) => {
+      // @ts-ignore
+      navigation.navigate('History', {id});
+    },
+    [navigation],
+  );
   const onAddSubactivityOption = useCallback((id: string) => {
     console.log(`add subactivity: ${id}`);
   }, []);

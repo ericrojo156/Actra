@@ -20,6 +20,12 @@ export function useIntervals(_parentActivityId: string): IntervalsData {
         startTimeEpochSeconds: Date.now() / 1000 - 120 * 60 * 60,
         endTimeEpochSeconds: 60 * 60 + Date.now() / 1000 - 120 * 60 * 60,
       },
+      {
+        intervalId: uuidv4(),
+        parentActivityId: _parentActivityId,
+        startTimeEpochSeconds: Date.now() / 1000 - 120 * 60 * 60,
+        endTimeEpochSeconds: 60 * 60 + Date.now() / 1000 - 120 * 60 * 60,
+      },
     ],
     [_parentActivityId],
   );

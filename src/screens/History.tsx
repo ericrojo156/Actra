@@ -4,15 +4,15 @@ import {commonStyles} from '../commonStyles';
 import {useTranslation} from '../internationalization/useTranslation';
 import GradientBackground from './GradientBackground';
 import {useIntervals} from '../interval/useIntervals';
-import {IdProp} from '../types';
+import {IdProp, NavigationScreenProps} from '../types';
 import {SPACE_BETWEEN_ELEMENTS} from '../constants';
 import {IntervalsList} from '../interval/IntervalsList';
 
-function History(props: IdProp) {
-  const {id: parentActivityId} = props;
+function History(props: NavigationScreenProps<IdProp>) {
+  const {id: parentActivityId} = props.route.params;
   const {intervals} = useIntervals(parentActivityId);
   const {translate} = useTranslation();
-  const headerText = translate('Intervals');
+  const headerText = translate('History');
   return (
     <GradientBackground>
       <View style={{marginTop: '10%'}} />
