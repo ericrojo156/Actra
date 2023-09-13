@@ -22,6 +22,14 @@ const englishDict: LanguageDict = new Map<string, string>([
   ['Combine-Activities', 'Combine Activities'],
   ['Save', 'Save'],
   ['Edit-Activity', 'Edit Activity'],
+  ['day', 'day'],
+  ['days', 'days'],
+  ['hour', 'hr'],
+  ['hours', 'hrs'],
+  ['minute', 'min'],
+  ['minutes', 'mins'],
+  ['second', 'sec'],
+  ['seconds', 'secs'],
 ]);
 
 const languages = new Map<Language, LanguageDict>([
@@ -33,7 +41,9 @@ export function useTranslation() {
     (state: ApplicationState) => state.internationalization.language,
   );
   const translate = useCallback(
-    (phrase: string) => languages.get(language)?.get(phrase) ?? phrase,
+    (phrase: string) =>
+      languages.get(language)?.get(phrase) ??
+      `untranslated key phrase: ${phrase}`,
     [language],
   );
   return {

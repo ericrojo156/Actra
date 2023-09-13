@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import * as ColorProcessor from '../ColorProcessor';
 import * as ColorPalette from '../ColorPalette';
 import {StyleProp, ViewStyle, StyleSheet, Text} from 'react-native';
@@ -10,6 +10,8 @@ import {
 } from '../constants';
 import useActivities from '../activity/useActivities';
 import CustomPressable from '../components/Pressable';
+import {useIntervals} from './useIntervals';
+import {useTimeString} from '../time/useTimeString';
 
 export interface ActivityIntervalRelation {
   intervalId: string;
@@ -28,15 +30,21 @@ export interface IntervalElementProps extends ActivityIntervalRelation {
 export type TimeUnit = 'days' | 'hours' | 'mins' | 'seconds';
 
 export interface TimeDisplayProps {
-  units: TimeUnit[];
+  seconds: number;
 }
 
-export function TimeDisplay(_props: TimeDisplayProps) {
-  return <Text>60 mins</Text>;
+export function TimeDisplay(props: TimeDisplayProps) {
+  const {seconds} = props;
+  const {toTimeString} = useTimeString();
+  const timeDisplayString = useMemo(
+    () => toTimeString(seconds),
+    [seconds, toTimeString],
+  );
+  return <Text style={styles.textStyle}>{timeDisplayString}</Text>;
 }
 
 export function IntervalElement(props: IntervalElementProps) {
-  const {parentActivityId, width} = props;
+  const {intervalId, parentActivityId, width} = props;
   let intervalStyle: StyleProp<ViewStyle> = {
     ...commonStyles.container,
     ...commonStyles.roundedElementBorder,
@@ -44,19 +52,33 @@ export function IntervalElement(props: IntervalElementProps) {
     width: width ?? STANDARD_ELEMENT_WIDTH,
   };
   const {getActivity} = useActivities();
-  const {color} = getActivity(parentActivityId) ?? {
-    color: ColorPalette.activityDefaultColor,
-  };
+  const {getInterval} = useIntervals(parentActivityId);
+  const {startTimeEpochSeconds, endTimeEpochSeconds} = useMemo(
+    () =>
+      getInterval(intervalId) ?? {
+        startTimeEpochSeconds: 0,
+        endTimeEpochSeconds: 0,
+      },
+    [getInterval, intervalId],
+  );
+  const {color} = useMemo(
+    () =>
+      getActivity(parentActivityId) ?? {
+        color: ColorPalette.activityDefaultColor,
+      },
+    [getActivity, parentActivityId],
+  );
   if (color) {
     intervalStyle = {
       ...intervalStyle,
       backgroundColor: ColorProcessor.serialize(color),
     };
   }
+  const durationSeconds = endTimeEpochSeconds - startTimeEpochSeconds;
   return (
     <CustomPressable style={intervalStyle}>
       <Text style={styles.textStyle}>
-        <TimeDisplay units={['mins']} />
+        <TimeDisplay seconds={durationSeconds} />
       </Text>
       <Text style={styles.textStyle}>{'---->'}</Text>
     </CustomPressable>
@@ -70,6 +92,7 @@ export const styles = StyleSheet.create({
     minHeight: ELEMENT_HEIGHT,
   },
   textStyle: {
+    textAlign: 'center',
     color: ColorPalette.OffWhite_RGBSerialized,
     fontSize: 20,
   },
