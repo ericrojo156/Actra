@@ -2,7 +2,7 @@ import GradientBackground from './GradientBackground';
 import * as ColorPalette from '../ColorPalette';
 import * as ColorProcessor from '../ColorProcessor';
 import useActivities from '../activity/useActivities';
-import {useState} from 'react';
+import {useMemo, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Activity, ActivityElement} from '../activity/ActivityElement';
 import {commonStyles} from '../commonStyles';
@@ -14,15 +14,32 @@ export interface SelectActivitiesProps {
   headerText: string;
 }
 
+export interface ConfirmationTextProps {
+  text1: string;
+  text2?: string;
+}
+
 export interface SelectActivitiesProps {
-  confirmationButtonText: string;
+  confirmationButtonText: ConfirmationTextProps;
   onConfirmSelection: (selectedIds: Array<string>) => void;
+  filterCondition?: (activity: Activity) => boolean;
 }
 
 export function SelectActivities(props: SelectActivitiesProps) {
-  const {headerText, confirmationButtonText, onConfirmSelection} = props;
+  const {
+    filterCondition,
+    headerText,
+    confirmationButtonText,
+    onConfirmSelection,
+  } = props;
+  const {text1: confirmationText1, text2: confirmationText2} =
+    confirmationButtonText;
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const {activities, getActivity} = useActivities();
+  const data = useMemo(
+    () => (filterCondition ? activities.filter(filterCondition) : activities),
+    [filterCondition, activities],
+  );
   const renderInnerItem = (activity: Activity | null, isSelected: boolean) => {
     if (activity) {
       return (
@@ -65,14 +82,17 @@ export function SelectActivities(props: SelectActivitiesProps) {
       <SelectionList
         selectedIds={selectedIds}
         setSelectedIds={setSelectedIds}
-        data={activities}
+        data={data}
         renderInnerItem={renderInnerItem}
       />
       <CustomPressable
         style={{...commonStyles.roundedElementBorder, ...styles.confirmButton}}
         onPress={() => onConfirmSelection([...selectedIds.values()])}>
         <Text style={{...commonStyles.textStyle, ...styles.confirmButtonText}}>
-          {confirmationButtonText}
+          {confirmationText1}
+        </Text>
+        <Text style={{...commonStyles.textStyle, ...styles.confirmButtonText}}>
+          {confirmationText2}
         </Text>
       </CustomPressable>
       <View style={{marginBottom: 50}} />

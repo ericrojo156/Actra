@@ -15,11 +15,12 @@ const englishDict: LanguageDict = new Map<string, string>([
   ['Delete-Activity', 'Delete Activity'],
   ['Cancel', 'Cancel'],
   ['Delete', 'Delete'],
+  ['Edit', 'Edit'],
   ['History', 'History'],
   ['Join', 'Combine'],
   ['to-Join', 'to Combine'],
   ['Select-Activities', 'Select Activities'],
-  ['Combine-Activities', 'Combine Activities'],
+  ['Combine-Activities-with', 'Combine Activities with'],
   ['Save', 'Save'],
   ['Edit-Activity', 'Edit Activity'],
   ['day', 'day'],
@@ -31,7 +32,7 @@ const englishDict: LanguageDict = new Map<string, string>([
   ['second', 'sec'],
   ['seconds', 'secs'],
   ['to-Add', 'to Add'],
-  ['Add-to-Activity', 'Add to Activity'],
+  ['Add-to', 'Add to'],
 ]);
 
 const languages = new Map<Language, LanguageDict>([

@@ -49,15 +49,18 @@ async function getMockActivities(): Promise<Activity[]> {
 }
 
 export type GetActivity = (id: string) => Activity | null;
+export type GetActivityName = (id: string) => string;
 
 interface ActivitiesData {
   activities: Activity[];
   getActivity: GetActivity;
+  getActivityName: GetActivityName;
   deleteActivity: (id: string) => void;
 }
 
 interface ActivitiesGetters {
   getActivity: GetActivity;
+  getActivityName: GetActivityName;
   getActivities: () => Promise<Activity[]>;
 }
 
@@ -72,8 +75,12 @@ function useGetActivity(): ActivitiesGetters {
     },
     [activitiesMap],
   );
+  const getActivityName = useCallback(
+    (id: string) => getActivity(id)?.name ?? '',
+    [getActivity],
+  );
   const getActivities = useCallback(getMockActivities, []);
-  return {getActivity, getActivities};
+  return {getActivity, getActivityName, getActivities};
 }
 
 function useUpdateActivity() {
@@ -109,11 +116,12 @@ export default function useActivities(): ActivitiesData {
   const activities: Activity[] = useSelector((state: ApplicationState) => [
     ...state.activity.activities.values(),
   ]);
-  const {getActivity} = useGetActivity();
+  const {getActivity, getActivityName} = useGetActivity();
   const {deleteActivity} = useUpdateActivity();
   return {
     activities,
     getActivity,
+    getActivityName,
     deleteActivity,
   };
 }
