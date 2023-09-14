@@ -1,11 +1,18 @@
+import React from 'react';
 import {ReactElement, useMemo, useCallback} from 'react';
 import {ListRenderItemInfo, View, FlatList, StyleSheet} from 'react-native';
-import {SPACE_BETWEEN_ELEMENTS} from '../screens/MainScreen';
-import {ELEMENT_HEIGHT, STANDARD_ELEMENT_WIDTH} from './ActivityElement';
 import * as ColorPalette from '../ColorPalette';
 import CustomPressable from './Pressable';
 import {useDispatch} from 'react-redux';
-import {joinActivitiesModalOpened} from '../modal/modalActions';
+import {
+  addSubactivitiesModalOpened,
+  joinActivitiesModalOpened,
+} from '../modal/modalActions';
+import {
+  ELEMENT_HEIGHT,
+  SPACE_BETWEEN_ELEMENTS,
+  STANDARD_ELEMENT_WIDTH,
+} from '../constants';
 
 export function useSelectionModal() {
   const dispatch = useDispatch();
@@ -19,8 +26,19 @@ export function useSelectionModal() {
     },
     [dispatch],
   );
+  const openAddSubactivitiesModal = useCallback(
+    (params: SelectionModalParams) => {
+      dispatch(
+        addSubactivitiesModalOpened({
+          params,
+        }),
+      );
+    },
+    [dispatch],
+  );
   return {
     openJoinActivitiesModal,
+    openAddSubactivitiesModal,
   };
 }
 

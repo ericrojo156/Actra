@@ -1,4 +1,4 @@
-import {Activity} from '../components/ActivityElement';
+import {Activity} from './ActivityElement';
 import {BaseAction} from '../types';
 import {ActivityState} from './ActivityState';
 import {ACTIVITIES_LOADED, ActivitiesAction} from './activityActions';

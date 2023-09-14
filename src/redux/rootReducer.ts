@@ -5,14 +5,18 @@ import InternationalizationState from '../internationalization/Internationalizat
 import internationalizationReducer from '../internationalization/internationalizationReducer';
 import activityReducer from '../activity/activityReducer';
 import {ActivityState} from '../activity/ActivityState';
+import intervalReducer from '../interval/intervalReducer';
+import {IntervalState} from '../interval/IntervalState';
 
 export interface ApplicationState {
+  interval: IntervalState;
   activity: ActivityState;
   modal: ModalState;
   internationalization: InternationalizationState;
 }
 
 export default combineReducers({
+  interval: intervalReducer,
   activity: activityReducer,
   modal: modalReducer,
   internationalization: internationalizationReducer,

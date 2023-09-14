@@ -1,4 +1,4 @@
-import {Activity} from '../components/ActivityElement';
+import {Activity} from './ActivityElement';
 import {BaseAction} from '../types';
 
 export const ACTIVITIES_LOADED = 'ACTIVITIES_LOADED';

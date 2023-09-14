@@ -1,22 +1,26 @@
 import React, {useMemo} from 'react';
 import {View, Text, StyleSheet, StyleProp, ViewStyle} from 'react-native';
 import * as ColorPalette from '../ColorPalette';
-import CustomPressable from './Pressable';
+import CustomPressable from '../components/Pressable';
 import DeleteOption from './optionsMenu/DeleteOption';
 import EditOption from './optionsMenu/EditOption';
 import HistoryOption from './optionsMenu/HistoryOption';
 import JoinOption from './optionsMenu/JoinOption';
-import useActivityOptionCallbacks from '../activity/useActivityOptionsActions';
+import useActivityOptionCallbacks from './useActivityOptionsActions';
 import {commonStyles} from '../commonStyles';
-import {ActivitiesList, SPACE_BETWEEN_ELEMENTS} from '../screens/MainScreen';
-import PressableIcon, {ACTRA_FUNCTION_OPTION_ICON_SIZE} from './PressableIcon';
+import PressableIcon, {
+  ACTRA_FUNCTION_OPTION_ICON_SIZE,
+} from '../components/PressableIcon';
 import {IdProp} from '../types';
 import * as ColorProcessor from '../ColorProcessor';
 import {useTranslation} from '../internationalization/useTranslation';
-
-export const ELEMENT_HEIGHT = 70;
-export const STANDARD_ELEMENT_WIDTH = 350;
-export const SUBACTIVITY_LEVEL_WIDTH_DECREMENT = 20;
+import {ActivitiesList} from './ActivitiesList';
+import {
+  STANDARD_ELEMENT_WIDTH,
+  SUBACTIVITY_LEVEL_WIDTH_DECREMENT,
+  ELEMENT_HEIGHT,
+  SPACE_BETWEEN_ELEMENTS,
+} from '../constants';
 
 export interface Activity {
   id: string;

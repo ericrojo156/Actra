@@ -9,9 +9,11 @@ import {configureStore} from '@reduxjs/toolkit';
 import activitiesSagas from './src/activity/activitySagas';
 import {NavigationContainer} from '@react-navigation/native';
 import * as ColorPalette from './src/ColorPalette';
-import ActivityListScreen from './src/screens/MainScreen';
+import MainScreen from './src/screens/MainScreen';
 import {useTranslation} from './src/internationalization/useTranslation';
 import {useActivitiesFetch} from './src/activity/useActivities';
+import History from './src/screens/History';
+import {IdProp} from './src/types';
 
 enableMapSet();
 
@@ -25,7 +27,8 @@ let store = configureStore({
 sagaMiddleware.run(activitiesSagas);
 
 export type RootStackParamsList = {
-  ActivitiesListScreen: {};
+  Main: {};
+  History: IdProp;
 };
 
 const RootStack = createStackNavigator<RootStackParamsList>();
@@ -43,8 +46,13 @@ function Screens() {
           headerTintColor: ColorPalette.OffWhite_RGBSerialized,
         }}>
         <RootStack.Screen
-          name="ActivitiesListScreen"
-          component={ActivityListScreen}
+          name="Main"
+          component={MainScreen}
+          options={{headerShown: false}}
+        />
+        <RootStack.Screen
+          name="History"
+          component={History}
           options={{headerShown: false}}
         />
       </RootStack.Navigator>
