@@ -3,7 +3,6 @@ import * as ColorPalette from '../ColorPalette';
 import * as ColorProcessor from '../ColorProcessor';
 import useActivities from '../activity/useActivities';
 import {useState} from 'react';
-import {useTranslation} from '../internationalization/useTranslation';
 import {View, Text, StyleSheet} from 'react-native';
 import {Activity, ActivityElement} from '../activity/ActivityElement';
 import {commonStyles} from '../commonStyles';
@@ -16,14 +15,14 @@ export interface SelectActivitiesProps {
 }
 
 export interface SelectActivitiesProps {
+  confirmationButtonText: string;
   onConfirmSelection: (selectedIds: Array<string>) => void;
 }
 
 export function SelectActivities(props: SelectActivitiesProps) {
-  const {headerText, onConfirmSelection} = props;
+  const {headerText, confirmationButtonText, onConfirmSelection} = props;
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const {activities, getActivity} = useActivities();
-  const {translate} = useTranslation();
   const renderInnerItem = (activity: Activity | null, isSelected: boolean) => {
     if (activity) {
       return (
@@ -73,7 +72,7 @@ export function SelectActivities(props: SelectActivitiesProps) {
         style={{...commonStyles.roundedElementBorder, ...styles.confirmButton}}
         onPress={() => onConfirmSelection([...selectedIds.values()])}>
         <Text style={{...commonStyles.textStyle, ...styles.confirmButtonText}}>
-          {translate('Combine-Activities')}
+          {confirmationButtonText}
         </Text>
       </CustomPressable>
       <View style={{marginBottom: 50}} />

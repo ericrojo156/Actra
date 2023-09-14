@@ -30,6 +30,8 @@ const englishDict: LanguageDict = new Map<string, string>([
   ['minutes', 'mins'],
   ['second', 'sec'],
   ['seconds', 'secs'],
+  ['to-Add', 'to Add'],
+  ['Add-to-Activity', 'Add to Activity'],
 ]);
 
 const languages = new Map<Language, LanguageDict>([

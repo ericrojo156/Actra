@@ -7,8 +7,15 @@ import {editActivityModalOpened} from '../modal/modalActions';
 import useActivities from './useActivities';
 import {useNavigation} from '@react-navigation/native';
 
-export function joinActivities(ids: string[]) {
+export function joinActivities(ids: string[]): void {
   console.log(`join activities: ${ids}`);
+}
+
+export function addSubactivitiesToActivity(
+  parentId: string,
+  subactivitiesIds: string[],
+): void {
+  console.log(`add subactivities ${subactivitiesIds} to activity ${parentId}`);
 }
 
 export default function useActivityOptionCallbacks() {
@@ -36,7 +43,8 @@ export default function useActivityOptionCallbacks() {
     },
     [deleteActivity, translate],
   );
-  const {openJoinActivitiesModal} = useSelectionModal();
+  const {openAddSubactivitiesModal, openJoinActivitiesModal} =
+    useSelectionModal();
   const onJoinActivityOption = useCallback(
     (id: string) => {
       openJoinActivitiesModal({
@@ -61,9 +69,18 @@ export default function useActivityOptionCallbacks() {
     },
     [navigation],
   );
-  const onAddSubactivityOption = useCallback((id: string) => {
-    console.log(`add subactivity: ${id}`);
-  }, []);
+  const onAddSubactivityOption = useCallback(
+    (id: string) => {
+      openAddSubactivitiesModal({
+        id,
+        selectionType: SELECTION_TYPE.MULTI_SELECT,
+        onConfirm: (selectedItems: string[]) =>
+          addSubactivitiesToActivity(id, selectedItems),
+      });
+    },
+    [openAddSubactivitiesModal],
+  );
+
   return {
     onDeleteActivityOption,
     onJoinActivityOption,
