@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {View, Text, StyleSheet, StyleProp, ViewStyle} from 'react-native';
 import * as ColorPalette from '../ColorPalette';
 import CustomPressable from '../components/Pressable';
@@ -37,8 +37,8 @@ export interface ActivityElementProps extends Activity {
 }
 
 export interface ExpandableActivityProps extends ActivityElementProps {
-  isExpanded: (id: string) => boolean;
-  setIsExpanded: (shouldExpand: boolean) => void;
+  isExpanded: boolean;
+  setIsExpanded: (shouldExpand: boolean, id: string) => void;
 }
 
 function ActivityOptionsMenuBar(props: ExpandableActivityProps) {
@@ -147,7 +147,7 @@ export function ActivityElement(props: ActivityElementProps) {
   );
 }
 
-export function ExpandedActivityElement(props: ExpandableActivityProps) {
+function ExpandedActivityElement(props: ExpandableActivityProps) {
   const {
     id,
     isExpanded,
@@ -160,17 +160,19 @@ export function ExpandedActivityElement(props: ExpandableActivityProps) {
     color: undefined,
   };
   return (
-    <CustomPressable
-      onPress={() => setIsExpanded(!isExpanded(id))}
-      style={{
-        ...commonStyles.roundedElementBorder,
-        ...styles.expandableActivityElement,
-        width,
-        backgroundColor: ColorProcessor.serialize(color),
-      }}>
-      <ActivityElement {...activityProps} />
-      <>{isExpanded(id) && <ExpandedSection {...props} />}</>
-    </CustomPressable>
+    <View style={{padding: SPACE_BETWEEN_ELEMENTS / 2}}>
+      <CustomPressable
+        onPress={() => setIsExpanded(!isExpanded, id)}
+        style={{
+          ...commonStyles.roundedElementBorder,
+          ...styles.expandableActivityElement,
+          width,
+          backgroundColor: ColorProcessor.serialize(color),
+        }}>
+        <ActivityElement {...activityProps} />
+        <>{isExpanded && <ExpandedSection {...props} />}</>
+      </CustomPressable>
+    </View>
   );
 }
 
@@ -200,3 +202,5 @@ export const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.1)',
   },
 });
+
+export default React.memo(ExpandedActivityElement);
