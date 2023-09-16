@@ -1,5 +1,5 @@
 import {View, Text, TextInput, StyleSheet} from 'react-native';
-import useActivities from '../activity/useActivities';
+import {useGetActivity} from '../activity/useActivities';
 import {IdProp} from '../types';
 import React from 'react';
 import {Formik} from 'formik';
@@ -20,7 +20,7 @@ const validationSchema = Yup.object().shape({
 
 export function EditActivity(props: IdProp) {
   const {id} = props;
-  const {getActivity} = useActivities();
+  const {getActivity} = useGetActivity();
   const activity = getActivity(id);
   const name = activity?.name ?? '';
   const {translate} = useTranslation();

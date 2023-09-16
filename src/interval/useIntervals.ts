@@ -1,5 +1,3 @@
-// import {useSelector} from 'react-redux';
-// import {ApplicationState} from '../redux/rootReducer';
 import {Interval} from './IntervalElement';
 import {useCallback, useMemo} from 'react';
 
@@ -8,29 +6,27 @@ interface IntervalsData {
   getInterval: (intervalId: string) => Interval | null;
 }
 
-export function useIntervals(_parentActivityId: string): IntervalsData {
-  //   const intervals: Interval[] = useSelector((state: ApplicationState) => [
-  //     ...state.interval.intervals.values(),
-  //   ]);
-  const startTimeEpochSeconds = Date.now() / 1000 - 60 * 60 * 2;
-  const endTimeEpochSeconds = startTimeEpochSeconds + 10 * 25 * 60 * 59 + 59;
-  const intervals = useMemo(
-    () => [
-      {
-        intervalId: '1',
-        parentActivityId: _parentActivityId,
+export function useIntervals(parentActivityId: string): IntervalsData {
+  const startTimeEpochSeconds = useMemo(
+    () => Date.now() / 1000 - 60 * 60 * 2,
+    [],
+  );
+  const endTimeEpochSeconds = useMemo(
+    () => startTimeEpochSeconds + 10 * 25 * 60 * 59 + 59,
+    [startTimeEpochSeconds],
+  );
+  const intervals = useMemo(() => {
+    const generatedIntervals = [];
+    for (let i = 3; i <= 302; i++) {
+      generatedIntervals.push({
+        intervalId: i.toString(),
+        parentActivityId,
         startTimeEpochSeconds,
         endTimeEpochSeconds,
-      },
-      {
-        intervalId: '2',
-        parentActivityId: _parentActivityId,
-        startTimeEpochSeconds: Date.now() / 1000 - 120 * 60 * 60,
-        endTimeEpochSeconds: 60 * 60 + Date.now() / 1000 - 120 * 60 * 60,
-      },
-    ],
-    [_parentActivityId, endTimeEpochSeconds, startTimeEpochSeconds],
-  );
+      });
+    }
+    return generatedIntervals;
+  }, [parentActivityId, endTimeEpochSeconds, startTimeEpochSeconds]);
   const getInterval = useCallback(
     (intervalId: string) =>
       intervals.find(interval => interval.intervalId === intervalId) ?? null,

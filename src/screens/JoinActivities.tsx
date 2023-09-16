@@ -6,11 +6,11 @@ import {modalClosed} from '../modal/modalActions';
 import {SelectActivities} from './SelectActivities';
 import {IdProp} from '../types';
 import {Activity} from '../activity/ActivityElement';
-import useActivities from '../activity/useActivities';
+import {useGetActivity} from '../activity/useActivities';
 
 export function JoinActivities(props: IdProp) {
   const {id} = props;
-  const {getActivityName} = useActivities();
+  const {getActivityName} = useGetActivity();
   const {translate} = useTranslation();
   const headerText1 = translate('Select-Activities');
   const headerText2 = translate('to-Join');

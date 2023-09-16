@@ -64,7 +64,7 @@ interface ActivitiesGetters {
   getActivities: () => Promise<Activity[]>;
 }
 
-function useGetActivity(): ActivitiesGetters {
+export function useGetActivity(): ActivitiesGetters {
   const activitiesMap = useSelector(
     (state: ApplicationState) => state.activity.activities,
   );

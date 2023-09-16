@@ -1,8 +1,8 @@
-import React, {useMemo} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {LayoutAnimation, View, FlatList, StyleSheet} from 'react-native';
-import {STANDARD_ELEMENT_WIDTH, ELEMENT_HEIGHT} from '../constants';
+import {ELEMENT_HEIGHT} from '../constants';
 import {useIntervals} from './useIntervals';
-import {Interval, IntervalElement} from './IntervalElement';
+import IntervalElement, {Interval} from './IntervalElement';
 
 export const SPACE_BETWEEN_ELEMENTS = 5;
 
@@ -30,32 +30,28 @@ export const IntervalsList = React.memo((props: IntervalsListProps) => {
   const {parentActivityId} = props;
   const {intervals} = useIntervals(parentActivityId);
   useLayoutAnimation();
+  const getItemLayout = useCallback(
+    (_data: any, index: number) => ({
+      length: ELEMENT_HEIGHT,
+      offset: ELEMENT_HEIGHT * index,
+      index,
+    }),
+    [],
+  );
   return (
     <View style={{...styles.intervalsListContainer}}>
       <FlatList
         data={intervals}
         renderItem={({item}) => (
-          <>
-            <IntervalElement
-              intervalId={item.intervalId}
-              parentActivityId={parentActivityId}
-            />
-            <View
-              style={{
-                marginTop: SPACE_BETWEEN_ELEMENTS,
-                width: STANDARD_ELEMENT_WIDTH,
-              }}
-            />
-          </>
+          <IntervalElement
+            intervalId={item.intervalId}
+            parentActivityId={parentActivityId}
+          />
         )}
         keyExtractor={item => item.intervalId.toString()}
-        initialNumToRender={20}
+        initialNumToRender={10}
         windowSize={5}
-        getItemLayout={(data, index) => ({
-          length: 100,
-          offset: ELEMENT_HEIGHT * index,
-          index,
-        })}
+        getItemLayout={getItemLayout}
       />
     </View>
   );
@@ -65,6 +61,5 @@ const styles = StyleSheet.create({
   intervalsListContainer: {
     display: 'flex',
     alignItems: 'center',
-    height: '85%',
   },
 });

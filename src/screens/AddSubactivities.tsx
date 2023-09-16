@@ -5,12 +5,12 @@ import {useTranslation} from '../internationalization/useTranslation';
 import {modalClosed} from '../modal/modalActions';
 import {ConfirmationTextProps, SelectActivities} from './SelectActivities';
 import {IdProp} from '../types';
-import useActivities from '../activity/useActivities';
+import {useGetActivity} from '../activity/useActivities';
 import {Activity} from '../activity/ActivityElement';
 
 export function AddSubactivities(props: IdProp) {
   const {id} = props;
-  const {getActivityName} = useActivities();
+  const {getActivityName} = useGetActivity();
   const {translate} = useTranslation();
   const headerText1 = translate('Select-Activities');
   const headerText2 = translate('to-Add');

@@ -14,6 +14,7 @@ import {useTranslation} from './src/internationalization/useTranslation';
 import {useActivitiesFetch} from './src/activity/useActivities';
 import History from './src/screens/History';
 import {IdProp} from './src/types';
+import {commonStyles} from './src/commonStyles';
 
 enableMapSet();
 
@@ -36,6 +37,8 @@ const RootStack = createStackNavigator<RootStackParamsList>();
 function Screens() {
   useActivitiesFetch();
   const {translate} = useTranslation();
+  const headerText = translate('History');
+
   return (
     <NavigationContainer>
       <StatusBar barStyle="light-content" translucent={true} />
@@ -53,7 +56,13 @@ function Screens() {
         <RootStack.Screen
           name="History"
           component={History}
-          options={{headerShown: false}}
+          options={{
+            headerTitle: headerText,
+            headerTransparent: true,
+            headerBackTitle: translate('Back'),
+            headerTintColor: ColorPalette.OffWhite_RGBSerialized,
+            headerTitleStyle: commonStyles.headerTextStyle,
+          }}
         />
       </RootStack.Navigator>
     </NavigationContainer>
