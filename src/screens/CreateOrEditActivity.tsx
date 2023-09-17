@@ -41,14 +41,16 @@ export function ActivityForm(props: ActivityFormProps) {
       {({handleChange, handleBlur, handleSubmit, values, errors}) => (
         <View style={{...commonStyles.container, ...styles.container}}>
           <Text style={commonStyles.headerTextStyle}>{headerText}</Text>
-          <TextInput
-            onChangeText={handleChange('name')}
-            onBlur={handleBlur('name')}
-            value={values.name}
-            placeholder={name}
-            style={styles.input}
-          />
-          {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
+          <View>
+            <TextInput
+              onChangeText={handleChange('name')}
+              onBlur={handleBlur('name')}
+              value={values.name}
+              placeholder={name}
+              style={styles.input}
+            />
+            {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
+          </View>
           <CustomPressable style={styles.saveButton} onPress={handleSubmit}>
             <Text style={styles.buttonTextStyle}>{confirmationText}</Text>
           </CustomPressable>
