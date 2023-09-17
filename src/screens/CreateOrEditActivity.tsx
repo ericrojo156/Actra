@@ -18,41 +18,62 @@ const validationSchema = Yup.object().shape({
     .max(100, 'Name must be no more than 100 characters long'),
 });
 
+interface ActivityFormProps {
+  id?: string | null;
+  name?: string;
+}
+
+export function ActivityForm(props: ActivityFormProps) {
+  const {id = null, name} = props;
+  const {translate} = useTranslation();
+  const confirmationText = translate('Save');
+  const dispatch = useDispatch();
+  const headerText =
+    id === null ? translate('Create-Activity') : translate('Edit-Activity');
+  return (
+    <Formik
+      initialValues={{name: name ?? ''}}
+      validationSchema={validationSchema}
+      onSubmit={values => {
+        console.log('Form submitted with values:', values);
+        dispatch(modalClosed());
+      }}>
+      {({handleChange, handleBlur, handleSubmit, values, errors}) => (
+        <View style={{...commonStyles.container, ...styles.container}}>
+          <Text style={commonStyles.headerTextStyle}>{headerText}</Text>
+          <TextInput
+            onChangeText={handleChange('name')}
+            onBlur={handleBlur('name')}
+            value={values.name}
+            placeholder={name}
+            style={styles.input}
+          />
+          {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
+          <CustomPressable style={styles.saveButton} onPress={handleSubmit}>
+            <Text style={styles.buttonTextStyle}>{confirmationText}</Text>
+          </CustomPressable>
+        </View>
+      )}
+    </Formik>
+  );
+}
+
 export function EditActivity(props: IdProp) {
   const {id} = props;
   const {getActivity} = useGetActivity();
   const activity = getActivity(id);
   const name = activity?.name ?? '';
-  const {translate} = useTranslation();
-  const confirmationText = translate('Save');
-  const headerText = translate('Edit-Activity');
-  const dispatch = useDispatch();
   return (
     <GradientBackground>
-      <Formik
-        initialValues={{name: activity?.name ?? ''}}
-        validationSchema={validationSchema}
-        onSubmit={values => {
-          console.log('Form submitted with values:', values);
-          dispatch(modalClosed());
-        }}>
-        {({handleChange, handleBlur, handleSubmit, values, errors}) => (
-          <View style={{...commonStyles.container, ...styles.container}}>
-            <Text style={commonStyles.headerTextStyle}>{headerText}</Text>
-            <TextInput
-              onChangeText={handleChange('name')}
-              onBlur={handleBlur('name')}
-              value={values.name}
-              placeholder={name}
-              style={styles.input}
-            />
-            {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
-            <CustomPressable style={styles.saveButton} onPress={handleSubmit}>
-              <Text style={styles.buttonTextStyle}>{confirmationText}</Text>
-            </CustomPressable>
-          </View>
-        )}
-      </Formik>
+      <ActivityForm id={id} name={name} />
+    </GradientBackground>
+  );
+}
+
+export function CreateActivity() {
+  return (
+    <GradientBackground>
+      <ActivityForm />
     </GradientBackground>
   );
 }

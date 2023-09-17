@@ -3,7 +3,10 @@ import {ActionSheetIOS} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {useTranslation} from '../internationalization/useTranslation';
 import {useSelectionModal, SELECTION_TYPE} from '../components/SelectionList';
-import {editActivityModalOpened} from '../modal/modalActions';
+import {
+  createActivityModalOpened,
+  editActivityModalOpened,
+} from '../modal/modalActions';
 import useActivities from './useActivities';
 import {useNavigation} from '@react-navigation/native';
 
@@ -81,11 +84,16 @@ export default function useActivityOptionCallbacks() {
     [openAddSubactivitiesModal],
   );
 
+  const onCreateActivityOption = useCallback(() => {
+    dispatch(createActivityModalOpened());
+  }, [dispatch]);
+
   return {
     onDeleteActivityOption,
     onJoinActivityOption,
     onEditActivityOption,
     onHistoryActivityOption,
     onAddSubactivityOption,
+    onCreateActivityOption,
   };
 }

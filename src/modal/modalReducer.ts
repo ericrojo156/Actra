@@ -5,15 +5,17 @@ import ModalState from './ModalState';
 import {
   ADD_SUBACTIVITIES_OPENED,
   CLOSE_MODAL,
+  CREATE_ACTIVITY_OPENED,
   EDIT_ACTIVITY_OPENED,
   JOIN_ACTIVITIES_OPENED,
   ModalOpenAction,
 } from './modalActions';
 
 export const enum ModalType {
-  JOIN_ACTIVITIES,
+  CREATE_ACTIVITY,
   EDIT_ACTIVITY,
   ADD_SUBACTIVITIES,
+  JOIN_ACTIVITIES,
 }
 
 const defaultModalState: ModalState = {
@@ -48,6 +50,12 @@ export default function IntervalsReducer(
         ...state,
         activeModal: ModalType.ADD_SUBACTIVITIES,
         params,
+      };
+    }
+    case CREATE_ACTIVITY_OPENED: {
+      return {
+        ...state,
+        activeModal: ModalType.CREATE_ACTIVITY,
       };
     }
     case EDIT_ACTIVITY_OPENED: {

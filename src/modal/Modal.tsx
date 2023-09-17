@@ -10,7 +10,7 @@ import {
   modalClosed,
 } from './modalActions';
 import {SelectionModalParams} from '../components/SelectionList';
-import {EditActivity} from '../screens/EditActivity';
+import {CreateActivity, EditActivity} from '../screens/CreateOrEditActivity';
 import {JoinActivities} from '../screens/JoinActivities';
 import {IdProp} from '../types';
 import {AddSubactivities} from '../screens/AddSubactivities';
@@ -73,6 +73,9 @@ export function ModalContent(props: ModalContentProps) {
     case ModalType.JOIN_ACTIVITIES: {
       const {id} = params as IdProp;
       return <JoinActivities id={id} />;
+    }
+    case ModalType.CREATE_ACTIVITY: {
+      return <CreateActivity />;
     }
     case ModalType.EDIT_ACTIVITY: {
       const {id} = params as IdProp;

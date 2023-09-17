@@ -6,7 +6,7 @@ import {ModalContent, useModal} from '../modal/Modal';
 import {commonStyles} from '../commonStyles';
 import {useTranslation} from '../internationalization/useTranslation';
 import {ActivitiesList} from '../activity/ActivitiesList';
-import CreateButton from '../activity/CreateButton';
+import CreateActivityOption from '../activity/CreateActivityOption';
 import * as ColorPalette from '../ColorPalette';
 import {SPACE_BETWEEN_ELEMENTS} from '../constants';
 
@@ -51,7 +51,7 @@ function MainScreen() {
           position: 'absolute',
           transform: [{translateY: 350}, {translateX: 90}],
         }}>
-        <CreateButton color={ColorPalette.SoftBlack} />
+        <CreateActivityOption color={ColorPalette.SoftBlack} />
       </View>
     </GradientBackground>
   );

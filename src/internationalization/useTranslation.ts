@@ -20,6 +20,7 @@ const englishDict: LanguageDict = new Map<string, string>([
   ['Select-Activities', 'Select Activities'],
   ['Combine-Activities-with', 'Combine Activities with'],
   ['Save', 'Save'],
+  ['Create-Activity', 'Create Activity'],
   ['Edit-Activity', 'Edit Activity'],
   ['day', 'day'],
   ['days', 'days'],

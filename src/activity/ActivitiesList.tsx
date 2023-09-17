@@ -52,7 +52,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
     },
     [setCurrentlyExpandedActivity],
   );
-  const renderItem = useCallback(
+  const swipeableItem = useCallback(
     ({item}: any) => (
       <ExpandedActivityElement
         getActivity={getActivity}
@@ -68,7 +68,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
     <View style={{...styles.activitiesListContainer, height: listHeight}}>
       <FlatList
         data={activities}
-        renderItem={renderItem}
+        renderItem={swipeableItem}
         keyExtractor={item => item.id.toString()}
         initialNumToRender={20}
         windowSize={5}

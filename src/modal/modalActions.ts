@@ -5,6 +5,7 @@ export const CLOSE_MODAL = 'CLOSE_MODAL';
 export const JOIN_ACTIVITIES_OPENED = 'JOIN_ACTIVITIES_OPENED';
 export const EDIT_ACTIVITY_OPENED = 'EDIT_ACTIVITY_OPENED';
 export const ADD_SUBACTIVITIES_OPENED = 'ADD_SUBACTIVITIES_OPENED';
+export const CREATE_ACTIVITY_OPENED = 'CREATE_ACTIVITY_OPENED';
 
 export interface ModalParams<T> {
   params: T;
@@ -26,6 +27,12 @@ export function joinActivitiesModalOpened(
   return {
     type: JOIN_ACTIVITIES_OPENED,
     payload: modalParams,
+  };
+}
+
+export function createActivityModalOpened(): BaseAction {
+  return {
+    type: CREATE_ACTIVITY_OPENED,
   };
 }
 
