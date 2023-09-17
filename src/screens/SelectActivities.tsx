@@ -68,8 +68,8 @@ export function SelectActivities(props: SelectActivitiesProps) {
         style={{
           flexDirection: 'row',
           justifyContent: 'center',
-          marginTop: 50,
-          marginBottom: 10,
+          paddingTop: 50,
+          paddingBottom: 10,
         }}>
         <Text
           style={{
@@ -85,17 +85,27 @@ export function SelectActivities(props: SelectActivitiesProps) {
         data={data}
         renderInnerItem={renderInnerItem}
       />
-      <CustomPressable
-        style={{...commonStyles.roundedElementBorder, ...styles.confirmButton}}
-        onPress={() => onConfirmSelection([...selectedIds.values()])}>
-        <Text style={{...commonStyles.textStyle, ...styles.confirmButtonText}}>
-          {confirmationText1}
-        </Text>
-        <Text style={{...commonStyles.textStyle, ...styles.confirmButtonText}}>
-          {confirmationText2}
-        </Text>
-      </CustomPressable>
-      <View style={{marginBottom: 50}} />
+      <View
+        style={{
+          padding: SPACE_BETWEEN_ELEMENTS,
+        }}>
+        <CustomPressable
+          style={{
+            ...commonStyles.roundedElementBorder,
+            ...styles.confirmButton,
+          }}
+          onPress={() => onConfirmSelection([...selectedIds.values()])}>
+          <Text
+            style={{...commonStyles.textStyle, ...styles.confirmButtonText}}>
+            {confirmationText1}
+          </Text>
+          <Text
+            style={{...commonStyles.textStyle, ...styles.confirmButtonText}}>
+            {confirmationText2}
+          </Text>
+        </CustomPressable>
+      </View>
+      <View style={{paddingBottom: 50}} />
     </GradientBackground>
   );
 }
@@ -117,10 +127,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: ELEMENT_HEIGHT,
-
     backgroundColor: ColorPalette.actionColorSerialized,
-    marginTop: SPACE_BETWEEN_ELEMENTS,
-    marginBottom: SPACE_BETWEEN_ELEMENTS,
     paddingHorizontal: 20,
   },
 });

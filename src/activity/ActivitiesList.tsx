@@ -6,7 +6,7 @@ import {
   StyleSheet,
   DimensionValue,
 } from 'react-native';
-import ExpandedActivityElement, {Activity} from './ActivityElement';
+import {ExpandedActivityElement, Activity} from './ActivityElement';
 import {GetActivity} from './useActivities';
 import {STANDARD_ELEMENT_WIDTH, ELEMENT_HEIGHT} from '../constants';
 
@@ -32,6 +32,7 @@ interface ActivitiesListProps {
 }
 
 export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
+  useLayoutAnimation();
   const {
     getActivity,
     activities,
@@ -51,25 +52,28 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
     },
     [setCurrentlyExpandedActivity],
   );
-  useLayoutAnimation();
+  const renderItem = useCallback(
+    ({item}: any) => (
+      <ExpandedActivityElement
+        getActivity={getActivity}
+        isExpanded={isExpanded(item.id)}
+        setIsExpanded={setIsExpanded}
+        {...item}
+        width={elementWidth}
+      />
+    ),
+    [elementWidth, getActivity, isExpanded, setIsExpanded],
+  );
   return (
     <View style={{...styles.activitiesListContainer, height: listHeight}}>
       <FlatList
         data={activities}
-        renderItem={({item}) => (
-          <ExpandedActivityElement
-            getActivity={getActivity}
-            isExpanded={isExpanded(item.id)}
-            setIsExpanded={setIsExpanded}
-            {...item}
-            width={elementWidth}
-          />
-        )}
+        renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
         initialNumToRender={20}
         windowSize={5}
         getItemLayout={(data, index) => ({
-          length: 100,
+          length: STANDARD_ELEMENT_WIDTH,
           offset: ELEMENT_HEIGHT * index,
           index,
         })}

@@ -99,7 +99,7 @@ export function SelectionList<T extends SelectableItem>(
       <CustomPressable onPress={() => toggleSelection(item.id)}>
         {renderInnerItem(dataMap.get(item.id) ?? null, isSelected(item.id))}
       </CustomPressable>
-      <View style={{marginTop: SPACE_BETWEEN_ELEMENTS}} />
+      <View style={{paddingTop: SPACE_BETWEEN_ELEMENTS}} />
     </View>
   );
   return (

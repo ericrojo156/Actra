@@ -7,45 +7,22 @@ import {useDispatch, useSelector} from 'react-redux';
 import {activitiesLoaded} from './activityActions';
 
 async function getMockActivities(): Promise<Activity[]> {
-  const activities: Activity[] = Array.from({length: 100}, (_, index) => ({
-    id: uuidv4(),
-    name: `Item ${index + 1}`,
-    subactivitiesIds: [],
-    intervalsIds: [],
-    currentlyActiveIntervalId: null,
-    color: ColorPalette.activityDefaultColor,
-  }));
-  const subactivitiesIds = [
-    uuidv4(),
-    uuidv4(),
-    uuidv4(),
-    uuidv4(),
-    uuidv4(),
-    uuidv4(),
-    uuidv4(),
-    uuidv4(),
-    uuidv4(),
-    uuidv4(),
-  ];
-  subactivitiesIds.forEach((id, index) => {
-    activities.push({
-      id,
-      name: `Item ${index + activities.length}`,
+  const activities: Activity[] = [];
+
+  for (let index = 0; index < 1000; index++) {
+    const activity: Activity = {
+      id: uuidv4(),
+      name: `Item ${index + 1}`,
       subactivitiesIds: [],
       intervalsIds: [],
       currentlyActiveIntervalId: null,
       color: ColorPalette.activityDefaultColor,
-    });
-  });
-  const activityWithSubactivities = {
-    id: uuidv4(),
-    name: `Item ${0}`,
-    subactivitiesIds,
-    intervalsIds: [],
-    currentlyActiveIntervalId: null,
-    color: ColorPalette.activityDefaultColor,
-  };
-  return [activityWithSubactivities, ...activities];
+    };
+
+    activities.push(activity);
+  }
+
+  return activities;
 }
 
 export type GetActivity = (id: string) => Activity | null;

@@ -41,14 +41,11 @@ export interface ExpandableActivityProps extends ActivityElementProps {
   setIsExpanded: (shouldExpand: boolean, id: string) => void;
 }
 
-function ActivityOptionsMenuBar(props: ExpandableActivityProps) {
+const ActivityOptionsMenuBar = React.memo(function (
+  props: ExpandableActivityProps,
+) {
   const {id, width} = props;
-  const {
-    onDeleteActivityOption,
-    onJoinActivityOption,
-    onEditActivityOption,
-    onHistoryActivityOption,
-  } = useActivityOptionCallbacks();
+
   return (
     <View
       style={{
@@ -56,20 +53,22 @@ function ActivityOptionsMenuBar(props: ExpandableActivityProps) {
         ...styles.activityOptionsMenuBar,
         width,
       }}>
-      <DeleteOption onPress={() => onDeleteActivityOption(id)} />
-      <JoinOption onPress={() => onJoinActivityOption(id)} />
-      <EditOption onPress={() => onEditActivityOption(id)} />
-      <HistoryOption onPress={() => onHistoryActivityOption(id)} />
+      <DeleteOption id={id} />
+      <JoinOption id={id} />
+      <EditOption id={id} />
+      <HistoryOption id={id} />
     </View>
   );
-}
+});
 
 interface AddSubactivityProps extends IdProp {
   id: string;
   width?: number;
 }
 
-function AddSubactivityOption(props: AddSubactivityProps) {
+export const AddSubactivityOption = React.memo(function (
+  props: AddSubactivityProps,
+) {
   const {id, width = STANDARD_ELEMENT_WIDTH} = props;
   const {onAddSubactivityOption} = useActivityOptionCallbacks();
   const {translate} = useTranslation();
@@ -86,9 +85,11 @@ function AddSubactivityOption(props: AddSubactivityProps) {
       onPress={() => onAddSubactivityOption(id)}
     />
   );
-}
+});
 
-function ExpandedSection(props: ExpandableActivityProps) {
+export const ExpandedSection = React.memo(function (
+  props: ExpandableActivityProps,
+) {
   const {
     id,
     subactivitiesIds,
@@ -107,25 +108,24 @@ function ExpandedSection(props: ExpandableActivityProps) {
       <View
         style={{
           ...commonStyles.container,
-          transform: [{translateY: -30}],
         }}>
         {subactivities.length > 0 && (
-          <>
-            <ActivitiesList
-              getActivity={getActivity}
-              activities={subactivities}
-              elementWidth={width - SUBACTIVITY_LEVEL_WIDTH_DECREMENT}
-            />
-            <View style={{marginBottom: SPACE_BETWEEN_ELEMENTS * 6}} />
-          </>
+          <ActivitiesList
+            getActivity={getActivity}
+            activities={subactivities}
+            elementWidth={width - SUBACTIVITY_LEVEL_WIDTH_DECREMENT}
+          />
         )}
       </View>
+      <View style={{padding: SPACE_BETWEEN_ELEMENTS / 2}} />
       <AddSubactivityOption id={id} width={width} />
     </CustomPressable>
   );
-}
+});
 
-export function ActivityElement(props: ActivityElementProps) {
+export const ActivityElement = React.memo(function (
+  props: ActivityElementProps,
+) {
   const {name, width, color} = props;
   let activityStyle: StyleProp<ViewStyle> = {
     ...commonStyles.container,
@@ -145,9 +145,11 @@ export function ActivityElement(props: ActivityElementProps) {
       </Text>
     </View>
   );
-}
+});
 
-function ExpandedActivityElement(props: ExpandableActivityProps) {
+export const ExpandedActivityElement = React.memo(function (
+  props: ExpandableActivityProps,
+) {
   const {
     id,
     isExpanded,
@@ -174,7 +176,7 @@ function ExpandedActivityElement(props: ExpandableActivityProps) {
       </CustomPressable>
     </View>
   );
-}
+});
 
 export const styles = StyleSheet.create({
   expandableActivityElement: {
@@ -202,5 +204,3 @@ export const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.1)',
   },
 });
-
-export default React.memo(ExpandedActivityElement);
