@@ -1,9 +1,8 @@
 import {BaseAction} from '../types';
-import {Language} from './useTranslation';
 import InternationalizationState from './InternationalizationState';
 
-const defaultInternationalizationState = {
-  language: Language.ENGLISH,
+const defaultInternationalizationState: InternationalizationState = {
+  locale: 'en-US',
 };
 
 export default function internationalizationReducer(

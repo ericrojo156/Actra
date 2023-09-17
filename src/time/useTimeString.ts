@@ -23,10 +23,16 @@ const resolveTranslationKey = (key: string, value: number): string => {
   }
 };
 
-export function useTimeString() {
-  const {translate} = useTranslation();
-  const toTimeString = useCallback(
-    (totalSeconds: number): string => {
+interface TimeStringOut {
+  toDateTimeString: (epoch: number) => {date: string; time: string};
+  toDurationString: (totalMilliseconds: number) => string;
+}
+
+export function useTimeString(): TimeStringOut {
+  const {translate, locale} = useTranslation();
+  const toDurationString = useCallback(
+    (totalMilliseconds: number): string => {
+      const totalSeconds = Math.floor(totalMilliseconds / 1000);
       const secondsPerMinute = 60;
       const secondsPerHour = 60 * secondsPerMinute;
       const secondsPerDay = 24 * secondsPerHour;
@@ -66,7 +72,32 @@ export function useTimeString() {
     },
     [translate],
   );
+  const toDateTimeString = useCallback(
+    (epochMs: number): {date: string; time: string} => {
+      const date = new Date(epochMs);
+
+      const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      };
+
+      const dateTimeString = new Intl.DateTimeFormat(locale, options).format(
+        date,
+      );
+      const split = dateTimeString.split(', ');
+      return {
+        date: `${split[0]}, ${split[1]}`,
+        time: split[2],
+      };
+    },
+    [locale],
+  );
   return {
-    toTimeString,
+    toDateTimeString,
+    toDurationString,
   };
 }

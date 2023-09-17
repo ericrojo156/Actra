@@ -13,6 +13,7 @@ import CustomPressable from '../components/Pressable';
 import {useIntervals} from './useIntervals';
 import {useTimeString} from '../time/useTimeString';
 import {useGetActivity} from '../activity/useActivities';
+import RightArrow from '../../assets/RightArrow';
 
 export interface ActivityIntervalRelation {
   intervalId: string;
@@ -20,8 +21,8 @@ export interface ActivityIntervalRelation {
 }
 
 export interface Interval extends ActivityIntervalRelation {
-  startTimeEpochSeconds: number;
-  endTimeEpochSeconds: number;
+  startTimeEpochMilliseconds: number;
+  endTimeEpochMilliseconds: number;
 }
 
 export interface IntervalElementProps extends ActivityIntervalRelation {
@@ -30,20 +31,28 @@ export interface IntervalElementProps extends ActivityIntervalRelation {
 
 export type TimeUnit = 'days' | 'hours' | 'mins' | 'seconds';
 
-export interface TimeDisplayProps {
-  seconds: number;
+export interface MillisecondsProps {
+  milliseconds: number;
 }
 
-export interface TimeDisplayProps {
-  seconds: number;
-}
-
-export function TimeDisplay(props: TimeDisplayProps) {
-  const {seconds} = props;
-  const {toTimeString} = useTimeString();
-  const timeDisplayString = toTimeString(seconds);
+export const TimeDisplay = React.memo(function (props: MillisecondsProps) {
+  const {milliseconds} = props;
+  const {toDurationString} = useTimeString();
+  const timeDisplayString = toDurationString(milliseconds);
   return <Text style={styles.textStyle}>{timeDisplayString}</Text>;
-}
+});
+
+export const DateTimeDisplay = React.memo(function (props: MillisecondsProps) {
+  const {milliseconds} = props;
+  const {toDateTimeString} = useTimeString();
+  const {date, time} = toDateTimeString(milliseconds);
+  return (
+    <View>
+      <Text style={{...styles.textStyle, fontSize: 15}}>{date}</Text>
+      <Text style={{...styles.textStyle, fontSize: 15}}>{time}</Text>
+    </View>
+  );
+});
 
 function IntervalElement(props: IntervalElementProps) {
   const {intervalId, parentActivityId, width} = props;
@@ -54,29 +63,35 @@ function IntervalElement(props: IntervalElementProps) {
     color: ColorPalette.activityDefaultColor,
   };
 
-  const interval = getInterval(intervalId) ?? {
-    startTimeEpochSeconds: 0,
-    endTimeEpochSeconds: 0,
-  };
+  const interval: Interval | null = getInterval(intervalId);
 
   const intervalStyle = {
+    ...commonStyles.container,
     ...commonStyles.roundedElementBorder,
     ...styles.intervalElement,
     width: width ?? STANDARD_ELEMENT_WIDTH,
     backgroundColor: ColorProcessor.serialize(activity.color),
   };
 
+  if (interval === null) {
+    return null;
+  }
   return (
     <View style={{paddingTop: PADDING_BETWEEN_ELEMENTS}}>
       <CustomPressable style={intervalStyle}>
         <Text style={styles.textStyle}>
           <TimeDisplay
-            seconds={
-              interval.endTimeEpochSeconds - interval.startTimeEpochSeconds
+            milliseconds={
+              interval.endTimeEpochMilliseconds -
+              interval.startTimeEpochMilliseconds
             }
           />
         </Text>
-        <Text style={styles.textStyle}>{'---->'}</Text>
+        <View style={{flexDirection: 'row'}}>
+          <DateTimeDisplay milliseconds={interval.startTimeEpochMilliseconds} />
+          <RightArrow />
+          <DateTimeDisplay milliseconds={interval.endTimeEpochMilliseconds} />
+        </View>
       </CustomPressable>
     </View>
   );
@@ -86,6 +101,7 @@ export const styles = StyleSheet.create({
   intervalElement: {
     width: STANDARD_ELEMENT_WIDTH,
     minHeight: ELEMENT_HEIGHT,
+    padding: 10,
   },
   textStyle: {
     textAlign: 'center',

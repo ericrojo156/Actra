@@ -1,5 +1,5 @@
-import {Language} from './useTranslation';
+import {Locale} from './useTranslation';
 
 export default interface InternationalizationState {
-  language: Language;
+  locale: Locale;
 }

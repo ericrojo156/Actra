@@ -7,26 +7,26 @@ interface IntervalsData {
 }
 
 export function useIntervals(parentActivityId: string): IntervalsData {
-  const startTimeEpochSeconds = useMemo(
-    () => Date.now() / 1000 - 60 * 60 * 2,
+  const startTimeEpochMilliseconds = useMemo(
+    () => Date.now() - 1000 * 60 * 60 * 2,
     [],
   );
-  const endTimeEpochSeconds = useMemo(
-    () => startTimeEpochSeconds + 10 * 25 * 60 * 59 + 59,
-    [startTimeEpochSeconds],
+  const endTimeEpochMilliseconds = useMemo(
+    () => startTimeEpochMilliseconds + 1000 * 60 * 60,
+    [startTimeEpochMilliseconds],
   );
   const intervals = useMemo(() => {
     const generatedIntervals = [];
-    for (let i = 3; i <= 302; i++) {
+    for (let i = 3; i <= 2002; i++) {
       generatedIntervals.push({
         intervalId: i.toString(),
         parentActivityId,
-        startTimeEpochSeconds,
-        endTimeEpochSeconds,
+        startTimeEpochMilliseconds,
+        endTimeEpochMilliseconds,
       });
     }
     return generatedIntervals;
-  }, [parentActivityId, endTimeEpochSeconds, startTimeEpochSeconds]);
+  }, [parentActivityId, endTimeEpochMilliseconds, startTimeEpochMilliseconds]);
   const getInterval = useCallback(
     (intervalId: string) =>
       intervals.find(interval => interval.intervalId === intervalId) ?? null,

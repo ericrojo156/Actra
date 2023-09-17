@@ -2,9 +2,7 @@ import {useCallback} from 'react';
 import {useSelector} from 'react-redux';
 import {ApplicationState} from '../redux/rootReducer';
 
-export enum Language {
-  ENGLISH,
-}
+export type Locale = 'en-US';
 
 type LanguageDict = Map<string, string>;
 
@@ -35,21 +33,20 @@ const englishDict: LanguageDict = new Map<string, string>([
   ['Add-to', 'Add to'],
 ]);
 
-const languages = new Map<Language, LanguageDict>([
-  [Language.ENGLISH, englishDict],
-]);
+const languages = new Map<Locale, LanguageDict>([['en-US', englishDict]]);
 
 export function useTranslation() {
-  const language = useSelector(
-    (state: ApplicationState) => state.internationalization.language,
+  const locale = useSelector(
+    (state: ApplicationState) => state.internationalization.locale,
   );
   const translate = useCallback(
     (phrase: string) =>
-      languages.get(language)?.get(phrase) ??
+      languages.get(locale)?.get(phrase) ??
       `untranslated key phrase: ${phrase}`,
-    [language],
+    [locale],
   );
   return {
+    locale,
     translate,
   };
 }
