@@ -8,7 +8,7 @@ import {commonStyles} from '../commonStyles';
 export const ACTRA_FUNCTION_OPTION_ICON_SIZE = 40;
 
 interface ActraFunctionProps {
-  label: string;
+  label?: string;
   style?: any;
   onPress?: (event: GestureResponderEvent) => void;
   iconName?: string;
@@ -30,7 +30,7 @@ function PressableIcon(props: ActraFunctionProps) {
       style={{...commonStyles.container, ...styles.iconContainer, ...style}}
       onPress={onPress}>
       {content}
-      <Text style={commonStyles.textStyle}>{label}</Text>
+      {label && <Text style={commonStyles.textStyle}>{label}</Text>}
     </CustomPressable>
   );
 }

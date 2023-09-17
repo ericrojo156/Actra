@@ -6,6 +6,8 @@ import {ModalContent, useModal} from '../modal/Modal';
 import {commonStyles} from '../commonStyles';
 import {useTranslation} from '../internationalization/useTranslation';
 import {ActivitiesList} from '../activity/ActivitiesList';
+import CreateButton from '../activity/CreateButton';
+import * as ColorPalette from '../ColorPalette';
 import {SPACE_BETWEEN_ELEMENTS} from '../constants';
 
 function MainScreen() {
@@ -24,16 +26,33 @@ function MainScreen() {
         }}>
         <ModalContent params={params} activeModal={activeModal} />
       </Modal>
-      <View style={{marginTop: '10%'}} />
-      <Text
+      <View
         style={{
-          ...commonStyles.headerTextStyle,
+          ...commonStyles.container,
+          paddingTop: 40,
+          justifyContent: 'flex-start',
         }}>
-        {headerText}
-      </Text>
-      <View style={{marginBottom: SPACE_BETWEEN_ELEMENTS}} />
-      <ActivitiesList activities={activities} getActivity={getActivity} />
-      <View style={{marginBottom: 40}} />
+        <Text
+          style={{
+            ...commonStyles.headerTextStyle,
+          }}>
+          {headerText}
+        </Text>
+        <View style={{paddingTop: SPACE_BETWEEN_ELEMENTS * 3}} />
+        <ActivitiesList
+          listHeight={'85%'}
+          activities={activities}
+          getActivity={getActivity}
+        />
+      </View>
+      <View
+        style={{
+          zIndex: 10,
+          position: 'absolute',
+          transform: [{translateY: 350}, {translateX: 90}],
+        }}>
+        <CreateButton color={ColorPalette.SoftBlack} />
+      </View>
     </GradientBackground>
   );
 }
