@@ -149,7 +149,7 @@ export const ActivityElement = React.memo(function (
         }}>
         {name}
       </Text>
-      <View style={{transform: [{translateX: 140}]}}>
+      <View style={styles.timerButtonPosition}>
         <TimerButton id={id} />
       </View>
     </View>
@@ -211,5 +211,9 @@ export const styles = StyleSheet.create({
     borderColor: ColorPalette.OffWhite_RGBSerialized,
     borderStyle: 'dashed',
     backgroundColor: 'rgba(255,255,255,0.1)',
+  },
+  timerButtonPosition: {
+    alignSelf: 'flex-end',
+    marginRight: 15,
   },
 });
