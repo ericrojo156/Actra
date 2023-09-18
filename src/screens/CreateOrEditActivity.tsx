@@ -11,6 +11,13 @@ import {commonStyles} from '../commonStyles';
 import * as ColorPalette from '../ColorPalette';
 import {useDispatch} from 'react-redux';
 import {modalClosed} from '../modal/modalActions';
+import {
+  ActivityFormAction,
+  ActivityFormData,
+  activityWasCreated,
+  activityWasEdited,
+} from '../activity/activityActions';
+import {uuidv4} from '../utils/uuid';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -19,23 +26,26 @@ const validationSchema = Yup.object().shape({
 });
 
 interface ActivityFormProps {
+  getActivityFormSubmissionAction: (
+    data: ActivityFormData,
+  ) => ActivityFormAction;
   id?: string | null;
   name?: string;
 }
 
 export function ActivityForm(props: ActivityFormProps) {
-  const {id = null, name} = props;
+  const {id = null, name, getActivityFormSubmissionAction} = props;
   const {translate} = useTranslation();
   const confirmationText = translate('Save');
-  const dispatch = useDispatch();
   const headerText =
     id === null ? translate('Create-Activity') : translate('Edit-Activity');
+  const dispatch = useDispatch();
   return (
     <Formik
       initialValues={{name: name ?? ''}}
       validationSchema={validationSchema}
       onSubmit={values => {
-        console.log('Form submitted with values:', values);
+        dispatch(getActivityFormSubmissionAction({id, ...values}));
         dispatch(modalClosed());
       }}>
       {({handleChange, handleBlur, handleSubmit, values, errors}) => (
@@ -60,22 +70,26 @@ export function ActivityForm(props: ActivityFormProps) {
   );
 }
 
-export function EditActivity(props: IdProp) {
-  const {id} = props;
-  const {getActivity} = useGetActivity();
-  const activity = getActivity(id);
-  const name = activity?.name ?? '';
+export function CreateActivity() {
   return (
     <GradientBackground>
-      <ActivityForm id={id} name={name} />
+      <ActivityForm getActivityFormSubmissionAction={activityWasCreated} />
     </GradientBackground>
   );
 }
 
-export function CreateActivity() {
+export function EditActivity(props: IdProp) {
+  const {id = uuidv4()} = props;
+  const {getActivity} = useGetActivity();
+  const activity = getActivity(id!);
+  const name = activity?.name ?? '';
   return (
     <GradientBackground>
-      <ActivityForm />
+      <ActivityForm
+        getActivityFormSubmissionAction={activityWasEdited}
+        id={id}
+        name={name}
+      />
     </GradientBackground>
   );
 }

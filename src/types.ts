@@ -3,7 +3,7 @@ export interface BaseAction {
 }
 
 export interface IdProp {
-  id: string;
+  id: string | null;
 }
 
 export type NavigationScreenProps<T> = {route: {params: T}};
