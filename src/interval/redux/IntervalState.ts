@@ -1,4 +1,4 @@
-import {Interval} from './IntervalElement';
+import {Interval} from '../IntervalElement';
 
 export interface IntervalState {
   intervals: Map<string, Interval>;

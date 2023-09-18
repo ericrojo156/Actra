@@ -1,5 +1,5 @@
-import {BaseAction} from '../types';
-import {Interval} from './IntervalElement';
+import {BaseAction} from '../../types';
+import {Interval} from '../IntervalElement';
 import {IntervalState} from './IntervalState';
 import {INTERVALS_LOADED, IntervalsAction} from './intervalsActions';
 

@@ -5,8 +5,8 @@ import InternationalizationState from '../internationalization/Internationalizat
 import internationalizationReducer from '../internationalization/internationalizationReducer';
 import activityReducer from '../activity/redux/activityReducer';
 import {ActivityState} from '../activity/redux/ActivityState';
-import intervalReducer from '../interval/intervalReducer';
-import {IntervalState} from '../interval/IntervalState';
+import intervalReducer from '../interval/redux/intervalReducer';
+import {IntervalState} from '../interval/redux/IntervalState';
 
 export interface ApplicationState {
   interval: IntervalState;

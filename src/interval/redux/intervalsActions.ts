@@ -1,5 +1,5 @@
-import {BaseAction} from '../types';
-import {Interval} from './IntervalElement';
+import {BaseAction} from '../../types';
+import {Interval} from '../IntervalElement';
 
 export const INTERVALS_LOADED = 'INTERVALS_LOADED';
 

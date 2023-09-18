@@ -1,7 +1,6 @@
 import {useEffect, useCallback} from 'react';
 import {Activity} from './ActivityElement';
 import * as ColorPalette from '../ColorPalette';
-import {uuidv4} from '../utils/uuid';
 import {ApplicationState} from '../redux/rootReducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {activitiesLoaded} from './redux/activityActions';
@@ -11,8 +10,8 @@ async function getMockActivities(): Promise<Activity[]> {
 
   for (let index = 0; index < 1000; index++) {
     const activity: Activity = {
-      id: uuidv4(),
-      name: `Item ${index + 1}`,
+      id: index.toString(),
+      name: `Item ${index}`,
       subactivitiesIds: [],
       intervalsIds: [],
       currentlyActiveIntervalId: null,
