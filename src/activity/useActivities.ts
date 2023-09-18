@@ -4,7 +4,7 @@ import * as ColorPalette from '../ColorPalette';
 import {uuidv4} from '../utils/uuid';
 import {ApplicationState} from '../redux/rootReducer';
 import {useDispatch, useSelector} from 'react-redux';
-import {activitiesLoaded} from './activityActions';
+import {activitiesLoaded} from './redux/activityActions';
 
 async function getMockActivities(): Promise<Activity[]> {
   const activities: Activity[] = [];

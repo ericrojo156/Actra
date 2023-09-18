@@ -6,7 +6,7 @@ import createSagaMiddleware from '@redux-saga/core';
 import {enableMapSet} from 'immer';
 import rootReducer from './src/redux/rootReducer';
 import {configureStore} from '@reduxjs/toolkit';
-import activitiesSagas from './src/activity/activitySagas';
+import activitiesSagas from './src/activity/redux/activitySagas';
 import {NavigationContainer} from '@react-navigation/native';
 import * as ColorPalette from './src/ColorPalette';
 import MainScreen from './src/screens/MainScreen';

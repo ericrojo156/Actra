@@ -21,6 +21,7 @@ import {
   ELEMENT_HEIGHT,
   SPACE_BETWEEN_ELEMENTS,
 } from '../constants';
+import TimerButton from './TimerButton';
 
 export interface Activity {
   id: string;
@@ -126,7 +127,7 @@ export const ExpandedSection = React.memo(function (
 export const ActivityElement = React.memo(function (
   props: ActivityElementProps,
 ) {
-  const {name, width, color} = props;
+  const {id, name, width, color} = props;
   let activityStyle: StyleProp<ViewStyle> = {
     ...commonStyles.container,
     ...styles.activityElement,
@@ -140,9 +141,17 @@ export const ActivityElement = React.memo(function (
   }
   return (
     <View style={activityStyle}>
-      <Text style={{...commonStyles.textStyle, ...styles.textStyle}}>
+      <Text
+        style={{
+          ...commonStyles.textStyle,
+          ...styles.textStyle,
+          position: 'absolute',
+        }}>
         {name}
       </Text>
+      <View style={{transform: [{translateX: 140}]}}>
+        <TimerButton id={id} />
+      </View>
     </View>
   );
 });
@@ -187,7 +196,7 @@ export const styles = StyleSheet.create({
     height: ELEMENT_HEIGHT,
   },
   textStyle: {
-    fontSize: 20,
+    fontSize: 25,
   },
   expandedSection: {
     paddingBottom: 10,

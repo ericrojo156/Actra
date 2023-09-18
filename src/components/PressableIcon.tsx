@@ -8,6 +8,7 @@ import {commonStyles} from '../commonStyles';
 export const ACTRA_FUNCTION_OPTION_ICON_SIZE = 40;
 
 interface ActraFunctionProps {
+  customActiveScale?: number;
   label?: string;
   style?: any;
   onPress?: (event: GestureResponderEvent) => void;
@@ -16,7 +17,14 @@ interface ActraFunctionProps {
 }
 
 function PressableIcon(props: ActraFunctionProps) {
-  const {label, style, onPress = () => {}, iconName, children} = props;
+  const {
+    customActiveScale,
+    label,
+    style,
+    onPress = () => {},
+    iconName,
+    children,
+  } = props;
   const content = children ?? (
     <MaterialCommunityIcons
       name={iconName ?? ''}
@@ -26,7 +34,7 @@ function PressableIcon(props: ActraFunctionProps) {
   );
   return (
     <CustomPressable
-      activeScale={0.85}
+      activeScale={customActiveScale ?? 0.85}
       style={{...commonStyles.container, ...styles.iconContainer, ...style}}
       onPress={onPress}>
       {content}

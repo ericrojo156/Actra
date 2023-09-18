@@ -16,7 +16,7 @@ import {
   ActivityFormData,
   activityWasCreated,
   activityWasEdited,
-} from '../activity/activityActions';
+} from '../activity/redux/activityActions';
 import {uuidv4} from '../utils/uuid';
 
 const validationSchema = Yup.object().shape({

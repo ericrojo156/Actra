@@ -3,8 +3,8 @@ import ModalState from '../modal/ModalState';
 import modalReducer from '../modal/modalReducer';
 import InternationalizationState from '../internationalization/InternationalizationState';
 import internationalizationReducer from '../internationalization/internationalizationReducer';
-import activityReducer from '../activity/activityReducer';
-import {ActivityState} from '../activity/ActivityState';
+import activityReducer from '../activity/redux/activityReducer';
+import {ActivityState} from '../activity/redux/ActivityState';
 import intervalReducer from '../interval/intervalReducer';
 import {IntervalState} from '../interval/IntervalState';
 
