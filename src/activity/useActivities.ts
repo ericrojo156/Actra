@@ -7,12 +7,15 @@ import {activitiesLoaded} from './redux/activityActions';
 
 async function getMockActivities(): Promise<Activity[]> {
   const activities: Activity[] = [];
-
+  const subactivities: string[] = [];
+  for (let index = 10; index < 20; index++) {
+    subactivities.push(index.toString());
+  }
   for (let index = 0; index < 1000; index++) {
     const activity: Activity = {
       id: index.toString(),
       name: `Item ${index}`,
-      subactivitiesIds: [],
+      subactivitiesIds: index === 0 ? subactivities : [],
       intervalsIds: [],
       currentlyActiveIntervalId: null,
       color: ColorPalette.activityDefaultColor,

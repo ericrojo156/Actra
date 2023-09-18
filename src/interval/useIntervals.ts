@@ -15,7 +15,7 @@ export function useIntervals(parentActivityId: string): IntervalsData {
     () => startTimeEpochMilliseconds + 1000 * 60 * 60,
     [startTimeEpochMilliseconds],
   );
-  const intervals = useMemo(() => {
+  const {intervals, intervalsMap} = useMemo(() => {
     const generatedIntervals = [];
     for (let i = 3; i <= 2002; i++) {
       generatedIntervals.push({
@@ -25,12 +25,17 @@ export function useIntervals(parentActivityId: string): IntervalsData {
         endTimeEpochMilliseconds,
       });
     }
-    return generatedIntervals;
+
+    return {
+      intervals: generatedIntervals,
+      intervalsMap: new Map(
+        generatedIntervals.map(interval => [interval.intervalId, interval]),
+      ),
+    };
   }, [parentActivityId, endTimeEpochMilliseconds, startTimeEpochMilliseconds]);
   const getInterval = useCallback(
-    (intervalId: string) =>
-      intervals.find(interval => interval.intervalId === intervalId) ?? null,
-    [intervals],
+    (intervalId: string) => intervalsMap.get(intervalId) ?? null,
+    [intervalsMap],
   );
   return {
     intervals,
