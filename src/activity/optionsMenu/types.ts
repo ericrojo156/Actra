@@ -1,6 +1,7 @@
 import {ViewStyle} from 'react-native';
+import {IdType} from '../../types';
 
 export interface OptionProps {
-  id: string;
+  id: IdType;
   style?: ViewStyle;
 }

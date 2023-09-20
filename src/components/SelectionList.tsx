@@ -13,6 +13,7 @@ import {
   SPACE_BETWEEN_ELEMENTS,
   STANDARD_ELEMENT_WIDTH,
 } from '../constants';
+import {IdType} from '../types';
 
 export function useSelectionModal() {
   const dispatch = useDispatch();
@@ -47,13 +48,13 @@ export enum SELECTION_TYPE {
   SINGLE_SELECT,
 }
 export interface SelectionModalParams {
-  id: string;
+  id: IdType;
   selectionType: SELECTION_TYPE.MULTI_SELECT;
-  onConfirm: (selectedItems: string[]) => void;
+  onConfirm: (selectedItems: IdType[]) => void;
 }
 
 export interface SelectableItem {
-  id: string;
+  id: IdType;
 }
 
 export interface SelectionListProps<T extends SelectableItem> {
@@ -62,8 +63,8 @@ export interface SelectionListProps<T extends SelectableItem> {
     props: T | null,
     isSelected: boolean,
   ) => ReactElement | null;
-  selectedIds: Set<string>;
-  setSelectedIds: (ids: Set<string>) => void;
+  selectedIds: Set<IdType>;
+  setSelectedIds: (ids: Set<IdType>) => void;
 }
 
 export function SelectionList<T extends SelectableItem>(
@@ -71,12 +72,12 @@ export function SelectionList<T extends SelectableItem>(
 ) {
   const {selectedIds, setSelectedIds} = props;
   const {data, renderInnerItem} = props;
-  const dataMap: Map<string, T> = useMemo(
+  const dataMap: Map<IdType, T> = useMemo(
     () => new Map(data?.map(child => [child.id, child]) ?? []),
     [data],
   );
   const toggleSelection = useCallback(
-    (id: string) => {
+    (id: IdType) => {
       const updatedSet = new Set(selectedIds);
       if (!updatedSet.has(id)) {
         updatedSet.add(id);
@@ -88,7 +89,7 @@ export function SelectionList<T extends SelectableItem>(
     [selectedIds, setSelectedIds],
   );
   const isSelected = useCallback(
-    (id: string) => selectedIds.has(id),
+    (id: IdType) => selectedIds.has(id),
     [selectedIds],
   );
   const renderItem = ({item}: ListRenderItemInfo<T>) => (
@@ -107,7 +108,7 @@ export function SelectionList<T extends SelectableItem>(
       <FlatList
         data={data}
         renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.id ?? ''}
         initialNumToRender={20}
         windowSize={5}
         getItemLayout={(_data, index) => ({

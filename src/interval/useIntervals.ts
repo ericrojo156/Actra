@@ -1,12 +1,13 @@
+import {IdType} from '../types';
 import {Interval} from './IntervalElement';
 import {useCallback, useMemo} from 'react';
 
 interface IntervalsData {
   intervals: Interval[];
-  getInterval: (intervalId: string) => Interval | null;
+  getInterval: (intervalId: IdType) => Interval | null;
 }
 
-export function useIntervals(parentActivityId: string): IntervalsData {
+export function useIntervals(parentActivityId: IdType): IntervalsData {
   const startTimeEpochMilliseconds = useMemo(
     () => Date.now() - 1000 * 60 * 60 * 2,
     [],
@@ -16,7 +17,10 @@ export function useIntervals(parentActivityId: string): IntervalsData {
     [startTimeEpochMilliseconds],
   );
   const {intervals, intervalsMap} = useMemo(() => {
-    const generatedIntervals = [];
+    if (!parentActivityId) {
+      return {intervals: [], intervalsMap: new Map<IdType, Interval>()};
+    }
+    const generatedIntervals: Interval[] = [];
     for (let i = 3; i <= 2002; i++) {
       generatedIntervals.push({
         intervalId: i.toString(),
@@ -34,7 +38,7 @@ export function useIntervals(parentActivityId: string): IntervalsData {
     };
   }, [parentActivityId, endTimeEpochMilliseconds, startTimeEpochMilliseconds]);
   const getInterval = useCallback(
-    (intervalId: string) => intervalsMap.get(intervalId) ?? null,
+    (intervalId: IdType) => intervalsMap.get(intervalId) ?? null,
     [intervalsMap],
   );
   return {

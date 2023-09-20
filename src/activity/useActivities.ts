@@ -4,6 +4,7 @@ import * as ColorPalette from '../ColorPalette';
 import {ApplicationState} from '../redux/rootReducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {activitiesLoaded} from './redux/activityActions';
+import {IdType} from '../types';
 
 async function getMockActivities(): Promise<Activity[]> {
   const activities: Activity[] = [];
@@ -14,6 +15,7 @@ async function getMockActivities(): Promise<Activity[]> {
   for (let index = 0; index < 1000; index++) {
     const activity: Activity = {
       id: index.toString(),
+      parentId: subactivities.find(id => id === index.toString()) ? '0' : null,
       name: `Item ${index}`,
       subactivitiesIds: index === 0 ? subactivities : [],
       intervalsIds: [],
@@ -27,14 +29,14 @@ async function getMockActivities(): Promise<Activity[]> {
   return activities;
 }
 
-export type GetActivity = (id: string) => Activity | null;
-export type GetActivityName = (id: string) => string;
+export type GetActivity = (id: IdType) => Activity | null;
+export type GetActivityName = (id: IdType) => string;
 
 interface ActivitiesData {
   activities: Activity[];
   getActivity: GetActivity;
   getActivityName: GetActivityName;
-  deleteActivity: (id: string) => void;
+  deleteActivity: (id: IdType) => void;
 }
 
 interface ActivitiesGetters {
@@ -48,22 +50,22 @@ export function useGetActivity(): ActivitiesGetters {
     (state: ApplicationState) => state.activity.activities,
   );
   const getActivity = useCallback(
-    (id: string) => {
-      const result = activitiesMap.get(id) ?? null;
+    (id: IdType): Activity | null => {
+      const result = activitiesMap.get(id)?.data ?? null;
       return result;
     },
     [activitiesMap],
   );
   const getActivityName = useCallback(
-    (id: string) => getActivity(id)?.name ?? '',
+    (id: IdType) => getActivity(id)?.name ?? '',
     [getActivity],
   );
   const getActivities = useCallback(getMockActivities, []);
   return {getActivity, getActivityName, getActivities};
 }
 
-function useUpdateActivity() {
-  const deleteActivity = useCallback((id: string) => {
+export function useUpdateActivity() {
+  const deleteActivity = useCallback((id: IdType) => {
     console.log(`delete activity: ${id}`);
   }, []);
   return {
@@ -91,10 +93,14 @@ export function useActivitiesFetch() {
   }, [getActivities, setActivities]);
 }
 
-export default function useActivities(): ActivitiesData {
-  const activities: Activity[] = useSelector((state: ApplicationState) => [
-    ...state.activity.activities.values(),
-  ]);
+export default function useActivities(parentId?: IdType): ActivitiesData {
+  const activities: Activity[] = useSelector((state: ApplicationState) => {
+    const dataList = state.activity.activities.dataList;
+    if (typeof parentId === 'undefined') {
+      return state.activity.activities.dataList;
+    }
+    return dataList.filter(activity => activity.parentId === parentId);
+  });
   const {getActivity, getActivityName} = useGetActivity();
   const {deleteActivity} = useUpdateActivity();
   return {

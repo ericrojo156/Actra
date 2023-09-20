@@ -1,5 +1,12 @@
-import {BaseAction} from '../types';
+import {BaseAction, IdType} from '../types';
 
 export interface IdAction extends BaseAction {
-  payload: string | null;
+  payload: IdType;
+}
+
+export interface ParentChildAction<T = IdType> extends BaseAction {
+  payload: {
+    parentId: IdType;
+    child: T;
+  };
 }

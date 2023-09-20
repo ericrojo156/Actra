@@ -14,10 +14,11 @@ import {useIntervals} from './useIntervals';
 import {useTimeString} from '../time/useTimeString';
 import {useGetActivity} from '../activity/useActivities';
 import RightArrow from '../../assets/RightArrow';
+import {IdType} from '../types';
 
 export interface ActivityIntervalRelation {
-  intervalId: string;
-  parentActivityId: string;
+  intervalId: IdType;
+  parentActivityId: IdType;
 }
 
 export interface Interval extends ActivityIntervalRelation {

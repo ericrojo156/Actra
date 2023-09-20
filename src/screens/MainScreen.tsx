@@ -11,7 +11,7 @@ import * as ColorPalette from '../ColorPalette';
 import {SPACE_BETWEEN_ELEMENTS} from '../constants';
 
 function MainScreen() {
-  const {activities, getActivity} = useActivities();
+  const {activities, getActivity} = useActivities(null);
   const {activeModal, params, closeModal} = useModal();
   const {translate} = useTranslation();
   const headerText = translate('Activities');

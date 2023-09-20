@@ -9,6 +9,7 @@ import {
 import {ExpandedActivityElement, Activity} from './ActivityElement';
 import {GetActivity} from './useActivities';
 import {STANDARD_ELEMENT_WIDTH, ELEMENT_HEIGHT} from '../constants';
+import {IdType} from '../types';
 
 function useLayoutAnimation() {
   const layoutAnimConfig = useMemo(
@@ -43,16 +44,16 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
     string | null
   >(null);
   const isExpanded = useCallback(
-    (id: string) => currentlyExpandedActivity === id,
+    (id: IdType) => currentlyExpandedActivity === id,
     [currentlyExpandedActivity],
   );
   const setIsExpanded = useCallback(
-    (shouldExpand: boolean, id: string) => {
+    (shouldExpand: boolean, id: IdType) => {
       setCurrentlyExpandedActivity(shouldExpand ? id : null);
     },
     [setCurrentlyExpandedActivity],
   );
-  const swipeableItem = useCallback(
+  const renderActivityElement = useCallback(
     ({item}: any) => (
       <ExpandedActivityElement
         getActivity={getActivity}
@@ -68,8 +69,8 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
     <View style={{...styles.activitiesListContainer, height: listHeight}}>
       <FlatList
         data={activities}
-        renderItem={swipeableItem}
-        keyExtractor={item => item.id.toString()}
+        renderItem={renderActivityElement}
+        keyExtractor={item => item.id?.toString() ?? ''}
         initialNumToRender={20}
         windowSize={5}
         getItemLayout={(data, index) => ({
