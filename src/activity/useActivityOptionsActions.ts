@@ -7,16 +7,17 @@ import {
   createActivityModalOpened,
   editActivityModalOpened,
 } from '../modal/modalActions';
-import useActivities from './useActivities';
+import {useUpdateActivity} from './useActivities';
 import {useNavigation} from '@react-navigation/native';
+import {IdType} from '../types';
 
-export function joinActivities(ids: string[]): void {
+export function joinActivities(ids: IdType[]): void {
   console.log(`join activities: ${ids}`);
 }
 
 export function addSubactivitiesToActivity(
-  parentId: string,
-  subactivitiesIds: string[],
+  parentId: IdType,
+  subactivitiesIds: IdType[],
 ): void {
   console.log(`add subactivities ${subactivitiesIds} to activity ${parentId}`);
 }
@@ -24,10 +25,10 @@ export function addSubactivitiesToActivity(
 export default function useActivityOptionCallbacks() {
   const {translate} = useTranslation();
   const dispatch = useDispatch();
-  const {deleteActivity} = useActivities();
+  const {deleteActivity} = useUpdateActivity();
   const navigation = useNavigation();
   const onDeleteActivityOption = useCallback(
-    (id: string) => {
+    (id: IdType) => {
       ActionSheetIOS.showActionSheetWithOptions(
         {
           options: [translate('Cancel'), translate('Delete-Activity')],
@@ -49,35 +50,35 @@ export default function useActivityOptionCallbacks() {
   const {openAddSubactivitiesModal, openJoinActivitiesModal} =
     useSelectionModal();
   const onJoinActivityOption = useCallback(
-    (id: string) => {
+    (id: IdType) => {
       openJoinActivitiesModal({
         id,
         selectionType: SELECTION_TYPE.MULTI_SELECT,
-        onConfirm: (selectedItems: string[]) =>
+        onConfirm: (selectedItems: IdType[]) =>
           joinActivities([id, ...selectedItems]),
       });
     },
     [openJoinActivitiesModal],
   );
   const onEditActivityOption = useCallback(
-    (id: string) => {
+    (id: IdType) => {
       dispatch(editActivityModalOpened({params: {id}}));
     },
     [dispatch],
   );
   const onHistoryActivityOption = useCallback(
-    (id: string) => {
+    (id: IdType) => {
       // @ts-ignore
       navigation.navigate('History', {id});
     },
     [navigation],
   );
   const onAddSubactivityOption = useCallback(
-    (id: string) => {
+    (id: IdType) => {
       openAddSubactivitiesModal({
         id,
         selectionType: SELECTION_TYPE.MULTI_SELECT,
-        onConfirm: (selectedItems: string[]) =>
+        onConfirm: (selectedItems: IdType[]) =>
           addSubactivitiesToActivity(id, selectedItems),
       });
     },

@@ -11,7 +11,7 @@ import {commonStyles} from '../commonStyles';
 import PressableIcon, {
   ACTRA_FUNCTION_OPTION_ICON_SIZE,
 } from '../components/PressableIcon';
-import {IdProp} from '../types';
+import {IdProp, IdType} from '../types';
 import * as ColorProcessor from '../ColorProcessor';
 import {useTranslation} from '../internationalization/useTranslation';
 import {ActivitiesList} from './ActivitiesList';
@@ -24,22 +24,23 @@ import {
 import TimerButton from './TimerButton';
 
 export interface Activity {
-  id: string;
+  id: IdType;
+  parentId: IdType;
   name: string;
   color?: ColorPalette.Color;
-  subactivitiesIds: string[];
-  intervalsIds: string[];
-  currentlyActiveIntervalId: string | null;
+  subactivitiesIds: IdType[];
+  intervalsIds: IdType[];
+  currentlyActiveIntervalId: IdType;
 }
 
 export interface ActivityElementProps extends Activity {
   width?: number;
-  getActivity: (id: string) => Activity | null;
+  getActivity: (id: IdType) => Activity | null;
 }
 
 export interface ExpandableActivityProps extends ActivityElementProps {
   isExpanded: boolean;
-  setIsExpanded: (shouldExpand: boolean, id: string) => void;
+  setIsExpanded: (shouldExpand: boolean, id: IdType) => void;
 }
 
 const ActivityOptionsMenuBar = React.memo(function (
@@ -63,7 +64,7 @@ const ActivityOptionsMenuBar = React.memo(function (
 });
 
 interface AddSubactivityProps extends IdProp {
-  id: string;
+  id: IdType;
   width?: number;
 }
 

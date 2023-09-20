@@ -3,6 +3,7 @@ import {LayoutAnimation, View, FlatList, StyleSheet} from 'react-native';
 import {ELEMENT_HEIGHT} from '../constants';
 import {useIntervals} from './useIntervals';
 import IntervalElement, {Interval} from './IntervalElement';
+import {IdType} from '../types';
 
 export const SPACE_BETWEEN_ELEMENTS = 5;
 
@@ -20,7 +21,7 @@ function useLayoutAnimation() {
 }
 
 interface IntervalsListProps {
-  parentActivityId: string;
+  parentActivityId: IdType;
   intervals: Interval[];
   customStyle?: any;
   width?: number;
@@ -45,10 +46,10 @@ export const IntervalsList = React.memo((props: IntervalsListProps) => {
         renderItem={({item}) => (
           <IntervalElement
             intervalId={item.intervalId}
-            parentActivityId={parentActivityId}
+            parentActivityId={parentActivityId ?? ''}
           />
         )}
-        keyExtractor={item => item.intervalId.toString()}
+        keyExtractor={item => item.intervalId ?? ''}
         initialNumToRender={10}
         windowSize={5}
         getItemLayout={getItemLayout}

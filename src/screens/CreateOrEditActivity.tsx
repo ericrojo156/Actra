@@ -1,6 +1,6 @@
 import {View, Text, TextInput, StyleSheet} from 'react-native';
 import {useGetActivity} from '../activity/useActivities';
-import {IdProp} from '../types';
+import {IdProp, IdType} from '../types';
 import React from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -14,7 +14,7 @@ import {modalClosed} from '../modal/modalActions';
 import {
   ActivityFormAction,
   ActivityFormData,
-  activityWasCreated,
+  createdActivity,
   activityWasEdited,
 } from '../activity/redux/activityActions';
 import {uuidv4} from '../utils/uuid';
@@ -29,7 +29,7 @@ interface ActivityFormProps {
   getActivityFormSubmissionAction: (
     data: ActivityFormData,
   ) => ActivityFormAction;
-  id?: string | null;
+  id?: IdType;
   name?: string;
 }
 
@@ -45,7 +45,9 @@ export function ActivityForm(props: ActivityFormProps) {
       initialValues={{name: name ?? ''}}
       validationSchema={validationSchema}
       onSubmit={values => {
-        dispatch(getActivityFormSubmissionAction({id, ...values}));
+        dispatch(
+          getActivityFormSubmissionAction({id: id ?? uuidv4(), ...values}),
+        );
         dispatch(modalClosed());
       }}>
       {({handleChange, handleBlur, handleSubmit, values, errors}) => (
@@ -73,7 +75,7 @@ export function ActivityForm(props: ActivityFormProps) {
 export function CreateActivity() {
   return (
     <GradientBackground>
-      <ActivityForm getActivityFormSubmissionAction={activityWasCreated} />
+      <ActivityForm getActivityFormSubmissionAction={createdActivity} />
     </GradientBackground>
   );
 }

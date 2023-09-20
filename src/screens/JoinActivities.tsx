@@ -4,8 +4,7 @@ import {joinActivities} from '../activity/useActivityOptionsActions';
 import {useTranslation} from '../internationalization/useTranslation';
 import {modalClosed} from '../modal/modalActions';
 import {SelectActivities} from './SelectActivities';
-import {IdProp} from '../types';
-import {Activity} from '../activity/ActivityElement';
+import {IdProp, IdType} from '../types';
 import {useGetActivity} from '../activity/useActivities';
 
 export function JoinActivities(props: IdProp) {
@@ -16,16 +15,18 @@ export function JoinActivities(props: IdProp) {
   const headerText2 = translate('to-Join');
   const confirmationButtonText = {
     text1: translate('Combine-Activities-with'),
-    text2: getActivityName(id),
+    text2: id !== null ? getActivityName(id) : '',
   };
   const dispatch = useDispatch();
   return (
     <SelectActivities
-      filterCondition={(activity: Activity) => activity.id !== id}
+      parentId={id}
       headerText={`${headerText1} ${headerText2}`}
       confirmationButtonText={confirmationButtonText}
-      onConfirmSelection={(selectedIds: string[]) => {
-        joinActivities([id, ...selectedIds]);
+      onConfirmSelection={(selectedIds: IdType[]) => {
+        if (id) {
+          joinActivities([id, ...selectedIds]);
+        }
         dispatch(modalClosed());
       }}
     />
