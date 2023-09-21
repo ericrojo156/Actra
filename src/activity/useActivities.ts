@@ -36,7 +36,6 @@ interface ActivitiesData {
   activities: Activity[];
   getActivity: GetActivity;
   getActivityName: GetActivityName;
-  deleteActivity: (id: IdType) => void;
 }
 
 interface ActivitiesGetters {
@@ -51,7 +50,7 @@ export function useGetActivity(): ActivitiesGetters {
   );
   const getActivity = useCallback(
     (id: IdType): Activity | null => {
-      const result = activitiesMap.get(id)?.data ?? null;
+      const result = activitiesMap.getNode(id)?.data ?? null;
       return result;
     },
     [activitiesMap],
@@ -62,15 +61,6 @@ export function useGetActivity(): ActivitiesGetters {
   );
   const getActivities = useCallback(getMockActivities, []);
   return {getActivity, getActivityName, getActivities};
-}
-
-export function useUpdateActivity() {
-  const deleteActivity = useCallback((id: IdType) => {
-    console.log(`delete activity: ${id}`);
-  }, []);
-  return {
-    deleteActivity,
-  };
 }
 
 export function useActivitiesFetch() {
@@ -102,11 +92,9 @@ export default function useActivities(parentId?: IdType): ActivitiesData {
     return dataList.filter(activity => activity.parentId === parentId);
   });
   const {getActivity, getActivityName} = useGetActivity();
-  const {deleteActivity} = useUpdateActivity();
   return {
     activities,
     getActivity,
     getActivityName,
-    deleteActivity,
   };
 }

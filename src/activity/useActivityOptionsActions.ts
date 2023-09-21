@@ -8,10 +8,9 @@ import {
   createActivityModalOpened,
   editActivityModalOpened,
 } from '../modal/modalActions';
-import {useUpdateActivity} from './useActivities';
 import {useNavigation} from '@react-navigation/native';
 import {IdType} from '../types';
-import {addedSubactivities} from './redux/activityActions';
+import {addedSubactivities, deletedActivity} from './redux/activityActions';
 
 export function joinActivities(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -31,7 +30,6 @@ export function addSubactivitiesToActivity(
 export default function useActivityOptionCallbacks() {
   const {translate} = useTranslation();
   const dispatch = useDispatch();
-  const {deleteActivity} = useUpdateActivity();
   const navigation = useNavigation();
   const onDeleteActivityOption = useCallback(
     (id: IdType) => {
@@ -46,12 +44,12 @@ export default function useActivityOptionCallbacks() {
           if (buttonIndex === 0) {
             // cancel action
           } else if (buttonIndex === 1) {
-            deleteActivity(id);
+            dispatch(deletedActivity(id));
           }
         },
       );
     },
-    [deleteActivity, translate],
+    [dispatch, translate],
   );
   const {openAddSubactivitiesModal, openJoinActivitiesModal} =
     useSelectionModal();

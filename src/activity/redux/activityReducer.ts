@@ -1,5 +1,5 @@
 import {Activity} from '../ActivityElement';
-import {BaseAction, IdType} from '../../types';
+import {BaseAction} from '../../types';
 import {ActivityNode, ActivityState} from './ActivityState';
 import {
   LOADED_ACTIVITIES,
@@ -36,7 +36,8 @@ function convertActivityToTreeNode(activity: Activity): ActivityNode {
     id: activity.id,
     parentId: activity.parentId,
     firstChild: activity.subactivitiesIds[0] ?? null,
-    lastChild: activity.subactivitiesIds[activity.subactivitiesIds.length - 1],
+    lastChild:
+      activity.subactivitiesIds[activity.subactivitiesIds.length - 1] ?? null,
     nextSibling: null,
     prevSibling: null,
     data: activity,
@@ -67,11 +68,8 @@ export default function activityReducer(
     case CREATED_ACTIVITY: {
       const formData = (action as ActivityFormAction).payload;
       const activity: Activity = {
+        ...emptyActivity,
         ...formData,
-        subactivitiesIds: [],
-        intervalsIds: [],
-        parentId: null,
-        currentlyActiveIntervalId: null,
       };
       const activities = Forest.copy(state.activities);
       activities.add(activity);
@@ -84,7 +82,7 @@ export default function activityReducer(
       const activities = Forest.copy(state.activities);
       const formData = (action as ActivityFormAction).payload;
       const preexistingNode: ActivityNode | null =
-        state.activities.get(formData.id) ?? null;
+        state.activities.getNode(formData.id) ?? null;
       if (!preexistingNode) {
         return state;
       }
@@ -104,9 +102,16 @@ export default function activityReducer(
     case DELETED_ACTIVITY: {
       const activities = Forest.copy(state.activities);
       const id = (action as IdAction).payload;
-      if (id !== null) {
-        activities.delete(id);
+      const activityToDelete = activities.getData(id);
+      if (activityToDelete) {
+        getNonNullProjections(
+          activityToDelete.subactivitiesIds,
+          activities.getData.bind(activities),
+        ).forEach((subactivity: Activity) => {
+          subactivity.parentId = null;
+        });
       }
+      activities.delete(id);
       return {
         ...state,
         activities: activities,
@@ -115,17 +120,16 @@ export default function activityReducer(
     case ADDED_SUBACTIVITIES: {
       const activities = Forest.copy(state.activities);
       const {parentId, children} = (action as ParentChildrenAction).payload;
-      const parent = activities.get(parentId);
+      const parent = activities.getNode(parentId);
       if (!parent) {
         return state;
       }
-      getNonNullProjections<Activity>(
-        children,
-        (id: IdType) => activities.get(id)?.data ?? null,
-      ).forEach((activityToAdd: Activity): void => {
-        activities.add({...activityToAdd, parentId});
-        parent.data.subactivitiesIds.push(activityToAdd.id);
-      });
+      getNonNullProjections<Activity>(children, activities.getData).forEach(
+        (activityToAdd: Activity): void => {
+          activities.add({...activityToAdd, parentId});
+          parent.data.subactivitiesIds.push(activityToAdd.id);
+        },
+      );
       return {
         ...state,
         activities,

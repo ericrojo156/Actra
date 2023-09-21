@@ -45,6 +45,9 @@ export class Forest<T extends IdPropWithParentId> {
       node => node.parentId === null,
     );
   }
+  getParentNode(child: IdType): TreeNode<T> | null {
+    return this.getNode(this.getNode(child)?.parentId ?? null);
+  }
   add(data: T): void {
     const parentId = data.parentId;
     const node = this.convertToNode(data);
@@ -53,12 +56,12 @@ export class Forest<T extends IdPropWithParentId> {
       parentId: parentId,
     };
     this.nodesMap.set(node.id, nodeToAdd);
-    const parent = this.get(parentId);
+    const parent = this.getNode(parentId);
     if (parent === null) {
       this.rootNodes.push(nodeToAdd);
       return;
     }
-    const lastChild = this.get(parent?.lastChild ?? null);
+    const lastChild = this.getNode(parent?.lastChild ?? null);
     if (parent?.firstChild === null) {
       parent.firstChild = nodeToAdd.id;
       parent.lastChild = nodeToAdd.id;
@@ -76,15 +79,15 @@ export class Forest<T extends IdPropWithParentId> {
     }
   }
   delete(id: IdType): void {
-    const nodeToDelete = this.get(id);
+    const nodeToDelete = this.getNode(id);
     if (nodeToDelete === null) {
       return;
     }
-    const prevSibling = this.get(nodeToDelete.prevSibling ?? null);
+    const prevSibling = this.getNode(nodeToDelete.prevSibling ?? null);
     if (prevSibling) {
       prevSibling.nextSibling = nodeToDelete.nextSibling;
     }
-    const nextSibling = this.get(nodeToDelete.nextSibling ?? null);
+    const nextSibling = this.getNode(nodeToDelete.nextSibling ?? null);
     if (nextSibling) {
       nextSibling.prevSibling = nodeToDelete.prevSibling;
     }
@@ -96,22 +99,25 @@ export class Forest<T extends IdPropWithParentId> {
     this.nodesMap.delete(id);
     this.reassignRootNodes();
   }
-  get(id: IdType): TreeNode<T> | null {
+  getNode(id: IdType): TreeNode<T> | null {
     if (id === null) {
       return null;
     }
     return this.nodesMap.get(id) ?? null;
   }
+  getData(id: IdType): T | null {
+    return this.getNode(id)?.data ?? null;
+  }
   getChildren(parentId: IdType): TreeNode<T>[] {
-    const parent = this.get(parentId) ?? null;
+    const parent = this.getNode(parentId) ?? null;
     if (parent === null) {
       return this.rootNodes;
     }
     const nodes = [];
-    let curr: TreeNode<T> | null = this.get(parent.firstChild);
+    let curr: TreeNode<T> | null = this.getNode(parent.firstChild);
     while (curr !== null) {
       nodes.push(curr);
-      curr = this.get(curr.nextSibling);
+      curr = this.getNode(curr.nextSibling);
     }
     return nodes;
   }
