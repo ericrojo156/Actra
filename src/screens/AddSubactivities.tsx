@@ -19,7 +19,6 @@ export function AddSubactivities(props: IdProp) {
     text2: id ? getActivityName(id) : '',
   };
   const dispatch = useDispatch();
-
   return (
     <SelectActivities
       parentId={id}
@@ -27,7 +26,7 @@ export function AddSubactivities(props: IdProp) {
       confirmationButtonText={confirmationButtonText}
       onConfirmSelection={(selectedIds: IdType[]) => {
         if (id) {
-          addSubactivitiesToActivity(id, selectedIds);
+          addSubactivitiesToActivity(id, selectedIds, dispatch);
         }
         dispatch(modalClosed());
       }}

@@ -1,5 +1,6 @@
 import {useCallback} from 'react';
 import {ActionSheetIOS} from 'react-native';
+import {AnyAction, Dispatch} from 'redux';
 import {useDispatch} from 'react-redux';
 import {useTranslation} from '../internationalization/useTranslation';
 import {useSelectionModal, SELECTION_TYPE} from '../components/SelectionList';
@@ -10,16 +11,21 @@ import {
 import {useUpdateActivity} from './useActivities';
 import {useNavigation} from '@react-navigation/native';
 import {IdType} from '../types';
+import {addedSubactivities} from './redux/activityActions';
 
-export function joinActivities(ids: IdType[]): void {
-  console.log(`join activities: ${ids}`);
-}
+export function joinActivities(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ids: IdType[],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  dispatch: Dispatch<AnyAction>,
+): void {}
 
 export function addSubactivitiesToActivity(
   parentId: IdType,
   subactivitiesIds: IdType[],
+  dispatch: Dispatch<AnyAction>,
 ): void {
-  console.log(`add subactivities ${subactivitiesIds} to activity ${parentId}`);
+  dispatch(addedSubactivities(parentId, subactivitiesIds));
 }
 
 export default function useActivityOptionCallbacks() {
@@ -54,8 +60,6 @@ export default function useActivityOptionCallbacks() {
       openJoinActivitiesModal({
         id,
         selectionType: SELECTION_TYPE.MULTI_SELECT,
-        onConfirm: (selectedItems: IdType[]) =>
-          joinActivities([id, ...selectedItems]),
       });
     },
     [openJoinActivitiesModal],
@@ -78,8 +82,6 @@ export default function useActivityOptionCallbacks() {
       openAddSubactivitiesModal({
         id,
         selectionType: SELECTION_TYPE.MULTI_SELECT,
-        onConfirm: (selectedItems: IdType[]) =>
-          addSubactivitiesToActivity(id, selectedItems),
       });
     },
     [openAddSubactivitiesModal],

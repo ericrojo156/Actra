@@ -1,5 +1,5 @@
 import {Activity} from '../ActivityElement';
-import {BaseAction} from '../../types';
+import {BaseAction, IdType} from '../../types';
 import {ActivityNode, ActivityState} from './ActivityState';
 import {
   LOADED_ACTIVITIES,
@@ -10,9 +10,11 @@ import {
   EDITED_ACTIVITY,
   ActivitiesAction,
   ActivityFormAction,
+  ADDED_SUBACTIVITIES,
 } from './activityActions';
-import {IdAction} from '../../redux/actions';
+import {IdAction, ParentChildrenAction} from '../../redux/actions';
 import {Forest, emptyNode} from '../../dataStructures/tree';
+import {getNonNullProjections} from '../../utils/projections';
 
 export const emptyActivity: Activity = {
   id: null,
@@ -108,6 +110,25 @@ export default function activityReducer(
       return {
         ...state,
         activities: activities,
+      };
+    }
+    case ADDED_SUBACTIVITIES: {
+      const activities = Forest.copy(state.activities);
+      const {parentId, children} = (action as ParentChildrenAction).payload;
+      const parent = activities.get(parentId);
+      if (!parent) {
+        return state;
+      }
+      getNonNullProjections<Activity>(
+        children,
+        (id: IdType) => activities.get(id)?.data ?? null,
+      ).forEach((activityToAdd: Activity): void => {
+        activities.add({...activityToAdd, parentId});
+        parent.data.subactivitiesIds.push(activityToAdd.id);
+      });
+      return {
+        ...state,
+        activities,
       };
     }
     case STARTED_ACTIVITY: {

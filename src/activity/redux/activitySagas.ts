@@ -4,15 +4,15 @@ import {
   ActivityFormData,
   ADDED_CREATED_SUBACTIVITY,
   createdActivity,
-  addedSubactivity,
+  addedSubactivities,
 } from './activityActions';
 
-function* addAndCreateSubactivity(action: ParentChildAction<ActivityFormData>) {
+function* createAndAddSubactivity(action: ParentChildAction<ActivityFormData>) {
   const {parentId, child} = action.payload;
   yield put(createdActivity(child));
-  yield put(addedSubactivity(parentId, child.id));
+  yield put(addedSubactivities(parentId, [child.id]));
 }
 
 export default function* rootSaga() {
-  yield takeLatest(ADDED_CREATED_SUBACTIVITY, addAndCreateSubactivity);
+  yield takeLatest(ADDED_CREATED_SUBACTIVITY, createAndAddSubactivity);
 }

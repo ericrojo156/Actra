@@ -1,13 +1,13 @@
 import {Activity} from '../ActivityElement';
 import {BaseAction, IdType} from '../../types';
-import {IdAction, ParentChildAction} from '../../redux/actions';
+import {IdAction, ParentChildrenAction} from '../../redux/actions';
 
 export const CREATED_ACTIVITY = 'CREATED_ACTIVITY';
 export const EDITED_ACTIVITY = 'EDITED_ACTIVITY';
 export const LOADED_ACTIVITIES = 'LOADED_ACTIVITIES';
 export const STARTED_ACTIVITY = 'STARTED_ACTIVITY';
 export const STOPPED_ACTIVITY = 'STOPPED_ACTIVITY';
-export const ADDED_SUBACTIVITY = 'ADDED_SUBACTIVITY';
+export const ADDED_SUBACTIVITIES = 'ADDED_SUBACTIVITY';
 export const ADDED_CREATED_SUBACTIVITY = 'ADDED_CREATED_SUBACTIVITY';
 export const REMOVED_SUBACTIVITY = 'REMOVED_SUBACTIVITY';
 export const DELETED_ACTIVITY = 'DELETED_ACTIVITY';
@@ -39,15 +39,15 @@ export function deletedActivity(id: IdType): IdAction {
   };
 }
 
-export function addedSubactivity(
+export function addedSubactivities(
   parentId: IdType,
-  child: IdType,
-): ParentChildAction {
+  subactivities: IdType[],
+): ParentChildrenAction {
   return {
-    type: ADDED_SUBACTIVITY,
+    type: ADDED_SUBACTIVITIES,
     payload: {
       parentId,
-      child,
+      children: subactivities,
     },
   };
 }

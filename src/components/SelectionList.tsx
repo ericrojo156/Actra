@@ -49,7 +49,6 @@ export enum SELECTION_TYPE {
 export interface SelectionModalParams {
   id: IdType;
   selectionType: SELECTION_TYPE.MULTI_SELECT;
-  onConfirm: (selectedItems: IdType[]) => void;
 }
 
 export interface SelectableItem {
