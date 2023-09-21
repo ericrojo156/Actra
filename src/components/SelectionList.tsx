@@ -1,5 +1,4 @@
-import React from 'react';
-import {ReactElement, useMemo, useCallback} from 'react';
+import React, {ReactElement, useMemo, useCallback} from 'react';
 import {ListRenderItemInfo, View, FlatList, StyleSheet} from 'react-native';
 import * as ColorPalette from '../ColorPalette';
 import CustomPressable from './Pressable';
@@ -104,27 +103,27 @@ export function SelectionList<T extends SelectableItem>(
     </View>
   );
   return (
-    <>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={item => item.id ?? ''}
-        initialNumToRender={20}
-        windowSize={5}
-        getItemLayout={(_data, index) => ({
-          length: 100,
-          offset: ELEMENT_HEIGHT * index,
-          index,
-        })}
-        contentContainerStyle={{
-          alignItems: 'center',
-        }}
-      />
-    </>
+    <FlatList
+      data={data}
+      renderItem={renderItem}
+      keyExtractor={item => item.id ?? ''}
+      initialNumToRender={20}
+      windowSize={5}
+      getItemLayout={(_data, index) => ({
+        length: 100,
+        offset: ELEMENT_HEIGHT * index,
+        index,
+      })}
+      contentContainerStyle={styles.listContainer}
+    />
   );
 }
 
 const styles = StyleSheet.create({
+  listContainer: {
+    display: 'flex',
+    alignItems: 'center',
+  },
   selectedActivityStyle: {
     borderColor: ColorPalette.OffWhite_RGBSerialized,
     borderWidth: 3,

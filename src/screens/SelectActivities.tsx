@@ -42,9 +42,6 @@ export function SelectActivities(props: SelectActivitiesProps) {
       return (
         <View
           style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
             ...commonStyles.roundedElementBorder,
             backgroundColor: ColorProcessor.serialize(activity.color),
             ...(isSelected ? styles.selectedActivityStyle : {}),
