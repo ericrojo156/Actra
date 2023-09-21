@@ -11,3 +11,5 @@ export interface IdProp {
 export type IdPropWithParentId = IdProp & {parentId: IdType};
 
 export type NavigationScreenProps<T> = {route: {params: T}};
+
+export type FilterCondition<T> = (data: T) => boolean;

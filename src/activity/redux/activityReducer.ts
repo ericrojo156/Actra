@@ -118,18 +118,26 @@ export default function activityReducer(
       };
     }
     case ADDED_SUBACTIVITIES: {
-      const activities = Forest.copy(state.activities);
       const {parentId, children} = (action as ParentChildrenAction).payload;
+      const activities = Forest.copy(state.activities);
       const parent = activities.getNode(parentId);
       if (!parent) {
         return state;
       }
-      getNonNullProjections<Activity>(children, activities.getData).forEach(
-        (activityToAdd: Activity): void => {
-          activities.add({...activityToAdd, parentId});
-          parent.data.subactivitiesIds.push(activityToAdd.id);
-        },
-      );
+      getNonNullProjections<Activity>(
+        children,
+        activities.getData.bind(activities),
+      ).forEach((activityToAdd: Activity): void => {
+        const previousParent = activities.getParentNode(activityToAdd.id);
+        if (previousParent !== null) {
+          previousParent.data.subactivitiesIds =
+            previousParent.data.subactivitiesIds.filter(
+              subactivityId => subactivityId !== activityToAdd.id,
+            );
+        }
+        activities.add({...activityToAdd, parentId});
+        parent.data.subactivitiesIds.push(activityToAdd.id);
+      });
       return {
         ...state,
         activities,

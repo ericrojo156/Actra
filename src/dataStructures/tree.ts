@@ -121,6 +121,9 @@ export class Forest<T extends IdPropWithParentId> {
     }
     return nodes;
   }
+  getChildrenIds(parentId: IdType): IdType[] {
+    return this.getChildren(parentId).map(node => node.id);
+  }
   getDescendants(parentId: IdType): TreeNode<T>[] {
     const children = this.getChildren(parentId);
     const result = children.map(child => [

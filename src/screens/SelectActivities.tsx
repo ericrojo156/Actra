@@ -10,6 +10,7 @@ import CustomPressable from '../components/Pressable';
 import {SelectionList} from '../components/SelectionList';
 import {ELEMENT_HEIGHT, SPACE_BETWEEN_ELEMENTS} from '../constants';
 import {IdType} from '../types';
+import {ArrayFilters} from '../utils/array';
 
 export interface SelectActivitiesProps {
   headerText: string;
@@ -22,21 +23,29 @@ export interface ConfirmationTextProps {
 
 export interface SelectActivitiesProps {
   parentId: IdType;
+  selectionConditions?: Array<(activity: Activity) => boolean>;
   confirmationButtonText: ConfirmationTextProps;
   onConfirmSelection: (selectedIds: Array<IdType>) => void;
 }
 
 export function SelectActivities(props: SelectActivitiesProps) {
-  const {parentId, headerText, confirmationButtonText, onConfirmSelection} =
-    props;
+  const {
+    parentId,
+    selectionConditions = [],
+    headerText,
+    confirmationButtonText,
+    onConfirmSelection,
+  } = props;
   const {text1: confirmationText1, text2: confirmationText2} =
     confirmationButtonText;
   const [selectedIds, setSelectedIds] = useState<Set<IdType>>(new Set());
   const {activities, getActivity} = useActivities();
   const filteredActivities = useMemo(() => {
-    let resultArray = activities.filter(activity => activity.id !== parentId);
-    return resultArray;
-  }, [activities, parentId]);
+    const excludeParentId = (activity: Activity) => activity.id !== parentId;
+    return new ArrayFilters([excludeParentId, ...selectionConditions]).apply(
+      activities,
+    );
+  }, [activities, parentId, selectionConditions]);
   const renderInnerItem = (activity: Activity | null, isSelected: boolean) => {
     if (activity) {
       return (

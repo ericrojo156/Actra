@@ -32,22 +32,22 @@ async function getMockActivities(): Promise<Activity[]> {
 export type GetActivity = (id: IdType) => Activity | null;
 export type GetActivityName = (id: IdType) => string;
 
-interface ActivitiesData {
+interface ActivitiesData extends ActivitiesGetters {
   activities: Activity[];
-  getActivity: GetActivity;
-  getActivityName: GetActivityName;
 }
 
 interface ActivitiesGetters {
   getActivity: GetActivity;
   getActivityName: GetActivityName;
   getActivities: () => Promise<Activity[]>;
+  isChildOf: (id: IdType, parentId: IdType) => boolean;
 }
 
 export function useGetActivity(): ActivitiesGetters {
   const activitiesMap = useSelector(
     (state: ApplicationState) => state.activity.activities,
   );
+
   const getActivity = useCallback(
     (id: IdType): Activity | null => {
       const result = activitiesMap.getNode(id)?.data ?? null;
@@ -60,7 +60,9 @@ export function useGetActivity(): ActivitiesGetters {
     [getActivity],
   );
   const getActivities = useCallback(getMockActivities, []);
-  return {getActivity, getActivityName, getActivities};
+  const isChildOf = (id: IdType, parentId: IdType): boolean =>
+    !!activitiesMap.getChildrenIds(parentId).find(childId => childId === id);
+  return {isChildOf, getActivity, getActivityName, getActivities};
 }
 
 export function useActivitiesFetch() {
@@ -91,10 +93,9 @@ export default function useActivities(parentId?: IdType): ActivitiesData {
     }
     return dataList.filter(activity => activity.parentId === parentId);
   });
-  const {getActivity, getActivityName} = useGetActivity();
+  const activityGetters = useGetActivity();
   return {
     activities,
-    getActivity,
-    getActivityName,
+    ...activityGetters,
   };
 }

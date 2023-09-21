@@ -25,7 +25,7 @@ export function JoinActivities(props: IdProp) {
       confirmationButtonText={confirmationButtonText}
       onConfirmSelection={(selectedIds: IdType[]) => {
         if (id) {
-          joinActivities([id, ...selectedIds]);
+          joinActivities([id, ...selectedIds], dispatch);
         }
         dispatch(modalClosed());
       }}
