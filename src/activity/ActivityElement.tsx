@@ -34,6 +34,7 @@ export interface Activity {
 }
 
 export interface ActivityElementProps extends Activity {
+  hideTracker?: boolean;
   width?: number;
   getActivity: (id: IdType) => Activity | null;
 }
@@ -128,7 +129,7 @@ export const ExpandedSection = React.memo(function (
 export const ActivityElement = React.memo(function (
   props: ActivityElementProps,
 ) {
-  const {id, name, width, color} = props;
+  const {hideTracker, id, name, width, color} = props;
   let activityStyle: StyleProp<ViewStyle> = {
     ...commonStyles.container,
     ...styles.activityElement,
@@ -150,9 +151,11 @@ export const ActivityElement = React.memo(function (
         }}>
         {name}
       </Text>
-      <View style={styles.timerButtonPosition}>
-        <TimerButton id={id} />
-      </View>
+      {!hideTracker && (
+        <View style={styles.timerButtonPosition}>
+          <TimerButton id={id} />
+        </View>
+      )}
     </View>
   );
 });

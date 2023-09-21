@@ -47,6 +47,7 @@ export function SelectActivities(props: SelectActivitiesProps) {
             ...(isSelected ? styles.selectedActivityStyle : {}),
           }}>
           <ActivityElement
+            hideTracker
             {...activity}
             getActivity={getActivity}
             color={undefined}
