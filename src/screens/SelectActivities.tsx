@@ -1,3 +1,4 @@
+import React from 'react';
 import GradientBackground from './GradientBackground';
 import * as ColorPalette from '../ColorPalette';
 import * as ColorProcessor from '../ColorProcessor';
@@ -28,7 +29,9 @@ export interface SelectActivitiesProps {
   onConfirmSelection: (selectedIds: Array<IdType>) => void;
 }
 
-export function SelectActivities(props: SelectActivitiesProps) {
+export const SelectActivities = React.memo(function (
+  props: SelectActivitiesProps,
+) {
   const {
     parentId,
     selectionConditions = [],
@@ -112,7 +115,7 @@ export function SelectActivities(props: SelectActivitiesProps) {
       <View style={{paddingBottom: 50}} />
     </GradientBackground>
   );
-}
+});
 
 const styles = StyleSheet.create({
   headerStyle: {

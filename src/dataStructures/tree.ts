@@ -115,7 +115,7 @@ export class Forest<T extends IdPropWithParentId> {
     }
     const nodes = [];
     let curr: TreeNode<T> | null = this.getNode(parent.firstChild);
-    while (curr !== null) {
+    while (curr !== null && curr.id !== curr.nextSibling) {
       nodes.push(curr);
       curr = this.getNode(curr.nextSibling);
     }

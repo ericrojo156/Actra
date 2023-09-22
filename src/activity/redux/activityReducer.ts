@@ -96,7 +96,7 @@ export default function activityReducer(
       activities.update(updatedNode);
       return {
         ...state,
-        activities: activities,
+        activities,
       };
     }
     case DELETED_ACTIVITY: {
@@ -114,7 +114,7 @@ export default function activityReducer(
       activities.delete(id);
       return {
         ...state,
-        activities: activities,
+        activities,
       };
     }
     case ADDED_SUBACTIVITIES: {
