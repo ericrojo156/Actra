@@ -72,7 +72,7 @@ export default function activityReducer(
         ...formData,
       };
       const activities = Forest.copy(state.activities);
-      activities.add(activity);
+      activities.add(activity, null);
       return {
         ...state,
         activities,
@@ -135,7 +135,7 @@ export default function activityReducer(
               subactivityId => subactivityId !== activityToAdd.id,
             );
         }
-        activities.add({...activityToAdd, parentId});
+        activities.add(activityToAdd, parentId);
         parent.data.subactivitiesIds.push(activityToAdd.id);
       });
       return {

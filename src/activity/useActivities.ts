@@ -8,16 +8,12 @@ import {IdType} from '../types';
 
 async function getMockActivities(): Promise<Activity[]> {
   const activities: Activity[] = [];
-  const subactivities: string[] = [];
-  for (let index = 10; index < 20; index++) {
-    subactivities.push(index.toString());
-  }
   for (let index = 0; index < 1000; index++) {
     const activity: Activity = {
       id: index.toString(),
-      parentId: subactivities.find(id => id === index.toString()) ? '0' : null,
+      parentId: null,
       name: `Item ${index}`,
-      subactivitiesIds: index === 0 ? subactivities : [],
+      subactivitiesIds: [],
       intervalsIds: [],
       currentlyActiveIntervalId: null,
       color: ColorPalette.activityDefaultColor,

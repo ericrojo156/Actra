@@ -1,5 +1,6 @@
 import {IdType, IdPropWithParentId} from '../types';
 import {flatten} from '../utils/array';
+import {getNonNullProjections} from '../utils/projections';
 
 export interface TreeNode<T> {
   id: IdType;
@@ -23,7 +24,13 @@ export const emptyNode = {
 export class Forest<T extends IdPropWithParentId> {
   private nodesMap: Map<IdType, TreeNode<T>>;
   public convertToNode: (data: T) => TreeNode<T>;
-  public rootNodes: TreeNode<T>[];
+  private roots: Set<IdType>;
+  get rootNodes(): TreeNode<T>[] {
+    return getNonNullProjections(
+      [...this.roots.values()],
+      this.getNode.bind(this),
+    );
+  }
   constructor(dataItems: T[], convertToNode: (data: T) => TreeNode<T>) {
     this.convertToNode = convertToNode;
     this.nodesMap = new Map(
@@ -31,46 +38,47 @@ export class Forest<T extends IdPropWithParentId> {
         .map(data => this.convertToNode(data))
         .map(node => [node.id, node]),
     );
-    this.rootNodes = [];
+    this.roots = new Set();
     if (!dataItems) {
       return;
     }
     dataItems.forEach((data: T) => {
-      this.add(data);
+      this.add(data, data.parentId);
     });
     this.reassignRootNodes();
   }
   reassignRootNodes() {
-    this.rootNodes = [...this.nodesMap.values()].filter(
-      node => node.parentId === null,
+    this.roots = new Set(
+      [...this.nodesMap.values()]
+        .filter(node => node.parentId === null)
+        .map(node => node.id),
     );
   }
   getParentNode(child: IdType): TreeNode<T> | null {
     return this.getNode(this.getNode(child)?.parentId ?? null);
   }
-  add(data: T): void {
-    const parentId = data.parentId;
+  add(data: T, targetParentId: IdType): void {
     const node = this.convertToNode(data);
     const nodeToAdd = {
       ...node,
-      parentId: parentId,
+      parentId: targetParentId,
     };
     this.nodesMap.set(node.id, nodeToAdd);
-    const parent = this.getNode(parentId);
-    if (parent === null) {
+    const targetParent = this.getNode(targetParentId);
+    if (targetParent === null) {
       this.rootNodes.push(nodeToAdd);
       return;
     }
-    const lastChild = this.getNode(parent?.lastChild ?? null);
-    if (parent?.firstChild === null) {
-      parent.firstChild = nodeToAdd.id;
-      parent.lastChild = nodeToAdd.id;
+    const lastChild = this.getNode(targetParent?.lastChild ?? null);
+    if (targetParent?.firstChild === null) {
+      targetParent.firstChild = nodeToAdd.id;
+      targetParent.lastChild = nodeToAdd.id;
     } else if (lastChild !== null) {
       lastChild.nextSibling = nodeToAdd.id;
       nodeToAdd.prevSibling = lastChild.id;
-      parent.lastChild = nodeToAdd.id;
+      targetParent.lastChild = nodeToAdd.id;
     }
-    this.update(parent);
+    this.update(targetParent);
   }
   update(node: TreeNode<T>): void {
     this.nodesMap.set(node.id, node);
