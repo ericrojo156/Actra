@@ -40,16 +40,16 @@ interface ActivitiesGetters {
 }
 
 export function useGetActivity(): ActivitiesGetters {
-  const activitiesMap = useSelector(
+  const activityForest = useSelector(
     (state: ApplicationState) => state.activity.activities,
   );
 
   const getActivity = useCallback(
     (id: IdType): Activity | null => {
-      const result = activitiesMap.getNode(id)?.data ?? null;
+      const result = activityForest.getData(id) ?? null;
       return result;
     },
-    [activitiesMap],
+    [activityForest],
   );
   const getActivityName = useCallback(
     (id: IdType) => getActivity(id)?.name ?? '',
@@ -57,7 +57,7 @@ export function useGetActivity(): ActivitiesGetters {
   );
   const getActivities = useCallback(getMockActivities, []);
   const isChildOf = (id: IdType, parentId: IdType): boolean =>
-    !!activitiesMap.getChildrenIds(parentId).find(childId => childId === id);
+    !!activityForest.getChildrenIds(parentId).find(childId => childId === id);
   return {isChildOf, getActivity, getActivityName, getActivities};
 }
 

@@ -1,11 +1,11 @@
 import {Activity} from '../ActivityElement';
-import {TreeNode, Forest} from '../../dataStructures/tree';
+import {TreeNode} from '../../dataStructures/forest';
 import {IdType} from '../../types';
+import {ActivityForest} from '../dataStructures/activityForest';
 
 export type ActivityNode = TreeNode<Activity>;
-export type ActivitiesForest = Forest<Activity>;
 
 export interface ActivityState {
-  activities: ActivitiesForest;
+  activities: ActivityForest;
   currentlyActive: IdType;
 }

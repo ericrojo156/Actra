@@ -21,9 +21,34 @@ export const emptyNode = {
   nextSibling: null,
 };
 
-export class Forest<T extends IdPropWithParentId> {
+export interface IForestIdLayer {
+  get ids(): IdType[];
+  getChildrenIds(parentId: IdType): IdType[];
+}
+
+export interface IForestNodesLayer<T extends IdPropWithParentId> {
+  convertToNode: (data: T, parentData: T | null) => TreeNode<T>;
+  get nodes(): TreeNode<T>[];
+  get rootNodes(): TreeNode<T>[];
+  reassignRootNodes(): void;
+  getParentNode(child: IdType): TreeNode<T> | null;
+  updateNode(node: TreeNode<T>): void;
+  delete(id: IdType): void;
+  getChildren(parentId: IdType): TreeNode<T>[];
+  getDescendants(parentId: IdType): TreeNode<T>[];
+  addNode(nodeToAdd: TreeNode<T>, targetParentId: IdType): void;
+}
+
+export interface IForestDataLayer<T extends IdPropWithParentId> {
+  get dataList(): T[];
+  getData(id: IdType): T | null;
+}
+
+export class Forest<T extends IdPropWithParentId>
+  implements IForestIdLayer, IForestNodesLayer<T>, IForestDataLayer<T>
+{
   private nodesMap: Map<IdType, TreeNode<T>>;
-  public convertToNode: (data: T) => TreeNode<T>;
+  public convertToNode: (data: T, parentData: T | null) => TreeNode<T>;
   private roots: Set<IdType>;
   get rootNodes(): TreeNode<T>[] {
     return getNonNullProjections(
@@ -31,11 +56,14 @@ export class Forest<T extends IdPropWithParentId> {
       this.getNode.bind(this),
     );
   }
-  constructor(dataItems: T[], convertToNode: (data: T) => TreeNode<T>) {
+  constructor(
+    dataItems: T[],
+    convertToNode: (data: T, parentData: T | null) => TreeNode<T>,
+  ) {
     this.convertToNode = convertToNode;
     this.nodesMap = new Map(
       dataItems
-        .map(data => this.convertToNode(data))
+        .map(data => this.convertToNode(data, this.getData(data.parentId)))
         .map(node => [node.id, node]),
     );
     this.roots = new Set();
@@ -43,7 +71,10 @@ export class Forest<T extends IdPropWithParentId> {
       return;
     }
     dataItems.forEach((data: T) => {
-      this.add(data, data.parentId);
+      this.addNode(
+        this.convertToNode(data, this.getData(data.parentId)),
+        data.parentId,
+      );
     });
     this.reassignRootNodes();
   }
@@ -57,13 +88,9 @@ export class Forest<T extends IdPropWithParentId> {
   getParentNode(child: IdType): TreeNode<T> | null {
     return this.getNode(this.getNode(child)?.parentId ?? null);
   }
-  add(data: T, targetParentId: IdType): void {
-    const node = this.convertToNode(data);
-    const nodeToAdd = {
-      ...node,
-      parentId: targetParentId,
-    };
-    this.nodesMap.set(node.id, nodeToAdd);
+  addNode(nodeToAdd: TreeNode<T>, targetParentId: IdType): void {
+    this.delete(nodeToAdd.id);
+    this.nodesMap.set(nodeToAdd.id, nodeToAdd);
     const targetParent = this.getNode(targetParentId);
     if (targetParent === null) {
       this.rootNodes.push(nodeToAdd);
@@ -78,9 +105,9 @@ export class Forest<T extends IdPropWithParentId> {
       nodeToAdd.prevSibling = lastChild.id;
       targetParent.lastChild = nodeToAdd.id;
     }
-    this.update(targetParent);
+    this.updateNode(targetParent);
   }
-  update(node: TreeNode<T>): void {
+  updateNode(node: TreeNode<T>): void {
     this.nodesMap.set(node.id, node);
     if (node.parentId === null) {
       this.reassignRootNodes();

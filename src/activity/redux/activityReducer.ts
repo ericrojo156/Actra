@@ -1,6 +1,6 @@
 import {Activity} from '../ActivityElement';
 import {BaseAction} from '../../types';
-import {ActivityNode, ActivityState} from './ActivityState';
+import {ActivityState} from './ActivityState';
 import {
   LOADED_ACTIVITIES,
   STARTED_ACTIVITY,
@@ -13,8 +13,8 @@ import {
   ADDED_SUBACTIVITIES,
 } from './activityActions';
 import {IdAction, ParentChildrenAction} from '../../redux/actions';
-import {Forest, emptyNode} from '../../dataStructures/tree';
 import {getNonNullProjections} from '../../utils/projections';
+import {ActivityForest} from '../dataStructures/activityForest';
 
 export const emptyActivity: Activity = {
   id: null,
@@ -25,27 +25,8 @@ export const emptyActivity: Activity = {
   currentlyActiveIntervalId: null,
 };
 
-const defaultActivityNode: ActivityNode = {
-  ...emptyNode,
-  data: emptyActivity,
-};
-
-function convertActivityToTreeNode(activity: Activity): ActivityNode {
-  return {
-    ...defaultActivityNode,
-    id: activity.id,
-    parentId: activity.parentId,
-    firstChild: activity.subactivitiesIds[0] ?? null,
-    lastChild:
-      activity.subactivitiesIds[activity.subactivitiesIds.length - 1] ?? null,
-    nextSibling: null,
-    prevSibling: null,
-    data: activity,
-  };
-}
-
 const defaultActivityState: ActivityState = {
-  activities: new Forest<Activity>([], convertActivityToTreeNode),
+  activities: new ActivityForest([]),
   currentlyActive: null,
 };
 
@@ -56,10 +37,7 @@ export default function activityReducer(
   switch (action.type) {
     case LOADED_ACTIVITIES: {
       const activities = (action as ActivitiesAction).payload;
-      const activitiesForest = new Forest(
-        activities,
-        convertActivityToTreeNode,
-      );
+      const activitiesForest = new ActivityForest(activities);
       return {
         ...state,
         activities: activitiesForest,
@@ -71,7 +49,7 @@ export default function activityReducer(
         ...emptyActivity,
         ...formData,
       };
-      const activities = Forest.copy(state.activities);
+      const activities = ActivityForest.copy(state.activities);
       activities.add(activity, null);
       return {
         ...state,
@@ -79,28 +57,22 @@ export default function activityReducer(
       };
     }
     case EDITED_ACTIVITY: {
-      const activities = Forest.copy(state.activities);
+      const activities = ActivityForest.copy(state.activities);
       const formData = (action as ActivityFormAction).payload;
-      const preexistingNode: ActivityNode | null =
-        state.activities.getNode(formData.id) ?? null;
-      if (!preexistingNode) {
-        return state;
-      }
-      const updatedNode: ActivityNode = {
-        ...preexistingNode,
-        data: {
-          ...preexistingNode.data,
+      const activityToUpdate = activities.getData(formData.id);
+      if (activityToUpdate) {
+        activities.updateActivity({
+          ...activityToUpdate,
           ...formData,
-        },
-      };
-      activities.update(updatedNode);
+        });
+      }
       return {
         ...state,
         activities,
       };
     }
     case DELETED_ACTIVITY: {
-      const activities = Forest.copy(state.activities);
+      const activities = ActivityForest.copy(state.activities);
       const id = (action as IdAction).payload;
       const activityToDelete = activities.getData(id);
       if (activityToDelete) {
@@ -119,8 +91,8 @@ export default function activityReducer(
     }
     case ADDED_SUBACTIVITIES: {
       const {parentId, children} = (action as ParentChildrenAction).payload;
-      const activities = Forest.copy(state.activities);
-      const parent = activities.getNode(parentId);
+      const activities = ActivityForest.copy(state.activities);
+      const parent = activities.getData(parentId);
       if (!parent) {
         return state;
       }
@@ -128,15 +100,8 @@ export default function activityReducer(
         children,
         activities.getData.bind(activities),
       ).forEach((activityToAdd: Activity): void => {
-        const previousParent = activities.getParentNode(activityToAdd.id);
-        if (previousParent !== null) {
-          previousParent.data.subactivitiesIds =
-            previousParent.data.subactivitiesIds.filter(
-              subactivityId => subactivityId !== activityToAdd.id,
-            );
-        }
         activities.add(activityToAdd, parentId);
-        parent.data.subactivitiesIds.push(activityToAdd.id);
+        parent.subactivitiesIds.push(activityToAdd.id);
       });
       return {
         ...state,
