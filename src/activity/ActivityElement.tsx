@@ -36,12 +36,13 @@ export interface Activity {
 export interface ActivityElementProps extends Activity {
   hideTracker?: boolean;
   width?: number;
-  getActivity: (id: IdType) => Activity | null;
 }
 
 export interface ExpandableActivityProps extends ActivityElementProps {
   isExpanded: boolean;
   setIsExpanded: (shouldExpand: boolean, id: IdType) => void;
+  getSubactivities: (id: IdType) => Activity[];
+  getActivity: (id: IdType) => Activity | null;
 }
 
 const ActivityOptionsMenuBar = React.memo(function (
@@ -95,15 +96,14 @@ export const ExpandedSection = React.memo(function (
 ) {
   const {
     id,
-    subactivitiesIds,
+    getSubactivities,
     getActivity,
     width = STANDARD_ELEMENT_WIDTH,
   } = props;
-  const subactivities: Activity[] = useMemo(() => {
-    return subactivitiesIds
-      .map(getActivity)
-      .filter(result => result !== null) as Activity[];
-  }, [subactivitiesIds, getActivity]);
+  const subactivities = useMemo(
+    () => getSubactivities(id),
+    [getSubactivities, id],
+  );
   return (
     <CustomPressable
       style={{...commonStyles.container, ...styles.expandedSection}}>
@@ -114,6 +114,7 @@ export const ExpandedSection = React.memo(function (
         }}>
         {subactivities.length > 0 && (
           <ActivitiesList
+            getSubactivities={getSubactivities}
             getActivity={getActivity}
             activities={subactivities}
             elementWidth={width - SUBACTIVITY_LEVEL_WIDTH_DECREMENT}

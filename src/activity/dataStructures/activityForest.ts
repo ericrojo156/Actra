@@ -2,7 +2,6 @@ import {
   IForestDataLayer,
   IForestIdLayer,
   TreeNode,
-  emptyNode,
 } from '../../dataStructures/forest';
 import {Activity} from '../ActivityElement';
 import {ActivityNode} from '../redux/ActivityState';
@@ -11,71 +10,44 @@ import {Forest} from '../../dataStructures/forest';
 import {IdType} from '../../types';
 
 const defaultActivityNode: ActivityNode = {
-  ...emptyNode,
+  id: null,
+  parent: null,
+  firstChild: null,
+  lastChild: null,
+  prevSibling: null,
+  nextSibling: null,
   data: emptyActivity,
 };
+
+function createActivityNode(data: Activity): TreeNode<Activity> {
+  return {
+    ...defaultActivityNode,
+    id: data.id,
+    data,
+  };
+}
 
 export class ActivityForest
   implements IForestIdLayer, IForestDataLayer<Activity>
 {
   private forest: Forest<Activity>;
   constructor(dataItems: Activity[]) {
-    this.forest = new Forest<Activity>(dataItems, this.convertToNode);
-  }
-  convertToNode(
-    data: Activity,
-    parentData: Activity | null,
-  ): TreeNode<Activity> {
-    const siblingIndexUnderParent: number =
-      parentData?.subactivitiesIds.findIndex(id => id === data.id) ?? -1;
-    const siblingNeighborhood: {nextSibling: IdType; prevSibling: IdType} = {
-      nextSibling: null,
-      prevSibling: null,
-    };
-    if (parentData !== null && siblingIndexUnderParent >= 0) {
-      const nextSiblingIndex = siblingIndexUnderParent + 1;
-      siblingNeighborhood.nextSibling =
-        nextSiblingIndex < parentData.subactivitiesIds.length
-          ? parentData.subactivitiesIds[nextSiblingIndex]
-          : null;
-
-      const prevSiblingIndex = siblingIndexUnderParent - 1;
-      siblingNeighborhood.prevSibling =
-        prevSiblingIndex >= 0
-          ? parentData.subactivitiesIds[prevSiblingIndex]
-          : null;
-    }
-    return {
-      ...defaultActivityNode,
-      id: data.id,
-      parentId: data.parentId,
-      firstChild: data.subactivitiesIds[0] ?? null,
-      lastChild:
-        data.subactivitiesIds[data.subactivitiesIds.length - 1] ?? null,
-      ...siblingNeighborhood,
-      data: data,
-    };
-  }
-  get rootNodes(): TreeNode<Activity>[] {
-    return this.forest.rootNodes;
+    this.forest = new Forest<Activity>(dataItems, createActivityNode);
   }
   getData(id: IdType): Activity | null {
     return this.forest.getData(id);
   }
-  getChildren(parentId: IdType): TreeNode<Activity>[] {
-    return this.forest.getChildren(parentId);
+  getChildrenData(parentId: IdType): Activity[] {
+    return this.forest.getChildren(parentId).map(node => node.data);
   }
   getChildrenIds(parentId: IdType): IdType[] {
     return this.forest.getChildrenIds(parentId);
   }
-  getDescendants(parentId: IdType): TreeNode<Activity>[] {
-    return this.forest.getDescendants(parentId);
+  getDescendantsData(parentId: IdType): Activity[] {
+    return this.forest.getDescendants(parentId).map(node => node.data);
   }
   get ids(): IdType[] {
     return this.forest.ids;
-  }
-  get nodes(): TreeNode<Activity>[] {
-    return this.forest.nodes;
   }
   get dataList(): Activity[] {
     return this.forest.dataList;
@@ -83,34 +55,16 @@ export class ActivityForest
   reassignRootNodes(): void {
     this.forest.reassignRootNodes();
   }
-  add(subactivityToAdd: Activity, targetParentId: IdType): void {
-    this.forest.addNode(
-      this.convertToNode(
-        subactivityToAdd,
-        this.getData(subactivityToAdd.parentId),
-      ),
-      targetParentId,
-    );
-    const originalParent: Activity | null = this.getData(
-      subactivityToAdd.parentId,
-    );
-    if (originalParent) {
-      const updatedOriginalParent = {
-        ...originalParent,
-        subactivitiesIds: originalParent.subactivitiesIds.filter(
-          id => id !== subactivityToAdd.id,
-        ),
-      };
-      this.forest.updateNode(
-        this.convertToNode(
-          updatedOriginalParent,
-          this.getData(updatedOriginalParent.parentId),
-        ),
-      );
-    }
-  }
-  update(node: TreeNode<Activity>): void {
-    this.updateActivity(node.data);
+  add(dataToAdd: Activity, targetParentId: IdType): void {
+    const nodeToAdd =
+      this.forest.getNode(dataToAdd.id) ?? createActivityNode(dataToAdd);
+    this.delete(dataToAdd.id);
+    nodeToAdd.data.parentId = targetParentId;
+    this.forest.addNode(nodeToAdd, targetParentId);
+    console.log(`add ${nodeToAdd.id} to ${targetParentId}`);
+    console.log('ActivityForest.add():');
+    console.log(this);
+    console.log('^^^');
   }
   updateActivity(activity: Activity): void {
     const nodeToUpdate = this.forest.getNode(activity.id);
@@ -119,11 +73,20 @@ export class ActivityForest
     }
   }
   delete(id: IdType): void {
+    const parent = this.forest.getParent(id);
+    if (parent) {
+      parent.data.subactivitiesIds = parent.data.subactivitiesIds.filter(
+        childId => childId !== id,
+      );
+    }
     this.forest.delete(id);
   }
   static copy(activityForest: ActivityForest): ActivityForest {
     const newActivityForest = new ActivityForest([]);
-    newActivityForest.forest = Forest.copy(activityForest.forest);
+    newActivityForest.forest = Forest.copy(
+      activityForest.forest,
+      createActivityNode,
+    );
     return newActivityForest;
   }
 }

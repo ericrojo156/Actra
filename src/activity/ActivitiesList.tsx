@@ -26,6 +26,7 @@ function useLayoutAnimation() {
 
 interface ActivitiesListProps {
   activities: Activity[];
+  getSubactivities: (id: IdType) => Activity[];
   getActivity: GetActivity;
   customStyle?: any;
   listHeight?: DimensionValue;
@@ -35,6 +36,7 @@ interface ActivitiesListProps {
 export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
   useLayoutAnimation();
   const {
+    getSubactivities,
     getActivity,
     activities,
     elementWidth = STANDARD_ELEMENT_WIDTH,
@@ -56,6 +58,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
   const renderActivityElement = useCallback(
     ({item}: any) => (
       <ExpandedActivityElement
+        getSubactivities={getSubactivities}
         getActivity={getActivity}
         isExpanded={isExpanded(item.id)}
         setIsExpanded={setIsExpanded}
@@ -63,7 +66,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
         width={elementWidth}
       />
     ),
-    [elementWidth, getActivity, isExpanded, setIsExpanded],
+    [elementWidth, getActivity, getSubactivities, isExpanded, setIsExpanded],
   );
   return (
     <View style={{...styles.activitiesListContainer, height: listHeight}}>

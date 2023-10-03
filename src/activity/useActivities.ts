@@ -8,7 +8,7 @@ import {IdType} from '../types';
 
 async function getMockActivities(): Promise<Activity[]> {
   const activities: Activity[] = [];
-  for (let index = 0; index < 1000; index++) {
+  for (let index = 0; index < 6; index++) {
     const activity: Activity = {
       id: index.toString(),
       parentId: null,
@@ -37,6 +37,7 @@ interface ActivitiesGetters {
   getActivityName: GetActivityName;
   getActivities: () => Promise<Activity[]>;
   isChildOf: (id: IdType, parentId: IdType) => boolean;
+  getSubactivities: (id: IdType) => Activity[];
 }
 
 export function useGetActivity(): ActivitiesGetters {
@@ -58,7 +59,17 @@ export function useGetActivity(): ActivitiesGetters {
   const getActivities = useCallback(getMockActivities, []);
   const isChildOf = (id: IdType, parentId: IdType): boolean =>
     !!activityForest.getChildrenIds(parentId).find(childId => childId === id);
-  return {isChildOf, getActivity, getActivityName, getActivities};
+  const getSubactivities = useCallback(
+    (id: IdType) => activityForest.getChildrenData(id),
+    [activityForest],
+  );
+  return {
+    getSubactivities,
+    isChildOf,
+    getActivity,
+    getActivityName,
+    getActivities,
+  };
 }
 
 export function useActivitiesFetch() {
