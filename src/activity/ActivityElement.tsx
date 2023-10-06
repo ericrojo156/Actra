@@ -132,13 +132,7 @@ export const ExpandedSection = React.memo(function (
 export const ActivityElement = React.memo(function (
   props: ActivityElementProps,
 ) {
-  const {
-    hideTracker,
-    id,
-    name,
-    width,
-    color = ColorPalette.activityDefaultColor,
-  } = props;
+  const {hideTracker, id, name, width, color} = props;
   let activityStyle: StyleProp<ViewStyle> = {
     ...commonStyles.container,
     ...styles.activityElement,
@@ -181,7 +175,7 @@ export const ExpandedActivityElement = React.memo(function (
   } = props;
   const activityProps = {
     ...props,
-    color: ColorPalette.activityDefaultColor,
+    color: undefined,
   };
   return (
     <View style={{padding: SPACE_BETWEEN_ELEMENTS / 2}}>
