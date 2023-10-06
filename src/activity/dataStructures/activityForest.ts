@@ -46,6 +46,9 @@ export class ActivityForest
   getDescendantsData(parentId: IdType): Activity[] {
     return this.forest.getDescendants(parentId).map(node => node.data);
   }
+  getAncestors(descendantId: IdType): Set<IdType> {
+    return this.forest.getAncestors(descendantId);
+  }
   get roots(): Activity[] {
     return this.forest.rootNodes.map(node => node.data);
   }

@@ -58,6 +58,15 @@ export class Forest<T extends IdPropWithParentId>
     });
     this.reassignRootNodes();
   }
+  getAncestors(descendantId: IdType): Set<IdType> {
+    const ids = new Set<IdType>();
+    let parentId = this.getParent(descendantId)?.id ?? null;
+    while (parentId !== null) {
+      ids.add(parentId);
+      parentId = this.getParent(parentId)?.id ?? null;
+    }
+    return ids;
+  }
   reassignRootNodes() {
     this.roots = new Set(
       [...this.nodesMap.values()]

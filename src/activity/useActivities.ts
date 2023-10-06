@@ -70,8 +70,9 @@ export function useGetActivity(): ActivitiesGetters {
     !!activityForest.getDescendantsSet(parentId).has(id);
   const canAddSubactivities = (id: IdType): boolean =>
     !(
-      activityForest.roots.length === 1 &&
-      isDescendantOf(id, activityForest.roots[0]?.id)
+      activityForest.getAncestors(id).size > 5 ||
+      (activityForest.roots.length === 1 &&
+        isDescendantOf(id, activityForest.roots[0]?.id))
     );
   return {
     getSubactivities,
