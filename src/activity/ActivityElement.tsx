@@ -27,7 +27,7 @@ export interface Activity {
   id: IdType;
   parentId: IdType;
   name: string;
-  color?: ColorPalette.Color;
+  color: ColorPalette.Color;
   subactivitiesIds: IdType[];
   intervalsIds: IdType[];
   currentlyActiveIntervalId: IdType;

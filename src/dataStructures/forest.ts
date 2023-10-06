@@ -79,7 +79,7 @@ export class Forest<T extends IdPropWithParentId>
     nodeToAdd.parent = targetParent;
     this.nodesMap.set(nodeToAdd.id, nodeToAdd);
     if (targetParent === null) {
-      this.rootNodes.push(nodeToAdd);
+      this.roots.add(nodeToAdd.id);
       return;
     }
     const lastChild = targetParent?.lastChild ?? null;

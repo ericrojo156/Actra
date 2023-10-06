@@ -1,6 +1,7 @@
 import {Activity} from '../ActivityElement';
 import {BaseAction} from '../../types';
 import {ActivityState} from './ActivityState';
+import * as ColorPalette from '../../ColorPalette';
 import {
   LOADED_ACTIVITIES,
   STARTED_ACTIVITY,
@@ -23,6 +24,7 @@ export const emptyActivity: Activity = {
   subactivitiesIds: [],
   intervalsIds: [],
   currentlyActiveIntervalId: null,
+  color: ColorPalette.activityDefaultColor,
 };
 
 const defaultActivityState: ActivityState = {
