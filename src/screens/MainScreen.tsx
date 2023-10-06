@@ -9,16 +9,10 @@ import {ActivitiesList} from '../activity/ActivitiesList';
 import CreateActivityOption from '../activity/CreateActivityOption';
 import * as ColorPalette from '../ColorPalette';
 import {SPACE_BETWEEN_ELEMENTS} from '../constants';
-import {useSelector} from 'react-redux';
-import {ApplicationState} from '../redux/rootReducer';
 
 function MainScreen() {
-  console.log('main screen:');
-  console.log(
-    useSelector((state: ApplicationState) => state.activity.activities),
-  );
-  console.log('^^^');
-  const {activities, getSubactivities, getActivity} = useActivities(null);
+  const {activities, getSubactivities, getActivity, canAddSubactivities} =
+    useActivities(null);
   const {activeModal, params, closeModal} = useModal();
   const {translate} = useTranslation();
   const headerText = translate('Activities');
@@ -51,6 +45,7 @@ function MainScreen() {
           activities={activities}
           getSubactivities={getSubactivities}
           getActivity={getActivity}
+          canAddSubactivities={canAddSubactivities}
         />
       </View>
       <View

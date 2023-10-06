@@ -42,7 +42,7 @@ export const SelectActivities = React.memo(function (
   const {text1: confirmationText1, text2: confirmationText2} =
     confirmationButtonText;
   const [selectedIds, setSelectedIds] = useState<Set<IdType>>(new Set());
-  const {activities, getActivity} = useActivities();
+  const {activities} = useActivities();
   const filteredActivities = useMemo(() => {
     const excludeParentId = (activity: Activity) => activity.id !== parentId;
     return new ArrayFilters([excludeParentId, ...selectionConditions]).apply(
@@ -58,12 +58,7 @@ export const SelectActivities = React.memo(function (
             backgroundColor: ColorProcessor.serialize(activity.color),
             ...(isSelected ? styles.selectedActivityStyle : {}),
           }}>
-          <ActivityElement
-            hideTracker
-            {...activity}
-            getActivity={getActivity}
-            color={undefined}
-          />
+          <ActivityElement hideTracker {...activity} color={undefined} />
         </View>
       );
     }

@@ -31,6 +31,7 @@ interface ActivitiesListProps {
   customStyle?: any;
   listHeight?: DimensionValue;
   elementWidth?: number;
+  canAddSubactivities: (id: IdType) => boolean;
 }
 
 export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
@@ -41,6 +42,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
     activities,
     elementWidth = STANDARD_ELEMENT_WIDTH,
     listHeight = '100%',
+    canAddSubactivities,
   } = props;
   const [currentlyExpandedActivity, setCurrentlyExpandedActivity] = useState<
     string | null
@@ -62,11 +64,19 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
         getActivity={getActivity}
         isExpanded={isExpanded(item.id)}
         setIsExpanded={setIsExpanded}
+        canAddSubactivities={canAddSubactivities}
         {...item}
         width={elementWidth}
       />
     ),
-    [elementWidth, getActivity, getSubactivities, isExpanded, setIsExpanded],
+    [
+      canAddSubactivities,
+      elementWidth,
+      getActivity,
+      getSubactivities,
+      isExpanded,
+      setIsExpanded,
+    ],
   );
   return (
     <View style={{...styles.activitiesListContainer, height: listHeight}}>

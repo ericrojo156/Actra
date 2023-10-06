@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, StyleProp, ViewStyle} from 'react-native';
 import * as ColorPalette from '../ColorPalette';
 import CustomPressable from '../components/Pressable';
@@ -43,6 +43,7 @@ export interface ExpandableActivityProps extends ActivityElementProps {
   setIsExpanded: (shouldExpand: boolean, id: IdType) => void;
   getSubactivities: (id: IdType) => Activity[];
   getActivity: (id: IdType) => Activity | null;
+  canAddSubactivities: (id: IdType) => boolean;
 }
 
 const ActivityOptionsMenuBar = React.memo(function (
@@ -98,12 +99,10 @@ export const ExpandedSection = React.memo(function (
     id,
     getSubactivities,
     getActivity,
+    canAddSubactivities,
     width = STANDARD_ELEMENT_WIDTH,
   } = props;
-  const subactivities = useMemo(
-    () => getSubactivities(id),
-    [getSubactivities, id],
-  );
+  const subactivities = getSubactivities(id);
   return (
     <CustomPressable
       style={{...commonStyles.container, ...styles.expandedSection}}>
@@ -116,13 +115,16 @@ export const ExpandedSection = React.memo(function (
           <ActivitiesList
             getSubactivities={getSubactivities}
             getActivity={getActivity}
+            canAddSubactivities={canAddSubactivities}
             activities={subactivities}
             elementWidth={width - SUBACTIVITY_LEVEL_WIDTH_DECREMENT}
           />
         )}
       </View>
       <View style={{padding: SPACE_BETWEEN_ELEMENTS / 2}} />
-      <AddSubactivityOption id={id} width={width} />
+      {canAddSubactivities(id) && (
+        <AddSubactivityOption id={id} width={width} />
+      )}
     </CustomPressable>
   );
 });

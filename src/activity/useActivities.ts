@@ -5,6 +5,7 @@ import {ApplicationState} from '../redux/rootReducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {activitiesLoaded} from './redux/activityActions';
 import {IdType} from '../types';
+import {uniqueBy} from '../utils/array';
 
 async function getMockActivities(): Promise<Activity[]> {
   const activities: Activity[] = [];
@@ -36,8 +37,10 @@ interface ActivitiesGetters {
   getActivity: GetActivity;
   getActivityName: GetActivityName;
   getActivities: () => Promise<Activity[]>;
-  isChildOf: (id: IdType, parentId: IdType) => boolean;
   getSubactivities: (id: IdType) => Activity[];
+  isChildOf: (id: IdType, parentId: IdType) => boolean;
+  isDescendantOf: (id: IdType, parentId: IdType) => boolean;
+  canAddSubactivities: (id: IdType) => boolean;
 }
 
 export function useGetActivity(): ActivitiesGetters {
@@ -63,12 +66,21 @@ export function useGetActivity(): ActivitiesGetters {
     (id: IdType) => activityForest.getChildrenData(id),
     [activityForest],
   );
+  const isDescendantOf = (id: IdType, parentId: IdType): boolean =>
+    !!activityForest.getDescendantsSet(parentId).has(id);
+  const canAddSubactivities = (id: IdType): boolean =>
+    !(
+      activityForest.roots.length === 1 &&
+      isDescendantOf(id, activityForest.roots[0]?.id)
+    );
   return {
     getSubactivities,
     isChildOf,
     getActivity,
     getActivityName,
     getActivities,
+    isDescendantOf,
+    canAddSubactivities,
   };
 }
 
@@ -96,7 +108,10 @@ export default function useActivities(parentId?: IdType): ActivitiesData {
   const activities: Activity[] = useSelector((state: ApplicationState) => {
     const dataList = state.activity.activities.dataList;
     if (typeof parentId === 'undefined') {
-      return state.activity.activities.dataList;
+      return uniqueBy(
+        state.activity.activities.dataList,
+        (activity: Activity) => activity.id,
+      );
     }
     return dataList.filter(activity => activity.parentId === parentId);
   });

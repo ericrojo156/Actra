@@ -46,6 +46,9 @@ export class ActivityForest
   getDescendantsData(parentId: IdType): Activity[] {
     return this.forest.getDescendants(parentId).map(node => node.data);
   }
+  get roots(): Activity[] {
+    return this.forest.rootNodes.map(node => node.data);
+  }
   get ids(): IdType[] {
     return this.forest.ids;
   }
@@ -58,13 +61,13 @@ export class ActivityForest
   add(dataToAdd: Activity, targetParentId: IdType): void {
     const nodeToAdd =
       this.forest.getNode(dataToAdd.id) ?? createActivityNode(dataToAdd);
-    this.delete(dataToAdd.id);
+    this.remove(dataToAdd.id);
     nodeToAdd.data.parentId = targetParentId;
+    const targetParent = this.forest.getNode(targetParentId);
+    if (targetParent) {
+      targetParent.data.subactivitiesIds.push(dataToAdd.id);
+    }
     this.forest.addNode(nodeToAdd, targetParentId);
-    console.log(`add ${nodeToAdd.id} to ${targetParentId}`);
-    console.log('ActivityForest.add():');
-    console.log(this);
-    console.log('^^^');
   }
   updateActivity(activity: Activity): void {
     const nodeToUpdate = this.forest.getNode(activity.id);
@@ -72,14 +75,14 @@ export class ActivityForest
       this.forest.updateNode({...nodeToUpdate, data: activity});
     }
   }
-  delete(id: IdType): void {
+  remove(id: IdType): void {
     const parent = this.forest.getParent(id);
     if (parent) {
       parent.data.subactivitiesIds = parent.data.subactivitiesIds.filter(
         childId => childId !== id,
       );
     }
-    this.forest.delete(id);
+    this.forest.remove(id);
   }
   static copy(activityForest: ActivityForest): ActivityForest {
     const newActivityForest = new ActivityForest([]);
@@ -88,5 +91,8 @@ export class ActivityForest
       createActivityNode,
     );
     return newActivityForest;
+  }
+  getDescendantsSet(id: IdType): Set<IdType> {
+    return this.forest.getDescendantsRecord(id);
   }
 }

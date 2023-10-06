@@ -24,19 +24,19 @@ export interface IForestNodesLayer<T extends IdPropWithParentId> {
   getNode(id: IdType): TreeNode<T> | null;
   getParent(childId: IdType): TreeNode<T> | null;
   updateNode(node: TreeNode<T>): void;
-  delete(id: IdType): void;
+  remove(id: IdType): void;
   getChildren(parentId: IdType): TreeNode<T>[];
-  getDescendants(parentId: IdType): TreeNode<T>[];
   addNode(nodeToAdd: TreeNode<T>, targetParentId: IdType): void;
 }
 
 export interface IForestDataLayer<T extends IdPropWithParentId> {
   get dataList(): T[];
+  get roots(): T[];
   getData(id: IdType): T | null;
 }
 
 export class Forest<T extends IdPropWithParentId>
-  implements IForestIdLayer, IForestNodesLayer<T>, IForestDataLayer<T>
+  implements IForestIdLayer, IForestNodesLayer<T>
 {
   private nodesMap: Map<IdType, TreeNode<T>>;
   private roots: Set<IdType>;
@@ -57,13 +57,6 @@ export class Forest<T extends IdPropWithParentId>
       this.addNode(node, data.parentId);
     });
     this.reassignRootNodes();
-  }
-  private clearNodeLinkings(node: TreeNode<T>) {
-    node.parent = null;
-    node.firstChild = null;
-    node.lastChild = null;
-    node.prevSibling = null;
-    node.nextSibling = null;
   }
   reassignRootNodes() {
     this.roots = new Set(
@@ -142,7 +135,7 @@ export class Forest<T extends IdPropWithParentId>
       }
     }
   }
-  delete(id: IdType): void {
+  remove(id: IdType): void {
     const nodeToDelete = this.getNode(id);
     if (nodeToDelete === null) {
       return;
@@ -161,7 +154,6 @@ export class Forest<T extends IdPropWithParentId>
       this.rootNodes.push(child);
     });
     this.removeNodeFromParentLinkings(id);
-    this.clearNodeLinkings(nodeToDelete);
     this.nodesMap.delete(id);
     this.reassignRootNodes();
   }
@@ -213,6 +205,9 @@ export class Forest<T extends IdPropWithParentId>
   }
   get dataList(): T[] {
     return this.nodes.map(node => node.data);
+  }
+  getDescendantsRecord(id: IdType): Set<IdType> {
+    return new Set(this.getDescendants(id).map(node => node.id));
   }
   static copy<T extends IdPropWithParentId>(
     forest: Forest<T>,

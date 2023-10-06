@@ -83,7 +83,7 @@ export default function activityReducer(
           subactivity.parentId = null;
         });
       }
-      activities.delete(id);
+      activities.remove(id);
       return {
         ...state,
         activities,
@@ -101,7 +101,6 @@ export default function activityReducer(
         activities.getData.bind(activities),
       ).forEach((activityToAdd: Activity): void => {
         activities.add(activityToAdd, parentId);
-        parent.subactivitiesIds.push(activityToAdd.id);
       });
       return {
         ...state,

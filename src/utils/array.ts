@@ -25,3 +25,15 @@ export class ArrayFilters<T> {
     return resultsArray;
   }
 }
+
+export function uniqueBy<T, K>(array: T[], getKey: (item: T) => K): T[] {
+  const seen = new Set<K>();
+  return array.filter(item => {
+    const key = getKey(item);
+    if (!seen.has(key)) {
+      seen.add(key);
+      return true;
+    }
+    return false;
+  });
+}
