@@ -22,6 +22,8 @@ import {
   SPACE_BETWEEN_ELEMENTS,
 } from '../constants';
 import TimerButton from './TimerButton';
+import {useSelector} from 'react-redux';
+import {ApplicationState} from '../redux/rootReducer';
 
 export interface Activity {
   id: IdType;
@@ -50,7 +52,10 @@ const ActivityOptionsMenuBar = React.memo(function (
   props: ExpandableActivityProps,
 ) {
   const {id, width} = props;
-
+  const hasIntervals = useSelector(
+    (state: ApplicationState) =>
+      (state.interval.activitiesIntervals.get(id)?.size ?? 0) > 0,
+  );
   return (
     <View
       style={{
@@ -61,7 +66,7 @@ const ActivityOptionsMenuBar = React.memo(function (
       <DeleteOption id={id} />
       <JoinOption id={id} />
       <EditOption id={id} />
-      <HistoryOption id={id} />
+      {hasIntervals && <HistoryOption id={id} />}
     </View>
   );
 });
