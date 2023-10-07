@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import * as ColorProcessor from '../ColorProcessor';
 import * as ColorPalette from '../ColorPalette';
@@ -72,6 +72,16 @@ export const DateTimeDisplay = React.memo(function (props: MillisecondsProps) {
   );
 });
 
+function calcDuration(interval: Interval | null): number {
+  if (interval === null) {
+    return 0;
+  }
+  return (
+    (interval?.endTimeEpochMilliseconds ?? Date.now()) -
+    (interval?.startTimeEpochMilliseconds ?? Date.now())
+  );
+}
+
 function IntervalElement(props: IntervalElementProps) {
   const {intervalId, parentActivityId, width} = props;
   const {getActivity} = useGetActivity();
@@ -83,6 +93,29 @@ function IntervalElement(props: IntervalElementProps) {
 
   const interval: Interval | null = getInterval(intervalId);
 
+  const [durationMilliseconds, setDurationMilliseconds] = useState(
+    calcDuration(interval),
+  );
+  const recalculateDuration = useCallback(
+    () => setDurationMilliseconds(calcDuration(interval)),
+    [setDurationMilliseconds, interval],
+  );
+  useEffect(() => {
+    let cleanup = () => {};
+    if (interval?.endTimeEpochMilliseconds === null) {
+      const handle = setInterval(() => {
+        recalculateDuration();
+      }, 1000);
+      cleanup = () => clearInterval(handle);
+    }
+    return () => {
+      cleanup();
+    };
+  }, [
+    interval?.endTimeEpochMilliseconds,
+    interval?.intervalId,
+    recalculateDuration,
+  ]);
   const intervalStyle = {
     ...commonStyles.container,
     ...commonStyles.roundedElementBorder,
@@ -98,12 +131,7 @@ function IntervalElement(props: IntervalElementProps) {
     <View style={{paddingTop: PADDING_BETWEEN_ELEMENTS}}>
       <CustomPressable style={intervalStyle}>
         <Text style={styles.textStyle}>
-          <TimeDisplay
-            milliseconds={
-              (interval.endTimeEpochMilliseconds ?? Date.now()) -
-              interval.startTimeEpochMilliseconds
-            }
-          />
+          <TimeDisplay milliseconds={durationMilliseconds} />
         </Text>
         <View style={{flexDirection: 'row'}}>
           <DateTimeDisplay milliseconds={interval.startTimeEpochMilliseconds} />
