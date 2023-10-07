@@ -37,8 +37,6 @@ const RootStack = createStackNavigator<RootStackParamsList>();
 function Screens() {
   useActivitiesFetch();
   const {translate} = useTranslation();
-  const headerText = translate('History');
-
   return (
     <NavigationContainer>
       <StatusBar barStyle="light-content" translucent={true} />
@@ -57,7 +55,7 @@ function Screens() {
           name="History"
           component={History}
           options={{
-            headerTitle: headerText,
+            headerTitle: '',
             headerTransparent: true,
             headerBackTitle: translate('Back'),
             headerTintColor: ColorPalette.OffWhite_RGBSerialized,

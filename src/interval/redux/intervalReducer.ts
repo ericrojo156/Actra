@@ -1,5 +1,6 @@
 import {produce} from 'immer';
 import {
+  DELETED_ACTIVITY,
   STARTED_ACTIVITY,
   STOPPED_ACTIVITY,
   TimerAction,
@@ -9,6 +10,7 @@ import {uuidv4} from '../../utils/uuid';
 import {Interval} from '../IntervalElement';
 import {IntervalState} from './IntervalState';
 import {INTERVALS_LOADED, IntervalsAction} from './intervalsActions';
+import {IdAction} from '../../redux/actions';
 
 const defaultIntervalState: IntervalState = {
   currentlyActive: null,
@@ -59,18 +61,23 @@ export default function intervalReducer(
       const {activityId: id, intervalId: currentlyActiveIntervalId} = (
         action as TimerAction
       ).payload;
-      console.log(action);
       const nextState = produce(state, draft => {
         const intervals = draft.activitiesIntervals.get(id) ?? new Map();
         const currentInterval =
           intervals.get(currentlyActiveIntervalId) ?? null;
-        console.log(currentInterval);
         if (!currentInterval) {
           return state;
         }
         currentInterval.endTimeEpochMilliseconds = Date.now();
         intervals.set(currentlyActiveIntervalId, currentInterval);
         draft.activitiesIntervals.set(id, intervals);
+      });
+      return nextState;
+    }
+    case DELETED_ACTIVITY: {
+      const deletedActivitiyId: IdType = (action as IdAction).payload;
+      const nextState = produce(state, draft => {
+        draft.activitiesIntervals.delete(deletedActivitiyId);
       });
       return nextState;
     }
