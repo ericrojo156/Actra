@@ -82,17 +82,7 @@ function calcDuration(interval: Interval | null): number {
   );
 }
 
-function IntervalElement(props: IntervalElementProps) {
-  const {intervalId, parentActivityId, width} = props;
-  const {getActivity} = useGetActivity();
-  const {getInterval} = useIntervals(parentActivityId);
-
-  const activity = getActivity(parentActivityId) ?? {
-    color: ColorPalette.activityDefaultColor,
-  };
-
-  const interval: Interval | null = getInterval(intervalId);
-
+function useIntervalRealTimeDuration(interval: Interval | null) {
   const [durationMilliseconds, setDurationMilliseconds] = useState(
     calcDuration(interval),
   );
@@ -105,7 +95,7 @@ function IntervalElement(props: IntervalElementProps) {
     if (interval?.endTimeEpochMilliseconds === null) {
       const handle = setInterval(() => {
         recalculateDuration();
-      }, 1000);
+      }, 500);
       cleanup = () => clearInterval(handle);
     }
     return () => {
@@ -116,6 +106,18 @@ function IntervalElement(props: IntervalElementProps) {
     interval?.intervalId,
     recalculateDuration,
   ]);
+  return durationMilliseconds;
+}
+
+function IntervalElement(props: IntervalElementProps) {
+  const {intervalId, parentActivityId, width} = props;
+  const {getActivity} = useGetActivity();
+  const {getInterval} = useIntervals(parentActivityId);
+  const activity = getActivity(parentActivityId) ?? {
+    color: ColorPalette.activityDefaultColor,
+  };
+  const interval: Interval | null = getInterval(intervalId);
+  const durationMilliseconds = useIntervalRealTimeDuration(interval);
   const intervalStyle = {
     ...commonStyles.container,
     ...commonStyles.roundedElementBorder,
