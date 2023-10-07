@@ -16,6 +16,13 @@ export interface ActivitiesAction extends BaseAction {
   payload: Activity[];
 }
 
+export interface TimerAction extends BaseAction {
+  payload: {
+    activityId: IdType;
+    intervalId: IdType;
+  };
+}
+
 export interface ActivityFormData {
   id: IdType;
   name: string;
@@ -73,16 +80,25 @@ export function activitiesLoaded(activities: Activity[]): ActivitiesAction {
   };
 }
 
-export function startedActivity(id: IdType): IdAction {
+export function startedActivity(
+  activityId: IdType,
+  intervalId: IdType,
+): TimerAction {
   return {
     type: STARTED_ACTIVITY,
-    payload: id,
+    payload: {activityId, intervalId},
   };
 }
 
-export function stoppedActivity(id: IdType): IdAction {
+export function stoppedActivity(
+  id: IdType,
+  currentlyActiveInterval: IdType,
+): TimerAction {
   return {
     type: STOPPED_ACTIVITY,
-    payload: id,
+    payload: {
+      activityId: id,
+      intervalId: currentlyActiveInterval,
+    },
   };
 }

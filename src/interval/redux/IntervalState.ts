@@ -1,5 +1,9 @@
+import {IdType} from '../../types';
 import {Interval} from '../IntervalElement';
 
+export type IntervalsRecord = Map<IdType, Interval>;
+
 export interface IntervalState {
-  intervals: Map<string, Interval>;
+  currentlyActive: IdType;
+  activitiesIntervals: Map<IdType, IntervalsRecord>;
 }

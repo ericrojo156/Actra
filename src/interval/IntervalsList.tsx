@@ -1,7 +1,6 @@
 import React, {useCallback, useMemo} from 'react';
 import {LayoutAnimation, View, FlatList, StyleSheet} from 'react-native';
 import {ELEMENT_HEIGHT} from '../constants';
-import {useIntervals} from './useIntervals';
 import IntervalElement, {Interval} from './IntervalElement';
 import {IdType} from '../types';
 
@@ -28,8 +27,7 @@ interface IntervalsListProps {
 }
 
 export const IntervalsList = React.memo((props: IntervalsListProps) => {
-  const {parentActivityId} = props;
-  const {intervals} = useIntervals(parentActivityId);
+  const {intervals, parentActivityId} = props;
   useLayoutAnimation();
   const getItemLayout = useCallback(
     (_data: any, index: number) => ({

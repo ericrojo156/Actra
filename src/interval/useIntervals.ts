@@ -1,13 +1,15 @@
+import {useSelector} from 'react-redux';
 import {IdType} from '../types';
 import {Interval} from './IntervalElement';
 import {useCallback, useMemo} from 'react';
+import {ApplicationState} from '../redux/rootReducer';
 
 interface IntervalsData {
   intervals: Interval[];
   getInterval: (intervalId: IdType) => Interval | null;
 }
 
-export function useIntervals(parentActivityId: IdType): IntervalsData {
+export function useMockIntervals(parentActivityId: IdType): IntervalsData {
   const startTimeEpochMilliseconds = useMemo(
     () => Date.now() - 1000 * 60 * 60 * 2,
     [],
@@ -41,6 +43,22 @@ export function useIntervals(parentActivityId: IdType): IntervalsData {
     (intervalId: IdType) => intervalsMap.get(intervalId) ?? null,
     [intervalsMap],
   );
+  return {
+    intervals,
+    getInterval,
+  };
+}
+
+export function useIntervals(parentActivityId: IdType) {
+  const intervalsMap = useSelector(
+    (state: ApplicationState) =>
+      state.interval.activitiesIntervals.get(parentActivityId) ?? new Map(),
+  );
+  const getInterval = useCallback(
+    (id: IdType) => intervalsMap.get(id) ?? null,
+    [intervalsMap],
+  );
+  const intervals = useMemo(() => [...intervalsMap.values()], [intervalsMap]);
   return {
     intervals,
     getInterval,

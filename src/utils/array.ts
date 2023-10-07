@@ -37,3 +37,13 @@ export function uniqueBy<T, K>(array: T[], getKey: (item: T) => K): T[] {
     return false;
   });
 }
+
+export function reverseArray<T>(arr: T[]): T[] {
+  const reversed = [];
+
+  for (let i = arr.length - 1; i >= 0; i--) {
+    reversed.push(arr[i]);
+  }
+
+  return reversed;
+}

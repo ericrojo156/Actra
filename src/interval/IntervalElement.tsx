@@ -15,6 +15,7 @@ import {useTimeString} from '../time/useTimeString';
 import {useGetActivity} from '../activity/useActivities';
 import RightArrow from '../../assets/RightArrow';
 import {IdType} from '../types';
+import {useTranslation} from '../internationalization/useTranslation';
 
 export interface ActivityIntervalRelation {
   intervalId: IdType;
@@ -23,7 +24,7 @@ export interface ActivityIntervalRelation {
 
 export interface Interval extends ActivityIntervalRelation {
   startTimeEpochMilliseconds: number;
-  endTimeEpochMilliseconds: number;
+  endTimeEpochMilliseconds: number | null;
 }
 
 export interface IntervalElementProps extends ActivityIntervalRelation {
@@ -33,12 +34,20 @@ export interface IntervalElementProps extends ActivityIntervalRelation {
 export type TimeUnit = 'days' | 'hours' | 'mins' | 'seconds';
 
 export interface MillisecondsProps {
-  milliseconds: number;
+  milliseconds: number | null;
 }
 
 export const TimeDisplay = React.memo(function (props: MillisecondsProps) {
   const {milliseconds} = props;
   const {toDurationString} = useTimeString();
+  const {translate} = useTranslation();
+  if (milliseconds === null) {
+    return (
+      <View>
+        <Text style={{...styles.textStyle}}>{translate('Now')}</Text>
+      </View>
+    );
+  }
   const timeDisplayString = toDurationString(milliseconds);
   return <Text style={styles.textStyle}>{timeDisplayString}</Text>;
 });
@@ -46,6 +55,14 @@ export const TimeDisplay = React.memo(function (props: MillisecondsProps) {
 export const DateTimeDisplay = React.memo(function (props: MillisecondsProps) {
   const {milliseconds} = props;
   const {toDateTimeString} = useTimeString();
+  const {translate} = useTranslation();
+  if (milliseconds === null) {
+    return (
+      <View>
+        <Text style={{...styles.textStyle}}>{translate('Now')}</Text>
+      </View>
+    );
+  }
   const {date, time} = toDateTimeString(milliseconds);
   return (
     <View>
@@ -83,7 +100,7 @@ function IntervalElement(props: IntervalElementProps) {
         <Text style={styles.textStyle}>
           <TimeDisplay
             milliseconds={
-              interval.endTimeEpochMilliseconds -
+              (interval.endTimeEpochMilliseconds ?? Date.now()) -
               interval.startTimeEpochMilliseconds
             }
           />

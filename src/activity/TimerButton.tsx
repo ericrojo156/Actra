@@ -15,7 +15,7 @@ function PlayButton(props: IdProp) {
   const dispatch = useDispatch();
   const onPressPlay = useCallback(() => {
     setTimeout(() => {
-      dispatch(startedActivity(id));
+      dispatch(startedActivity(id, null));
     }, PRESS_ANIMATION_DURATION);
   }, [dispatch, id]);
   return (
@@ -29,12 +29,15 @@ function PlayButton(props: IdProp) {
 
 function StopButton(props: IdProp) {
   const {id} = props;
+  const currentlyActive = useSelector(
+    (state: ApplicationState) => state.interval.currentlyActive,
+  );
   const dispatch = useDispatch();
   const onPressStop = useCallback(() => {
     setTimeout(() => {
-      dispatch(stoppedActivity(id));
+      dispatch(stoppedActivity(id, currentlyActive));
     }, PRESS_ANIMATION_DURATION);
-  }, [dispatch, id]);
+  }, [currentlyActive, dispatch, id]);
   return (
     <PressableIcon
       customActiveScale={TIMER_BUTTON_ACTIVE_SCALE}

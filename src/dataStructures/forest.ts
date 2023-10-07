@@ -47,7 +47,12 @@ export class Forest<T extends IdPropWithParentId>
     );
   }
   constructor(dataItems: T[], createNode: (data: T) => TreeNode<T>) {
-    this.nodesMap = new Map(dataItems.map(data => [data.id, createNode(data)]));
+    this.nodesMap = new Map(
+      dataItems.map(data => [
+        data.id,
+        createNode(JSON.parse(JSON.stringify(data))),
+      ]),
+    );
     this.roots = new Set();
     if (!dataItems) {
       return;

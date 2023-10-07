@@ -12,6 +12,7 @@ import {
   ActivitiesAction,
   ActivityFormAction,
   ADDED_SUBACTIVITIES,
+  TimerAction,
 } from './activityActions';
 import {IdAction, ParentChildrenAction} from '../../redux/actions';
 import {getNonNullProjections} from '../../utils/projections';
@@ -110,7 +111,7 @@ export default function activityReducer(
       };
     }
     case STARTED_ACTIVITY: {
-      const id = (action as IdAction).payload;
+      const {activityId: id} = (action as TimerAction).payload;
       return {
         ...state,
         currentlyActive: id,
