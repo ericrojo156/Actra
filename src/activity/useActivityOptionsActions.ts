@@ -10,14 +10,18 @@ import {
 } from '../modal/modalActions';
 import {useNavigation} from '@react-navigation/native';
 import {IdType} from '../types';
-import {addedSubactivities, deletedActivity} from './redux/activityActions';
+import {
+  joinedActivities,
+  addedSubactivities,
+  deletedActivity,
+} from './redux/activityActions';
 
 export function joinActivities(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ids: IdType[],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   dispatch: Dispatch<AnyAction>,
-): void {}
+): void {
+  dispatch(joinedActivities(ids));
+}
 
 export function addSubactivitiesToActivity(
   parentId: IdType,

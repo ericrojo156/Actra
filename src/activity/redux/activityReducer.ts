@@ -1,20 +1,21 @@
 import {Activity} from '../ActivityElement';
-import {BaseAction} from '../../types';
+import {BaseAction, IdType} from '../../types';
 import {ActivityState} from './ActivityState';
 import * as ColorPalette from '../../ColorPalette';
 import {
   LOADED_ACTIVITIES,
-  STARTED_ACTIVITY,
-  STOPPED_ACTIVITY,
   CREATED_ACTIVITY,
   DELETED_ACTIVITY,
   EDITED_ACTIVITY,
   ActivitiesAction,
   ActivityFormAction,
   ADDED_SUBACTIVITIES,
-  TimerAction,
+  IntervalAction,
+  START_ACTIVITY,
+  STOP_ACTIVITY,
+  DELETED_ACTIVITIES,
 } from './activityActions';
-import {IdAction, ParentChildrenAction} from '../../redux/actions';
+import {IdAction, IdsAction, ParentChildrenAction} from '../../redux/actions';
 import {getNonNullProjections} from '../../utils/projections';
 import {ActivityForest} from '../dataStructures/activityForest';
 
@@ -32,6 +33,29 @@ const defaultActivityState: ActivityState = {
   activities: new ActivityForest([]),
   currentlyActive: null,
 };
+
+function deleteActivitiesFromStore(
+  state: ActivityState,
+  ids: IdType[],
+): ActivityState {
+  const activities = ActivityForest.copy(state.activities);
+  ids.forEach((id: IdType) => {
+    const activityToDelete = activities.getData(id);
+    if (activityToDelete) {
+      getNonNullProjections(
+        activityToDelete.subactivitiesIds,
+        activities.getData.bind(activities),
+      ).forEach((subactivity: Activity) => {
+        subactivity.parentId = null;
+      });
+    }
+    activities.remove(id);
+  });
+  return {
+    ...state,
+    activities,
+  };
+}
 
 export default function activityReducer(
   state: ActivityState = defaultActivityState,
@@ -75,22 +99,12 @@ export default function activityReducer(
       };
     }
     case DELETED_ACTIVITY: {
-      const activities = ActivityForest.copy(state.activities);
       const id = (action as IdAction).payload;
-      const activityToDelete = activities.getData(id);
-      if (activityToDelete) {
-        getNonNullProjections(
-          activityToDelete.subactivitiesIds,
-          activities.getData.bind(activities),
-        ).forEach((subactivity: Activity) => {
-          subactivity.parentId = null;
-        });
-      }
-      activities.remove(id);
-      return {
-        ...state,
-        activities,
-      };
+      return deleteActivitiesFromStore(state, [id]);
+    }
+    case DELETED_ACTIVITIES: {
+      const ids = (action as IdsAction).payload;
+      return deleteActivitiesFromStore(state, ids);
     }
     case ADDED_SUBACTIVITIES: {
       const {parentId, children} = (action as ParentChildrenAction).payload;
@@ -110,14 +124,14 @@ export default function activityReducer(
         activities,
       };
     }
-    case STARTED_ACTIVITY: {
-      const {activityId: id} = (action as TimerAction).payload;
+    case START_ACTIVITY: {
+      const {activityId: id} = (action as IntervalAction).payload;
       return {
         ...state,
         currentlyActive: id,
       };
     }
-    case STOPPED_ACTIVITY: {
+    case STOP_ACTIVITY: {
       return {
         ...state,
         currentlyActive: null,

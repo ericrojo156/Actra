@@ -8,7 +8,6 @@ function JoinOption(props: OptionProps) {
   const {style, id} = props;
   const {translate} = useTranslation();
   const {onJoinActivityOption} = useActivityOptionCallbacks();
-
   const onPress = useCallback(
     () => onJoinActivityOption(id),
     [onJoinActivityOption, id],

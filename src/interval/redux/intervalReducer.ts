@@ -1,16 +1,23 @@
 import {produce} from 'immer';
 import {
   DELETED_ACTIVITY,
-  STARTED_ACTIVITY,
-  STOPPED_ACTIVITY,
-  TimerAction,
+  START_ACTIVITY,
+  STOP_ACTIVITY,
+  IntervalAction,
 } from '../../activity/redux/activityActions';
 import {BaseAction, IdType} from '../../types';
 import {uuidv4} from '../../utils/uuid';
 import {Interval} from '../IntervalElement';
 import {IntervalState} from './IntervalState';
-import {INTERVALS_LOADED, IntervalsAction} from './intervalsActions';
+import {
+  DELETE_INTERVAL,
+  INTERVALS_LOADED,
+  IntervalsAction,
+  JOIN_INTERVALS_TO_ACTIVITY,
+  JoinActivitiesAction,
+} from './intervalsActions';
 import {IdAction} from '../../redux/actions';
+import {flatten} from '../../utils/array';
 
 const defaultIntervalState: IntervalState = {
   currentlyActive: null,
@@ -43,9 +50,8 @@ export default function intervalReducer(
       });
       return nextState;
     }
-    case STARTED_ACTIVITY: {
-      const {activityId: parentActivityId} = (action as TimerAction).payload;
-
+    case START_ACTIVITY: {
+      const {activityId: parentActivityId} = (action as IntervalAction).payload;
       const nextState = produce(state, draft => {
         const intervals =
           draft.activitiesIntervals.get(parentActivityId) ?? new Map();
@@ -57,9 +63,9 @@ export default function intervalReducer(
       });
       return nextState;
     }
-    case STOPPED_ACTIVITY: {
+    case STOP_ACTIVITY: {
       const {activityId: id, intervalId: currentlyActiveIntervalId} = (
-        action as TimerAction
+        action as IntervalAction
       ).payload;
       const nextState = produce(state, draft => {
         const intervals = draft.activitiesIntervals.get(id) ?? new Map();
@@ -80,6 +86,33 @@ export default function intervalReducer(
         draft.activitiesIntervals.delete(deletedActivitiyId);
       });
       return nextState;
+    }
+    case JOIN_INTERVALS_TO_ACTIVITY: {
+      const {combinedActivityId, activitiesToJoin} = (
+        action as JoinActivitiesAction
+      ).payload;
+      const nextState = produce(state, draft => {
+        const combinedIntervals: Interval[] = flatten(
+          activitiesToJoin.map(id => [
+            ...(state.activitiesIntervals.get(id)?.values() ?? []),
+          ]),
+        );
+        const combinedIntervalsMap = new Map(
+          combinedIntervals.map(interval => [interval.intervalId, interval]),
+        );
+        draft.activitiesIntervals.set(combinedActivityId, combinedIntervalsMap);
+      });
+      return nextState;
+    }
+    case DELETE_INTERVAL: {
+      const {activityId, intervalId} = (action as IntervalAction).payload;
+      return produce(state, draft => {
+        const intervals = draft.activitiesIntervals.get(activityId);
+        if (!intervals) {
+          return;
+        }
+        intervals.delete(intervalId);
+      });
     }
     default: {
       return state;

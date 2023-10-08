@@ -4,6 +4,10 @@ export interface IdAction extends BaseAction {
   payload: IdType;
 }
 
+export interface IdsAction extends BaseAction {
+  payload: IdType[];
+}
+
 export interface ParentChildAction<T = IdType> extends BaseAction {
   payload: {
     parentId: IdType;
