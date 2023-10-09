@@ -3,6 +3,7 @@ import {IdType} from '../types';
 import {Interval} from './IntervalElement';
 import {useCallback, useMemo} from 'react';
 import {ApplicationState} from '../redux/rootReducer';
+import {flatten} from '../utils/array';
 
 interface IntervalsData {
   intervals: Interval[];
@@ -49,11 +50,41 @@ export function useMockIntervals(parentActivityId: IdType): IntervalsData {
   };
 }
 
-export function useIntervals(parentActivityId: IdType) {
-  const intervalsMap = useSelector(
-    (state: ApplicationState) =>
-      state.interval.activitiesIntervals.get(parentActivityId) ?? new Map(),
+function getDescendantIntervalsEntries(
+  state: ApplicationState,
+  parentActivityId: IdType,
+): [id: IdType, interval: Interval][] {
+  return flatten(
+    [
+      ...(state.activity.activities
+        .getDescendantsSet(parentActivityId)
+        .values() ?? []),
+    ].map(descendantId => [
+      ...(state.interval.activitiesIntervals.get(descendantId)?.values() ?? []),
+    ]) ?? [],
+  ).map(interval => [interval.intervalId, interval]);
+}
+
+function getIntervalsEntries(
+  state: ApplicationState,
+  parentActivityId: IdType,
+): [id: IdType, interval: Interval][] {
+  return (
+    [
+      ...(state.interval.activitiesIntervals.get(parentActivityId)?.values() ??
+        []),
+    ].map(interval => [interval.intervalId, interval]) ?? []
   );
+}
+
+export function useIntervals(parentActivityId: IdType) {
+  const intervalsMap = useSelector((state: ApplicationState) => {
+    const directIntervals: [id: IdType, interval: Interval][] =
+      getIntervalsEntries(state, parentActivityId);
+    const descendantsIntervals: [id: IdType, interval: Interval][] =
+      getDescendantIntervalsEntries(state, parentActivityId);
+    return new Map([...directIntervals, ...descendantsIntervals]);
+  });
   const getInterval = useCallback(
     (id: IdType) => intervalsMap.get(id) ?? null,
     [intervalsMap],
