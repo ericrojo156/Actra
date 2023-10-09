@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import PressableIcon from '../components/PressableIcon';
 import {Color} from '../ColorPalette';
 import * as ColorProcessor from '../ColorProcessor';
@@ -8,7 +8,11 @@ import useActivityOptionCallbacks from './useActivityOptionsActions';
 
 const DIAMETER = 65;
 
-export default function CreateActivityOption(props: {color: Color}) {
+interface CreateActivityProps {
+  color: Color;
+}
+
+export function CreateActivityOption(props: CreateActivityProps) {
   const {onCreateActivityOption} = useActivityOptionCallbacks();
   const {color} = props;
   return (
@@ -20,6 +24,23 @@ export default function CreateActivityOption(props: {color: Color}) {
       }}
       iconName="plus"
     />
+  );
+}
+
+export function FloatingCreateActivityButton(props: {
+  translateX?: number;
+  translateY?: number;
+}) {
+  const {translateY = 350, translateX = 90} = props;
+  return (
+    <View
+      style={{
+        zIndex: 10,
+        position: 'absolute',
+        transform: [{translateX}, {translateY}],
+      }}>
+      <CreateActivityOption color={ColorPalette.SoftBlack} />
+    </View>
   );
 }
 

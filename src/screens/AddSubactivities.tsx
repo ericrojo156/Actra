@@ -34,6 +34,7 @@ export function AddSubactivities(props: IdProp) {
         }
         dispatch(modalClosed());
       }}
+      canCreateActivityToSelect
     />
   );
 }

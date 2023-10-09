@@ -6,8 +6,7 @@ import {ModalContent, useModal} from '../modal/Modal';
 import {commonStyles} from '../commonStyles';
 import {useTranslation} from '../internationalization/useTranslation';
 import {ActivitiesList} from '../activity/ActivitiesList';
-import CreateActivityOption from '../activity/CreateActivityOption';
-import * as ColorPalette from '../ColorPalette';
+import {FloatingCreateActivityButton} from '../activity/CreateActivityOption';
 import {SPACE_BETWEEN_ELEMENTS} from '../constants';
 
 function MainScreen() {
@@ -48,14 +47,7 @@ function MainScreen() {
           canAddSubactivities={canAddSubactivities}
         />
       </View>
-      <View
-        style={{
-          zIndex: 10,
-          position: 'absolute',
-          transform: [{translateY: 350}, {translateX: 90}],
-        }}>
-        <CreateActivityOption color={ColorPalette.SoftBlack} />
-      </View>
+      <FloatingCreateActivityButton />
     </GradientBackground>
   );
 }
