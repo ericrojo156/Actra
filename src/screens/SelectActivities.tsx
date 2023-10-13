@@ -12,21 +12,19 @@ import {SelectionList} from '../components/SelectionList';
 import {ELEMENT_HEIGHT, SPACE_BETWEEN_ELEMENTS} from '../constants';
 import {IdType} from '../types';
 import {ArrayFilters} from '../utils/array';
-
-export interface SelectActivitiesProps {
-  headerText: string;
-}
+import {FloatingCreateActivityButton} from '../activity/CreateActivityOption';
 
 export interface ConfirmationTextProps {
   text1: string;
   text2?: string;
 }
-
 export interface SelectActivitiesProps {
+  headerText: string;
   parentId: IdType;
   selectionConditions?: Array<(activity: Activity) => boolean>;
   confirmationButtonText: ConfirmationTextProps;
   onConfirmSelection: (selectedIds: Array<IdType>) => void;
+  canCreateActivityToSelect?: boolean;
 }
 
 export const SelectActivities = React.memo(function (
@@ -38,6 +36,7 @@ export const SelectActivities = React.memo(function (
     headerText,
     confirmationButtonText,
     onConfirmSelection,
+    canCreateActivityToSelect,
   } = props;
   const {text1: confirmationText1, text2: confirmationText2} =
     confirmationButtonText;
@@ -108,6 +107,14 @@ export const SelectActivities = React.memo(function (
         </CustomPressable>
       </View>
       <View style={{paddingBottom: 50}} />
+      {canCreateActivityToSelect && (
+        <FloatingCreateActivityButton
+          translateY={335}
+          translateX={120}
+          parentId={parentId}
+          shouldCreate={canCreateActivityToSelect}
+        />
+      )}
     </GradientBackground>
   );
 });

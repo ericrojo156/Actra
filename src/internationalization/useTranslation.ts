@@ -34,6 +34,7 @@ const englishDict: LanguageDict = new Map<string, string>([
   ['Add-to', 'Add to'],
   ['Create', 'Create'],
   ['Now', 'Now'],
+  ['Create-Subactivity', 'Create Subactivity'],
 ]);
 
 const languages = new Map<Locale, LanguageDict>([['en-US', englishDict]]);

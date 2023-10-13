@@ -2,6 +2,10 @@ export interface BaseAction {
   type: string;
 }
 
+export interface BooleanAction extends BaseAction {
+  payload: boolean;
+}
+
 export type IdType = string | null;
 
 export interface IdProp {

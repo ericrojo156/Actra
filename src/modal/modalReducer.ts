@@ -1,4 +1,7 @@
-import {SelectionModalParams} from '../components/SelectionList';
+import {
+  CreateSubactivityParams,
+  SelectionModalParams,
+} from '../components/SelectionList';
 import {BaseAction, IdProp} from '../types';
 
 import ModalState from './ModalState';
@@ -53,9 +56,12 @@ export default function IntervalsReducer(
       };
     }
     case CREATE_ACTIVITY_OPENED: {
+      const {params} = (action as ModalOpenAction<CreateSubactivityParams>)
+        .payload;
       return {
         ...state,
         activeModal: ModalType.CREATE_ACTIVITY,
+        params,
       };
     }
     case EDIT_ACTIVITY_OPENED: {

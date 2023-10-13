@@ -1,6 +1,11 @@
 import {Activity} from '../ActivityElement';
 import {BaseAction, IdType} from '../../types';
-import {IdAction, IdsAction, ParentChildrenAction} from '../../redux/actions';
+import {
+  IdAction,
+  IdsAction,
+  ParentChildAction,
+  ParentChildrenAction,
+} from '../../redux/actions';
 
 export const CREATED_ACTIVITY = 'CREATED_ACTIVITY';
 export const EDITED_ACTIVITY = 'EDITED_ACTIVITY';
@@ -40,6 +45,16 @@ export function createdActivity(data: ActivityFormData): ActivityFormAction {
   return {
     type: CREATED_ACTIVITY,
     payload: data,
+  };
+}
+
+export function createdSubactivity(
+  data: ActivityFormData,
+  parentId: IdType,
+): ParentChildAction<ActivityFormData> {
+  return {
+    type: ADDED_CREATED_SUBACTIVITY,
+    payload: {parentId, child: data},
   };
 }
 

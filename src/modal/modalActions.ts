@@ -1,5 +1,8 @@
-import {SelectionModalParams} from '../components/SelectionList';
-import {BaseAction, IdProp} from '../types';
+import {
+  CreateSubactivityParams,
+  SelectionModalParams,
+} from '../components/SelectionList';
+import {BaseAction, IdProp, IdType} from '../types';
 
 export const CLOSE_MODAL = 'CLOSE_MODAL';
 export const JOIN_ACTIVITIES_OPENED = 'JOIN_ACTIVITIES_OPENED';
@@ -30,9 +33,15 @@ export function joinActivitiesModalOpened(
   };
 }
 
-export function createActivityModalOpened(): BaseAction {
+export function createActivityModalOpened(
+  parentId: IdType,
+  shouldAddAsSubactivity: boolean,
+): ModalOpenAction<CreateSubactivityParams> {
   return {
     type: CREATE_ACTIVITY_OPENED,
+    payload: {
+      params: {parentId, shouldAddAsSubactivity},
+    },
   };
 }
 
