@@ -5,6 +5,8 @@ import {Color} from '../ColorPalette';
 import * as ColorProcessor from '../ColorProcessor';
 import * as ColorPalette from '../ColorPalette';
 import useActivityOptionCallbacks from './useActivityOptionsActions';
+import {CreateSubactivityParams} from '../components/SelectionList';
+import {IdType} from '../types';
 
 const DIAMETER = 65;
 
@@ -17,7 +19,24 @@ export function CreateActivityOption(props: CreateActivityProps) {
   const {color} = props;
   return (
     <PressableIcon
-      onPress={onCreateActivityOption}
+      onPress={() => onCreateActivityOption()}
+      style={{
+        backgroundColor: ColorProcessor.serialize(color),
+        ...styles.circularButton,
+      }}
+      iconName="plus"
+    />
+  );
+}
+
+export function CreateSubactivityOption(
+  props: CreateActivityProps & CreateSubactivityParams,
+) {
+  const {onCreateActivityOption} = useActivityOptionCallbacks();
+  const {parentId, color} = props;
+  return (
+    <PressableIcon
+      onPress={() => onCreateActivityOption(parentId, true)}
       style={{
         backgroundColor: ColorProcessor.serialize(color),
         ...styles.circularButton,
@@ -28,10 +47,17 @@ export function CreateActivityOption(props: CreateActivityProps) {
 }
 
 export function FloatingCreateActivityButton(props: {
+  parentId?: IdType;
   translateX?: number;
   translateY?: number;
+  shouldCreate?: boolean;
 }) {
-  const {translateY = 350, translateX = 90} = props;
+  const {
+    parentId = null,
+    shouldCreate,
+    translateY = 350,
+    translateX = 90,
+  } = props;
   return (
     <View
       style={{
@@ -39,7 +65,14 @@ export function FloatingCreateActivityButton(props: {
         position: 'absolute',
         transform: [{translateX}, {translateY}],
       }}>
-      <CreateActivityOption color={ColorPalette.SoftBlack} />
+      {shouldCreate && parentId !== null ? (
+        <CreateSubactivityOption
+          parentId={parentId}
+          color={ColorPalette.SoftBlack}
+        />
+      ) : (
+        <CreateActivityOption color={ColorPalette.SoftBlack} />
+      )}
     </View>
   );
 }

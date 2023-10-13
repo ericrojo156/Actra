@@ -89,9 +89,17 @@ export default function useActivityOptionCallbacks() {
     [openAddSubactivitiesModal],
   );
 
-  const onCreateActivityOption = useCallback(() => {
-    dispatch(createActivityModalOpened());
-  }, [dispatch]);
+  const onCreateActivityOption = useCallback(
+    (parentId?: IdType, shouldAddAsSubactivity?: boolean) => {
+      dispatch(
+        createActivityModalOpened(
+          parentId ?? null,
+          shouldAddAsSubactivity ?? false,
+        ),
+      );
+    },
+    [dispatch],
+  );
 
   return {
     onDeleteActivityOption,

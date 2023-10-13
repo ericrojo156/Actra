@@ -1,7 +1,7 @@
 import {View, Text, TextInput, StyleSheet} from 'react-native';
 import {useGetActivity} from '../activity/useActivities';
 import {IdProp, IdType} from '../types';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import CustomPressable from '../components/Pressable';
@@ -9,15 +9,18 @@ import {useTranslation} from '../internationalization/useTranslation';
 import GradientBackground from './GradientBackground';
 import {commonStyles} from '../commonStyles';
 import * as ColorPalette from '../ColorPalette';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {modalClosed} from '../modal/modalActions';
 import {
   ActivityFormAction,
   ActivityFormData,
   createdActivity,
   activityWasEdited,
+  createdSubactivity,
 } from '../activity/redux/activityActions';
 import {uuidv4} from '../utils/uuid';
+import {ApplicationState} from '../redux/rootReducer';
+import {ParentChildAction} from '../redux/actions';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -28,7 +31,7 @@ const validationSchema = Yup.object().shape({
 interface ActivityFormProps {
   getActivityFormSubmissionAction: (
     data: ActivityFormData,
-  ) => ActivityFormAction;
+  ) => ActivityFormAction | ParentChildAction<ActivityFormData>;
   id?: IdType;
   name?: string;
 }
@@ -73,9 +76,23 @@ export function ActivityForm(props: ActivityFormProps) {
 }
 
 export function CreateActivity() {
+  const shouldAddAsSubactivity = useSelector(
+    (state: ApplicationState) =>
+      state.modal.params?.shouldAddAsSubactivity ?? false,
+  );
+  const parentId = useSelector(
+    (state: ApplicationState) => state.modal.params?.parentId,
+  );
+  const submitForm = useMemo(
+    () =>
+      shouldAddAsSubactivity
+        ? (data: ActivityFormData) => createdSubactivity(data, parentId)
+        : createdActivity,
+    [parentId, shouldAddAsSubactivity],
+  );
   return (
     <GradientBackground>
-      <ActivityForm getActivityFormSubmissionAction={createdActivity} />
+      <ActivityForm getActivityFormSubmissionAction={submitForm} />
     </GradientBackground>
   );
 }

@@ -108,7 +108,12 @@ export const SelectActivities = React.memo(function (
       </View>
       <View style={{paddingBottom: 50}} />
       {canCreateActivityToSelect && (
-        <FloatingCreateActivityButton translateY={335} translateX={120} />
+        <FloatingCreateActivityButton
+          translateY={335}
+          translateX={120}
+          parentId={parentId}
+          shouldCreate={canCreateActivityToSelect}
+        />
       )}
     </GradientBackground>
   );

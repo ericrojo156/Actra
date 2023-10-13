@@ -51,6 +51,11 @@ export interface SelectionModalParams {
   selectionType: SELECTION_TYPE.MULTI_SELECT;
 }
 
+export interface CreateSubactivityParams {
+  parentId: IdType;
+  shouldAddAsSubactivity?: boolean;
+}
+
 export interface SelectableItem {
   id: IdType;
 }
