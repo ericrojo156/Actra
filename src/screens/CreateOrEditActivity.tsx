@@ -34,14 +34,21 @@ interface ActivityFormProps {
   ) => ActivityFormAction | ParentChildAction<ActivityFormData>;
   id?: IdType;
   name?: string;
+  customHeader?: string | null;
 }
 
 export function ActivityForm(props: ActivityFormProps) {
-  const {id = null, name, getActivityFormSubmissionAction} = props;
+  const {
+    customHeader = null,
+    id = null,
+    name,
+    getActivityFormSubmissionAction,
+  } = props;
   const {translate} = useTranslation();
   const confirmationText = translate('Save');
   const headerText =
-    id === null ? translate('Create-Activity') : translate('Edit-Activity');
+    customHeader ||
+    (id === null ? translate('Create-Activity') : translate('Edit-Activity'));
   const dispatch = useDispatch();
   return (
     <Formik
@@ -90,9 +97,15 @@ export function CreateActivity() {
         : createdActivity,
     [parentId, shouldAddAsSubactivity],
   );
+  const {translate} = useTranslation();
+  const customHeader =
+    parentId !== null ? translate('Create-Subactivity') : null;
   return (
     <GradientBackground>
-      <ActivityForm getActivityFormSubmissionAction={submitForm} />
+      <ActivityForm
+        customHeader={customHeader}
+        getActivityFormSubmissionAction={submitForm}
+      />
     </GradientBackground>
   );
 }
