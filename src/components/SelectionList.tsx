@@ -67,7 +67,7 @@ export interface SelectionListProps<T extends SelectableItem> {
     isSelected: boolean,
   ) => ReactElement | null;
   selectedIds: Set<IdType>;
-  setSelectedIds: (ids: Set<IdType>) => void;
+  setSelectedIds: (ids: IdType[]) => void;
 }
 
 export function SelectionList<T extends SelectableItem>(
@@ -87,7 +87,7 @@ export function SelectionList<T extends SelectableItem>(
       } else {
         updatedSet.delete(id);
       }
-      setSelectedIds(updatedSet);
+      setSelectedIds([...updatedSet.values()]);
     },
     [selectedIds, setSelectedIds],
   );

@@ -19,6 +19,7 @@ import {
 } from './activityActions';
 import {uuidv4} from '../../utils/uuid';
 import {ApplicationState} from '../../redux/rootReducer';
+import {IdType} from '../../types';
 
 function* startActivitySaga(action: IntervalAction): any {
   const previouslyActiveActivity = yield select(
@@ -52,7 +53,12 @@ function* stopActivitySaga(action: IntervalAction): any {
 function* createAndAddSubactivity(action: ParentChildAction<ActivityFormData>) {
   const {parentId, child} = action.payload;
   yield put(createdActivity(child));
-  yield put(addedSubactivities(parentId, [child.id]));
+  const selectedIds: IdType[] = yield select(
+    (state: ApplicationState): IdType[] => [
+      ...state.activity.selectedActivitiesIds.values(),
+    ],
+  );
+  yield put(addedSubactivities(parentId, [child.id, ...selectedIds]));
 }
 
 function* joinActivities(action: IdsAction) {

@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import GradientBackground from './GradientBackground';
 import * as ColorPalette from '../ColorPalette';
 import * as ColorProcessor from '../ColorProcessor';
 import useActivities from '../activity/useActivities';
-import {useMemo, useState} from 'react';
+import {useMemo} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Activity, ActivityElement} from '../activity/ActivityElement';
 import {commonStyles} from '../commonStyles';
@@ -13,6 +13,9 @@ import {ELEMENT_HEIGHT, SPACE_BETWEEN_ELEMENTS} from '../constants';
 import {IdType} from '../types';
 import {ArrayFilters} from '../utils/array';
 import {FloatingCreateActivityButton} from '../activity/CreateActivityOption';
+import {useDispatch, useSelector} from 'react-redux';
+import {ApplicationState} from '../redux/rootReducer';
+import {activitiesSelected} from '../activity/redux/activityActions';
 
 export interface ConfirmationTextProps {
   text1: string;
@@ -40,7 +43,14 @@ export const SelectActivities = React.memo(function (
   } = props;
   const {text1: confirmationText1, text2: confirmationText2} =
     confirmationButtonText;
-  const [selectedIds, setSelectedIds] = useState<Set<IdType>>(new Set());
+  const selectedIds: Set<IdType> = useSelector(
+    (state: ApplicationState) => state.activity.selectedActivitiesIds,
+  );
+  const dispatch = useDispatch();
+  const setSelectedIds = useCallback(
+    (ids: IdType[]) => dispatch(activitiesSelected(ids)),
+    [dispatch],
+  );
   const {activities} = useActivities();
   const filteredActivities = useMemo(() => {
     const excludeParentId = (activity: Activity) => activity.id !== parentId;

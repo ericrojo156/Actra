@@ -20,6 +20,7 @@ export const REMOVED_SUBACTIVITY = 'REMOVED_SUBACTIVITY';
 export const JOINED_ACTIVITIES = 'JOINED_ACTIVITIES';
 export const DELETED_ACTIVITY = 'DELETED_ACTIVITY';
 export const DELETED_ACTIVITIES = 'DELETED_ACTIVITIES';
+export const ACTIVITIES_SELECTED = 'ACTIVITIES_SELECTED';
 
 export interface ActivitiesAction extends BaseAction {
   payload: Activity[];
@@ -155,6 +156,13 @@ export function stoppedActivity(
 export function joinedActivities(ids: IdType[]): IdsAction {
   return {
     type: JOINED_ACTIVITIES,
+    payload: ids,
+  };
+}
+
+export function activitiesSelected(ids: IdType[]): IdsAction {
+  return {
+    type: ACTIVITIES_SELECTED,
     payload: ids,
   };
 }

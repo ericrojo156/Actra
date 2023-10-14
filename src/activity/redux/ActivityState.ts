@@ -8,4 +8,5 @@ export type ActivityNode = TreeNode<Activity>;
 export interface ActivityState {
   activities: ActivityForest;
   currentlyActive: IdType;
+  selectedActivitiesIds: Set<IdType>;
 }

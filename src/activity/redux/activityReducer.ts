@@ -15,6 +15,7 @@ import {
   STOP_ACTIVITY,
   DELETED_ACTIVITIES,
   REMOVED_SUBACTIVITY,
+  ACTIVITIES_SELECTED,
 } from './activityActions';
 import {IdAction, IdsAction, ParentChildrenAction} from '../../redux/actions';
 import {getNonNullProjections} from '../../utils/projections';
@@ -31,6 +32,7 @@ export const emptyActivity: Activity = {
 };
 
 const defaultActivityState: ActivityState = {
+  selectedActivitiesIds: new Set(),
   activities: new ActivityForest([]),
   currentlyActive: null,
 };
@@ -145,6 +147,13 @@ export default function activityReducer(
       return {
         ...state,
         currentlyActive: null,
+      };
+    }
+    case ACTIVITIES_SELECTED: {
+      const ids = (action as IdsAction).payload;
+      return {
+        ...state,
+        selectedActivitiesIds: new Set(ids),
       };
     }
     default: {
