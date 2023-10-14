@@ -1,15 +1,19 @@
-import React, {useMemo, useState, useCallback} from 'react';
+import React, {useMemo, useState, useCallback, useRef} from 'react';
 import {
   LayoutAnimation,
   View,
   FlatList,
   StyleSheet,
   DimensionValue,
+  Animated,
 } from 'react-native';
 import {ExpandedActivityElement, Activity} from './ActivityElement';
 import {GetActivity} from './useActivities';
 import {STANDARD_ELEMENT_WIDTH, ELEMENT_HEIGHT} from '../constants';
 import {IdType} from '../types';
+import {PanGestureRecognizer} from '../components/PanGestureRecognizer';
+
+const SWIPE_LEFT_THRESHOLD = -50;
 
 function useLayoutAnimation() {
   const layoutAnimConfig = useMemo(
@@ -32,7 +36,10 @@ interface ActivitiesListProps {
   listHeight?: DimensionValue;
   elementWidth?: number;
   canAddSubactivities: (id: IdType) => boolean;
+  onSwipeLeft?: (id: IdType) => void;
 }
+
+type ListItemProps = any;
 
 export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
   useLayoutAnimation();
@@ -43,6 +50,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
     elementWidth = STANDARD_ELEMENT_WIDTH,
     listHeight = '100%',
     canAddSubactivities,
+    onSwipeLeft,
   } = props;
   const [currentlyExpandedActivity, setCurrentlyExpandedActivity] = useState<
     string | null
@@ -57,8 +65,8 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
     },
     [setCurrentlyExpandedActivity],
   );
-  const renderActivityElement = useCallback(
-    ({item}: any) => (
+  const ActivityListElement = useCallback(
+    ({item}: ListItemProps) => (
       <ExpandedActivityElement
         getSubactivities={getSubactivities}
         getActivity={getActivity}
@@ -78,11 +86,24 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
       setIsExpanded,
     ],
   );
+  const pan = useRef(new Animated.ValueXY()).current;
+  const LeftSwipeableElement = useCallback(
+    (listItemProps: ListItemProps) => (
+      <PanGestureRecognizer
+        pan={pan}
+        shouldUsePositionFromPan={false}
+        thresholdDx={SWIPE_LEFT_THRESHOLD}
+        onSwipeLeft={() => onSwipeLeft?.(listItemProps.item.id)}>
+        <ActivityListElement {...listItemProps} />
+      </PanGestureRecognizer>
+    ),
+    [ActivityListElement, onSwipeLeft, pan],
+  );
   return (
     <View style={{...styles.activitiesListContainer, height: listHeight}}>
       <FlatList
         data={activities}
-        renderItem={renderActivityElement}
+        renderItem={onSwipeLeft ? LeftSwipeableElement : ActivityListElement}
         keyExtractor={item => item.id?.toString() ?? ''}
         initialNumToRender={20}
         windowSize={5}

@@ -14,6 +14,7 @@ import {
   START_ACTIVITY,
   STOP_ACTIVITY,
   DELETED_ACTIVITIES,
+  REMOVED_SUBACTIVITY,
 } from './activityActions';
 import {IdAction, IdsAction, ParentChildrenAction} from '../../redux/actions';
 import {getNonNullProjections} from '../../utils/projections';
@@ -119,6 +120,15 @@ export default function activityReducer(
       ).forEach((activityToAdd: Activity): void => {
         activities.add(activityToAdd, parentId);
       });
+      return {
+        ...state,
+        activities,
+      };
+    }
+    case REMOVED_SUBACTIVITY: {
+      const id = (action as IdAction).payload;
+      const activities = ActivityForest.copy(state.activities);
+      activities.remove(id);
       return {
         ...state,
         activities,

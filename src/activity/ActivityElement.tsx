@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {View, Text, StyleSheet, StyleProp, ViewStyle} from 'react-native';
 import * as ColorPalette from '../ColorPalette';
 import CustomPressable from '../components/Pressable';
@@ -22,8 +22,9 @@ import {
   SPACE_BETWEEN_ELEMENTS,
 } from '../constants';
 import TimerButton from './TimerButton';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {ApplicationState} from '../redux/rootReducer';
+import {removedSubactivity} from './redux/activityActions';
 
 export interface Activity {
   id: IdType;
@@ -107,7 +108,14 @@ export const ExpandedSection = React.memo(function (
     canAddSubactivities,
     width = STANDARD_ELEMENT_WIDTH,
   } = props;
+  const dispatch = useDispatch();
   const subactivities = getSubactivities(id);
+  const onSwipeLeft = useCallback(
+    (id: IdType) => {
+      dispatch(removedSubactivity(id));
+    },
+    [dispatch],
+  );
   return (
     <CustomPressable
       style={{...commonStyles.container, ...styles.expandedSection}}>
@@ -123,6 +131,7 @@ export const ExpandedSection = React.memo(function (
             canAddSubactivities={canAddSubactivities}
             activities={subactivities}
             elementWidth={width - SUBACTIVITY_LEVEL_WIDTH_DECREMENT}
+            onSwipeLeft={onSwipeLeft}
           />
         )}
       </View>
