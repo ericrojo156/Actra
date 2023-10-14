@@ -1,5 +1,9 @@
 import {put, select, takeEvery, takeLatest} from 'redux-saga/effects';
-import {IdsAction, ParentChildAction} from '../../redux/actions';
+import {
+  IdsAction,
+  ParentChildAction,
+  ParentChildrenAction,
+} from '../../redux/actions';
 import {
   deleteInterval,
   joinIntervalsToActivity,
@@ -16,6 +20,9 @@ import {
   stopActivity,
   startActivity,
   deletedActivities,
+  clearSelectedActivities,
+  addSubactivitiesRequested,
+  ADD_SUBACTIVITIES_REQUESTED,
 } from './activityActions';
 import {uuidv4} from '../../utils/uuid';
 import {ApplicationState} from '../../redux/rootReducer';
@@ -50,7 +57,15 @@ function* stopActivitySaga(action: IntervalAction): any {
   }
 }
 
-function* createAndAddSubactivity(action: ParentChildAction<ActivityFormData>) {
+function* addSubactivitiesSaga(action: ParentChildrenAction) {
+  const {parentId, children: selectedIds} = action.payload;
+  yield put(addedSubactivities(parentId, selectedIds));
+  yield put(clearSelectedActivities());
+}
+
+function* createAndAddSubactivitySaga(
+  action: ParentChildAction<ActivityFormData>,
+) {
   const {parentId, child} = action.payload;
   yield put(createdActivity(child));
   const selectedIds: IdType[] = yield select(
@@ -58,7 +73,7 @@ function* createAndAddSubactivity(action: ParentChildAction<ActivityFormData>) {
       ...state.activity.selectedActivitiesIds.values(),
     ],
   );
-  yield put(addedSubactivities(parentId, [child.id, ...selectedIds]));
+  yield put(addSubactivitiesRequested(parentId, [child.id, ...selectedIds]));
 }
 
 function* joinActivities(action: IdsAction) {
@@ -79,8 +94,9 @@ function* joinActivities(action: IdsAction) {
 }
 
 export default function* rootSaga() {
+  yield takeLatest(ADD_SUBACTIVITIES_REQUESTED, addSubactivitiesSaga);
   yield takeLatest(STARTED_ACTIVITY, startActivitySaga);
   yield takeLatest(STOPPED_ACTIVITY, stopActivitySaga);
   yield takeEvery(JOINED_ACTIVITIES, joinActivities);
-  yield takeLatest(ADDED_CREATED_SUBACTIVITY, createAndAddSubactivity);
+  yield takeLatest(ADDED_CREATED_SUBACTIVITY, createAndAddSubactivitySaga);
 }

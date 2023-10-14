@@ -12,7 +12,7 @@ import {useNavigation} from '@react-navigation/native';
 import {IdType} from '../types';
 import {
   joinedActivities,
-  addedSubactivities,
+  addSubactivitiesRequested,
   deletedActivity,
 } from './redux/activityActions';
 
@@ -28,7 +28,7 @@ export function addSubactivitiesToActivity(
   subactivitiesIds: IdType[],
   dispatch: Dispatch<AnyAction>,
 ): void {
-  dispatch(addedSubactivities(parentId, subactivitiesIds));
+  dispatch(addSubactivitiesRequested(parentId, subactivitiesIds));
 }
 
 export default function useActivityOptionCallbacks() {

@@ -14,7 +14,9 @@ export const START_ACTIVITY = 'START_ACTIVITY';
 export const STOP_ACTIVITY = 'STOP_ACTIVITY';
 export const STARTED_ACTIVITY = 'STARTED_ACTIVITY';
 export const STOPPED_ACTIVITY = 'STOPPED_ACTIVITY';
+export const ADD_SUBACTIVITIES_REQUESTED = 'ADD_SUBACTIVITIES_REQUESTED';
 export const ADDED_SUBACTIVITIES = 'ADDED_SUBACTIVITY';
+export const CLEAR_SELECTED_ACTIVITIES = 'CLEAR_SELECTED_ACTIVITIES';
 export const ADDED_CREATED_SUBACTIVITY = 'ADDED_CREATED_SUBACTIVITY';
 export const REMOVED_SUBACTIVITY = 'REMOVED_SUBACTIVITY';
 export const JOINED_ACTIVITIES = 'JOINED_ACTIVITIES';
@@ -73,6 +75,19 @@ export function deletedActivities(ids: IdType[]): IdsAction {
   };
 }
 
+export function addSubactivitiesRequested(
+  parentId: IdType,
+  subactivities: IdType[],
+): ParentChildrenAction {
+  return {
+    type: ADD_SUBACTIVITIES_REQUESTED,
+    payload: {
+      parentId,
+      children: subactivities,
+    },
+  };
+}
+
 export function addedSubactivities(
   parentId: IdType,
   subactivities: IdType[],
@@ -83,6 +98,12 @@ export function addedSubactivities(
       parentId,
       children: subactivities,
     },
+  };
+}
+
+export function clearSelectedActivities(): BaseAction {
+  return {
+    type: CLEAR_SELECTED_ACTIVITIES,
   };
 }
 

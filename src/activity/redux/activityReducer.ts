@@ -16,6 +16,7 @@ import {
   DELETED_ACTIVITIES,
   REMOVED_SUBACTIVITY,
   ACTIVITIES_SELECTED,
+  CLEAR_SELECTED_ACTIVITIES,
 } from './activityActions';
 import {IdAction, IdsAction, ParentChildrenAction} from '../../redux/actions';
 import {getNonNullProjections} from '../../utils/projections';
@@ -154,6 +155,12 @@ export default function activityReducer(
       return {
         ...state,
         selectedActivitiesIds: new Set(ids),
+      };
+    }
+    case CLEAR_SELECTED_ACTIVITIES: {
+      return {
+        ...state,
+        selectedActivitiesIds: new Set(),
       };
     }
     default: {
