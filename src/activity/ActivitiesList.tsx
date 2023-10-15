@@ -7,7 +7,7 @@ import {
   DimensionValue,
   Animated,
 } from 'react-native';
-import {ExpandedActivityElement, Activity} from './ActivityElement';
+import {ExpandableActivityElement, Activity} from './ActivityElement';
 import {GetActivity} from './useActivities';
 import {STANDARD_ELEMENT_WIDTH, ELEMENT_HEIGHT} from '../constants';
 import {IdType} from '../types';
@@ -67,7 +67,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
   );
   const ActivityListElement = useCallback(
     ({item}: ListItemProps) => (
-      <ExpandedActivityElement
+      <ExpandableActivityElement
         getSubactivities={getSubactivities}
         getActivity={getActivity}
         isExpanded={isExpanded(item.id)}

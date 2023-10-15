@@ -177,7 +177,7 @@ export const ActivityElement = React.memo(function (
   );
 });
 
-export const ExpandedActivityElement = React.memo(function (
+export const ExpandableActivityElement = React.memo(function (
   props: ExpandableActivityProps,
 ) {
   const {
