@@ -24,7 +24,7 @@ export const PanGestureRecognizer = (props: PanGestureProps) => {
       }, duration);
     });
   };
-
+  const pan = useRef(new Animated.ValueXY()).current;
   const springBack = () => {
     // @ts-ignore
     if (pan.x._value > thresholdDx) {

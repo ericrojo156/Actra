@@ -86,12 +86,10 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
       setIsExpanded,
     ],
   );
-  const pan = useRef(new Animated.ValueXY()).current;
   const LeftSwipeableElement = useCallback(
     (listItemProps: ListItemProps) => (
       <PanGestureRecognizer
-        pan={pan}
-        shouldUsePositionFromPan={false}
+        shouldUsePositionFromPan={true}
         thresholdDx={SWIPE_LEFT_THRESHOLD}
         onSwipeLeft={() => onSwipeLeft?.(listItemProps.item.id)}>
         <ActivityListElement {...listItemProps} />
