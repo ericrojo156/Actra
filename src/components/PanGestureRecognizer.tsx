@@ -37,7 +37,12 @@ export const PanGestureRecognizer = (props: PanGestureProps) => {
 
   const panResponder = useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (e, gestureState) => {
+        const {dx, dy} = gestureState;
+        const magnitudeDx = Math.abs(dx);
+        const magnitudeDy = Math.abs(dy);
+        return magnitudeDx - magnitudeDy > 5 && dx < 0;
+      },
       onPanResponderMove: async (_, gesture) => {
         const nextPositionX = gesture.dx;
         pan.setValue({x: nextPositionX, y: 0});
@@ -54,10 +59,11 @@ export const PanGestureRecognizer = (props: PanGestureProps) => {
       },
     }),
   ).current;
-
   return (
     <Animated.View
-      style={{transform: [{translateX: shouldUsePositionFromPan ? pan.x : 0}]}}
+      style={{
+        transform: [{translateX: shouldUsePositionFromPan ? pan.x : 0}],
+      }}
       {...panResponder.panHandlers}>
       {children}
     </Animated.View>
