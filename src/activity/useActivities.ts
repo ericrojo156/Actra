@@ -40,6 +40,7 @@ interface ActivitiesGetters {
   getSubactivities: (id: IdType) => Activity[];
   isChildOf: (id: IdType, parentId: IdType) => boolean;
   isDescendantOf: (id: IdType, parentId: IdType) => boolean;
+  isAncestorOf: (possibleParentId: IdType, id: IdType) => boolean;
   canAddSubactivities: (id: IdType) => boolean;
 }
 
@@ -55,25 +56,36 @@ export function useGetActivity(): ActivitiesGetters {
     },
     [activityForest],
   );
+
   const getActivityName = useCallback(
     (id: IdType) => getActivity(id)?.name ?? '',
     [getActivity],
   );
+
   const getActivities = useCallback(getMockActivities, []);
+
   const isChildOf = (id: IdType, parentId: IdType): boolean =>
     !!activityForest.getChildrenIds(parentId).find(childId => childId === id);
   const getSubactivities = useCallback(
     (id: IdType) => activityForest.getChildrenData(id),
     [activityForest],
   );
+
   const isDescendantOf = (id: IdType, parentId: IdType): boolean =>
     !!activityForest.getDescendantsSet(parentId).has(id);
+
+  const isAncestorOf = (possibleParentId: IdType, id: IdType): boolean => {
+    const ancestors = activityForest.getAncestors(id);
+    return ancestors.has(possibleParentId);
+  };
+
   const canAddSubactivities = (id: IdType): boolean =>
     !(
       activityForest.getAncestors(id).size > 5 ||
       (activityForest.roots.length === 1 &&
         isDescendantOf(id, activityForest.roots[0]?.id))
     );
+
   return {
     getSubactivities,
     isChildOf,
@@ -81,6 +93,7 @@ export function useGetActivity(): ActivitiesGetters {
     getActivityName,
     getActivities,
     isDescendantOf,
+    isAncestorOf,
     canAddSubactivities,
   };
 }
