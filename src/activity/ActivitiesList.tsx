@@ -1,11 +1,10 @@
-import React, {useMemo, useState, useCallback, useRef} from 'react';
+import React, {useMemo, useState, useCallback} from 'react';
 import {
   LayoutAnimation,
   View,
   FlatList,
   StyleSheet,
   DimensionValue,
-  Animated,
 } from 'react-native';
 import {ExpandableActivityElement, Activity} from './ActivityElement';
 import {GetActivity} from './useActivities';
@@ -95,7 +94,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
         <ActivityListElement {...listItemProps} />
       </PanGestureRecognizer>
     ),
-    [ActivityListElement, onSwipeLeft, pan],
+    [ActivityListElement, onSwipeLeft],
   );
   return (
     <View style={{...styles.activitiesListContainer, height: listHeight}}>

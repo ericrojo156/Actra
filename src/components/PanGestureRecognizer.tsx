@@ -4,13 +4,11 @@ import {PanResponder, Animated} from 'react-native';
 interface PanGestureProps extends PropsWithChildren {
   thresholdDx: number;
   onSwipeLeft: () => void;
-  pan: Animated.ValueXY;
   shouldUsePositionFromPan: boolean;
 }
 
 export const PanGestureRecognizer = (props: PanGestureProps) => {
-  const {thresholdDx, onSwipeLeft, children, pan, shouldUsePositionFromPan} =
-    props;
+  const {thresholdDx, onSwipeLeft, children, shouldUsePositionFromPan} = props;
   const triggerSwipeLeftAnimation = (positionX: Animated.Value) => {
     const duration = 100;
     Animated.timing(positionX, {
