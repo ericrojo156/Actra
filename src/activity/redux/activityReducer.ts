@@ -53,7 +53,7 @@ function deleteActivitiesFromStore(
         subactivity.parentId = null;
       });
     }
-    activities.remove(id);
+    activities.delete(id);
   });
   return {
     ...state,
@@ -131,7 +131,7 @@ export default function activityReducer(
     case REMOVED_SUBACTIVITY: {
       const id = (action as IdAction).payload;
       const activities = ActivityForest.copy(state.activities);
-      activities.remove(id);
+      activities.removeFromParent(id);
       return {
         ...state,
         activities,

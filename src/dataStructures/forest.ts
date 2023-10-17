@@ -24,7 +24,8 @@ export interface IForestNodesLayer<T extends IdPropWithParentId> {
   getNode(id: IdType): TreeNode<T> | null;
   getParent(childId: IdType): TreeNode<T> | null;
   updateNode(node: TreeNode<T>): void;
-  remove(id: IdType): void;
+  delete(id: IdType): void;
+  removeFromParent(id: IdType): void;
   getChildren(parentId: IdType): TreeNode<T>[];
   addNode(nodeToAdd: TreeNode<T>, targetParentId: IdType): void;
 }
@@ -115,41 +116,32 @@ export class Forest<T extends IdPropWithParentId>
     }
     yield null;
   }
-  private removeNodeFromParentLinkings(id: IdType) {
-    const parent = this.getParent(id);
-    if (parent) {
-      if (parent.firstChild === parent.lastChild && parent.firstChild === id) {
-        parent.firstChild = null;
-        parent.lastChild = null;
-      } else {
-        const node = this.getNode(id);
-        const prevSibling = node?.prevSibling ?? null;
-        const nextSibling = node?.nextSibling ?? null;
-        for (const child of this.getNextChild(parent)) {
-          if (child === null) {
-            break;
-          }
-          if (child.id === node?.id) {
-            child.prevSibling = prevSibling;
-            child.nextSibling = nextSibling;
-            if (prevSibling) {
-              prevSibling.nextSibling = nextSibling;
-            }
-            if (nextSibling) {
-              nextSibling.prevSibling = prevSibling;
-            }
-            if (parent.firstChild?.id === node.id) {
-              parent.firstChild = nextSibling;
-            }
-            if (parent.lastChild?.id === node.id) {
-              parent.lastChild = prevSibling;
-            }
-          }
-        }
+  private removeNodeFromParentLinkings(node: TreeNode<T>) {
+    const parent = this.getParent(node.id);
+    if (parent && parent.firstChild !== null) {
+      if (parent.firstChild.id === node.id) {
+        parent.firstChild = node.nextSibling;
       }
+      if (parent.lastChild?.id === node.id) {
+        parent.lastChild = node.prevSibling;
+      }
+      node.parent = null;
     }
   }
-  remove(id: IdType): void {
+  private removeNodeFromSiblingsLinkings(node: TreeNode<T>) {
+    const nodePrevSibling = node.prevSibling;
+    const nodeNextSibling = node.nextSibling;
+    if (nodePrevSibling) {
+      nodePrevSibling.nextSibling = nodeNextSibling;
+    }
+    if (nodeNextSibling) {
+      nodeNextSibling.prevSibling = nodePrevSibling;
+    }
+    // This node becomes a root node. There is no need to keep references to sibling root nodes, since order is maintained by Forest.rootNodes array rather than via sibling nodes linked list
+    node.nextSibling = null;
+    node.prevSibling = null;
+  }
+  delete(id: IdType): void {
     const nodeToDelete = this.getNode(id);
     if (nodeToDelete === null) {
       return;
@@ -163,13 +155,22 @@ export class Forest<T extends IdPropWithParentId>
       nextSibling.prevSibling = nodeToDelete.prevSibling;
     }
     this.getChildren(id)?.forEach(child => {
-      // immediate child nodes become root nodes, but they maintain their own subtrees
+      // Immediate child nodes become root nodes, but they maintain their own subtrees
       child.parent = null;
       this.rootNodes.push(child);
     });
-    this.removeNodeFromParentLinkings(id);
+    this.removeFromParent(id);
     this.nodesMap.delete(id);
     this.reassignRootNodes();
+  }
+  removeFromParent(id: IdType): void {
+    const node = this.getNode(id);
+    const parent = this.getParent(id);
+    if (node && parent) {
+      this.removeNodeFromParentLinkings(node);
+      this.removeNodeFromSiblingsLinkings(node);
+      this.reassignRootNodes();
+    }
   }
   getNode(id: IdType): TreeNode<T> | null {
     if (id === null) {

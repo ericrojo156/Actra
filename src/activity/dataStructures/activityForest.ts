@@ -64,7 +64,7 @@ export class ActivityForest
   add(dataToAdd: Activity, targetParentId: IdType): void {
     const nodeToAdd =
       this.forest.getNode(dataToAdd.id) ?? createActivityNode(dataToAdd);
-    this.remove(dataToAdd.id);
+    this.removeFromParent(dataToAdd.id);
     nodeToAdd.data.parentId = targetParentId;
     const targetParent = this.forest.getNode(targetParentId);
     if (targetParent) {
@@ -78,14 +78,23 @@ export class ActivityForest
       this.forest.updateNode({...nodeToUpdate, data: activity});
     }
   }
-  remove(id: IdType): void {
+  delete(id: IdType): void {
+    // note: it is cleanest to first remove the node before deleting, which must be done through the data layer of ActivityForest (and in that method, the node layer will be taken care of)
+    this.removeFromParent(id);
+    this.forest.delete(id);
+  }
+  removeFromParent(id: IdType): void {
     const parent = this.forest.getParent(id);
     if (parent) {
       parent.data.subactivitiesIds = parent.data.subactivitiesIds.filter(
         childId => childId !== id,
       );
     }
-    this.forest.remove(id);
+    const activity: Activity | null = this.getData(id);
+    if (activity) {
+      activity.parentId = null;
+    }
+    this.forest.removeFromParent(id);
   }
   static copy(activityForest: ActivityForest): ActivityForest {
     const newActivityForest = new ActivityForest([]);
