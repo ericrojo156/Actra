@@ -10,7 +10,7 @@ import {Activity} from '../activity/ActivityElement';
 
 export function AddSubactivities(props: IdProp) {
   const {id} = props;
-  const {getActivityName, isDescendantOf, isAncestorOf} = useGetActivity();
+  const {getActivityName, isChildOf, isAncestorOf} = useGetActivity();
   const {translate} = useTranslation();
   const headerText1 = translate('Select-Activities');
   const headerText2 = translate('to-Add');
@@ -21,7 +21,7 @@ export function AddSubactivities(props: IdProp) {
   const dispatch = useDispatch();
   const selectionConditions: FilterCondition<Activity>[] = [
     (activity: Activity) =>
-      !isDescendantOf(activity.id, id) && !isAncestorOf(activity.id, id),
+      !isChildOf(activity.id, id) && !isAncestorOf(activity.id, id),
   ];
   return (
     <SelectActivities
