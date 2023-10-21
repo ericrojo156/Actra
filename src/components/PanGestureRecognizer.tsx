@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, useRef} from 'react';
+import React, {PropsWithChildren, useCallback, useRef} from 'react';
 import {PanResponder, Animated} from 'react-native';
 import {IdType} from '../types';
 
@@ -17,8 +17,8 @@ export const PanGestureRecognizer = (props: PanGestureProps) => {
     shouldUsePositionFromPan,
     currentlyPressingIdRef,
   } = props;
-  const triggerSwipeLeftAnimation = (positionX: Animated.Value) => {
-    const duration = 100;
+  const triggerSwipeLeftAnimation = useCallback((positionX: Animated.Value) => {
+    const duration = 200;
     Animated.timing(positionX, {
       toValue: -400,
       duration: duration,
@@ -29,9 +29,9 @@ export const PanGestureRecognizer = (props: PanGestureProps) => {
         resolve();
       }, duration);
     });
-  };
+  }, []);
   const pan = useRef(new Animated.ValueXY()).current;
-  const springBack = () => {
+  const springBack = useCallback(() => {
     // @ts-ignore
     if (pan.x._value > thresholdDx) {
       Animated.spring(pan, {
@@ -39,7 +39,7 @@ export const PanGestureRecognizer = (props: PanGestureProps) => {
         useNativeDriver: true,
       }).start();
     }
-  };
+  }, [pan, thresholdDx]);
 
   const panResponder = useRef(
     PanResponder.create({
