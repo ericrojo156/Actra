@@ -1,4 +1,4 @@
-import React, {useMemo, useState, useCallback} from 'react';
+import React, {useMemo, useState, useCallback, useRef, useEffect} from 'react';
 import {
   LayoutAnimation,
   View,
@@ -6,7 +6,11 @@ import {
   StyleSheet,
   DimensionValue,
 } from 'react-native';
-import {ExpandableActivityElement, Activity} from './ActivityElement';
+import {
+  ExpandableActivityElement,
+  Activity,
+  ActivityElementProps,
+} from './ActivityElement';
 import {GetActivity} from './useActivities';
 import {STANDARD_ELEMENT_WIDTH, ELEMENT_HEIGHT} from '../constants';
 import {IdType} from '../types';
@@ -38,7 +42,7 @@ interface ActivitiesListProps {
   onSwipeLeft?: (id: IdType) => void;
 }
 
-type ListItemProps = any;
+type ListItemProps = {item: ActivityElementProps};
 
 export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
   useLayoutAnimation();
@@ -85,13 +89,20 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
       setIsExpanded,
     ],
   );
+  const [currentlyPressingId, setCurrentlyPressingId] = useState<IdType>(null);
+  const currentlyPanningIdRef: React.MutableRefObject<IdType> =
+    useRef(currentlyPressingId);
+  useEffect(() => {
+    currentlyPanningIdRef.current = currentlyPressingId;
+  }, [currentlyPanningIdRef, currentlyPressingId]);
   const LeftSwipeableElement = useCallback(
-    (listItemProps: ListItemProps) => (
+    ({item}: ListItemProps) => (
       <PanGestureRecognizer
+        currentlyPressingIdRef={currentlyPanningIdRef}
         shouldUsePositionFromPan={true}
         thresholdDx={SWIPE_LEFT_THRESHOLD}
-        onSwipeLeft={() => onSwipeLeft?.(listItemProps.item.id)}>
-        <ActivityListElement {...listItemProps} />
+        onSwipeLeft={() => onSwipeLeft?.(item.id)}>
+        <ActivityListElement item={{...item, setCurrentlyPressingId}} />
       </PanGestureRecognizer>
     ),
     [ActivityListElement, onSwipeLeft],

@@ -47,7 +47,7 @@ function deleteActivitiesFromStore(
     const activityToDelete = activities.getData(id);
     if (activityToDelete) {
       getNonNullProjections(
-        activityToDelete.subactivitiesIds,
+        activityToDelete.subactivitiesIds ?? [],
         activities.getData.bind(activities),
       ).forEach((subactivity: Activity) => {
         subactivity.parentId = null;

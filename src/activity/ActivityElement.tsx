@@ -31,14 +31,15 @@ export interface Activity {
   parentId: IdType;
   name: string;
   color?: ColorPalette.Color;
-  subactivitiesIds: IdType[];
-  intervalsIds: IdType[];
+  subactivitiesIds?: IdType[];
+  intervalsIds?: IdType[];
   currentlyActiveIntervalId: IdType;
 }
 
 export interface ActivityElementProps extends Activity {
   hideTracker?: boolean;
   width?: number;
+  setCurrentlyPressingId?: (id: IdType) => void;
 }
 
 export interface ExpandableActivityProps extends ActivityElementProps {
@@ -47,6 +48,7 @@ export interface ExpandableActivityProps extends ActivityElementProps {
   getSubactivities: (id: IdType) => Activity[];
   getActivity: (id: IdType) => Activity | null;
   canAddSubactivities: (id: IdType) => boolean;
+  setCurrentlyPressingId?: (id: IdType) => void;
 }
 
 const ActivityOptionsMenuBar = React.memo(function (
@@ -186,14 +188,20 @@ export const ExpandableActivityElement = React.memo(function (
     setIsExpanded,
     width = STANDARD_ELEMENT_WIDTH,
     color,
+    setCurrentlyPressingId,
   } = props;
   const activityProps = {
     ...props,
     color: undefined,
   };
+  const pressableTrackingCallbacks = {
+    onPressIn: () => setCurrentlyPressingId?.(id),
+    onPressOut: () => setCurrentlyPressingId?.(null),
+  };
   return (
     <View style={{padding: SPACE_BETWEEN_ELEMENTS / 2}}>
       <CustomPressable
+        {...pressableTrackingCallbacks}
         onPress={() => setIsExpanded(!isExpanded, id)}
         style={{
           ...commonStyles.roundedElementBorder,

@@ -7,6 +7,7 @@ interface PressableProps {
   activeScale?: number;
   onPress?: (event?: any) => void;
   onPressIn?: (event?: any) => void;
+  onPressOut?: (event?: any) => void;
   renderElement?: () => ReactElement;
   children?: any;
   style?: any;
@@ -16,9 +17,10 @@ function CustomPressable(props: PressableProps) {
   const {
     activeScale,
     children,
+    renderElement,
     onPress = () => {},
     onPressIn = () => {},
-    renderElement,
+    onPressOut = () => {},
     style,
   } = props;
   return (
@@ -27,7 +29,8 @@ function CustomPressable(props: PressableProps) {
       tension={200}
       activeScale={activeScale ?? DEFAULT_ACTIVE_SCALE}
       onPress={onPress}
-      onPressIn={onPressIn}>
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}>
       {children ?? renderElement?.()}
     </TouchableScale>
   );

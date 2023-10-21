@@ -1,14 +1,22 @@
 import React, {PropsWithChildren, useRef} from 'react';
 import {PanResponder, Animated} from 'react-native';
+import {IdType} from '../types';
 
 interface PanGestureProps extends PropsWithChildren {
   thresholdDx: number;
   onSwipeLeft: () => void;
   shouldUsePositionFromPan: boolean;
+  currentlyPressingIdRef: React.MutableRefObject<IdType>;
 }
 
 export const PanGestureRecognizer = (props: PanGestureProps) => {
-  const {thresholdDx, onSwipeLeft, children, shouldUsePositionFromPan} = props;
+  const {
+    thresholdDx,
+    onSwipeLeft,
+    children,
+    shouldUsePositionFromPan,
+    currentlyPressingIdRef,
+  } = props;
   const triggerSwipeLeftAnimation = (positionX: Animated.Value) => {
     const duration = 100;
     Animated.timing(positionX, {
@@ -36,6 +44,10 @@ export const PanGestureRecognizer = (props: PanGestureProps) => {
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (e, gestureState) => {
+        const currentlyPanningId = currentlyPressingIdRef?.current ?? null;
+        if (currentlyPanningId === null) {
+          return false;
+        }
         const {dx, dy} = gestureState;
         const magnitudeDx = Math.abs(dx);
         const magnitudeDy = Math.abs(dy);
