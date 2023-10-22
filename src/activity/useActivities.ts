@@ -41,6 +41,7 @@ interface ActivitiesGetters {
   isDescendantOf: (id: IdType, parentId: IdType) => boolean;
   isAncestorOf: (possibleParentId: IdType, id: IdType) => boolean;
   canAddSubactivities: (id: IdType) => boolean;
+  getParent: (id: IdType) => Activity | null;
 }
 
 export function useGetActivity(): ActivitiesGetters {
@@ -53,6 +54,11 @@ export function useGetActivity(): ActivitiesGetters {
       const result = activityForest.getData(id) ?? null;
       return result;
     },
+    [activityForest],
+  );
+
+  const getParent = useCallback(
+    (id: IdType): Activity | null => activityForest.getParentData(id),
     [activityForest],
   );
 
@@ -94,6 +100,7 @@ export function useGetActivity(): ActivitiesGetters {
     isDescendantOf,
     isAncestorOf,
     canAddSubactivities,
+    getParent,
   };
 }
 

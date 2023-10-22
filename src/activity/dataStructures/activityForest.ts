@@ -37,6 +37,9 @@ export class ActivityForest
   getData(id: IdType): Activity | null {
     return this.forest.getData(id);
   }
+  getParentData(id: IdType): Activity | null {
+    return this.forest.getParent(id)?.data ?? null;
+  }
   getChildrenData(parentId: IdType): Activity[] {
     return this.forest.getChildren(parentId).map(node => node.data);
   }
@@ -68,6 +71,9 @@ export class ActivityForest
     nodeToAdd.data.parentId = targetParentId;
     const targetParent = this.forest.getNode(targetParentId);
     if (targetParent) {
+      if (typeof targetParent.data.subactivitiesIds === 'undefined') {
+        targetParent.data.subactivitiesIds = [];
+      }
       targetParent.data.subactivitiesIds.push(dataToAdd.id);
     }
     this.forest.addNode(nodeToAdd, targetParentId);
@@ -86,9 +92,8 @@ export class ActivityForest
   removeFromParent(id: IdType): void {
     const parent = this.forest.getParent(id);
     if (parent) {
-      parent.data.subactivitiesIds = parent.data.subactivitiesIds.filter(
-        childId => childId !== id,
-      );
+      parent.data.subactivitiesIds =
+        parent.data.subactivitiesIds?.filter(childId => childId !== id) ?? [];
     }
     const activity: Activity | null = this.getData(id);
     if (activity) {

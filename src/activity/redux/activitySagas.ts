@@ -1,9 +1,5 @@
 import {put, select, takeEvery, takeLatest} from 'redux-saga/effects';
-import {
-  IdsAction,
-  ParentChildAction,
-  ParentChildrenAction,
-} from '../../redux/actions';
+import {ParentChildAction, ParentChildrenAction} from '../../redux/actions';
 import {
   deleteInterval,
   joinIntervalsToActivity,
@@ -23,6 +19,7 @@ import {
   clearSelectedActivities,
   addSubactivitiesRequested,
   ADD_SUBACTIVITIES_REQUESTED,
+  CombinedActivitiesAction,
 } from './activityActions';
 import {uuidv4} from '../../utils/uuid';
 import {ApplicationState} from '../../redux/rootReducer';
@@ -76,8 +73,8 @@ function* createAndAddSubactivitySaga(
   yield put(addSubactivitiesRequested(parentId, [child.id, ...selectedIds]));
 }
 
-function* joinActivities(action: IdsAction) {
-  const ids = action.payload;
+function* joinActivities(action: CombinedActivitiesAction) {
+  const {targetParentId, ids} = action.payload;
   const nameOfCombinedActivity: string = yield select(
     (state: ApplicationState) =>
       state.activity.activities.getData(ids[0] ?? null)?.name ?? '',
@@ -89,6 +86,7 @@ function* joinActivities(action: IdsAction) {
       name: nameOfCombinedActivity,
     }),
   );
+  yield put(addedSubactivities(targetParentId, [combinedActivityId]));
   yield put(joinIntervalsToActivity(combinedActivityId, ids));
   yield put(deletedActivities(ids));
 }

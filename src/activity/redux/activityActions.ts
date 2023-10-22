@@ -40,6 +40,15 @@ export interface ActivityFormData {
   name: string;
 }
 
+export interface CombinedActivitiesPayload {
+  targetParentId: IdType;
+  ids: IdType[];
+}
+
+export interface CombinedActivitiesAction extends BaseAction {
+  payload: CombinedActivitiesPayload;
+}
+
 export type ActivityFormAction = BaseAction & {
   payload: ActivityFormData;
 };
@@ -174,10 +183,13 @@ export function stoppedActivity(
   };
 }
 
-export function joinedActivities(ids: IdType[]): IdsAction {
+export function joinedActivities(
+  targetParentId: IdType,
+  ids: IdType[],
+): CombinedActivitiesAction {
   return {
     type: JOINED_ACTIVITIES,
-    payload: ids,
+    payload: {targetParentId, ids},
   };
 }
 

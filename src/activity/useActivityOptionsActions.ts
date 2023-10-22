@@ -17,10 +17,11 @@ import {
 } from './redux/activityActions';
 
 export function joinActivities(
+  targetParentId: IdType,
   ids: IdType[],
   dispatch: Dispatch<AnyAction>,
 ): void {
-  dispatch(joinedActivities(ids));
+  dispatch(joinedActivities(targetParentId, ids));
 }
 
 export function addSubactivitiesToActivity(

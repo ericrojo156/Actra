@@ -9,7 +9,7 @@ import {useGetActivity} from '../activity/useActivities';
 
 export function JoinActivities(props: IdProp) {
   const {id} = props;
-  const {getActivityName} = useGetActivity();
+  const {getActivityName, getParent} = useGetActivity();
   const {translate} = useTranslation();
   const headerText1 = translate('Select-Activities');
   const headerText2 = translate('to-Join');
@@ -25,7 +25,11 @@ export function JoinActivities(props: IdProp) {
       confirmationButtonText={confirmationButtonText}
       onConfirmSelection={(selectedIds: IdType[]) => {
         if (id) {
-          joinActivities([id, ...selectedIds], dispatch);
+          joinActivities(
+            getParent(id)?.id ?? null,
+            [id, ...selectedIds],
+            dispatch,
+          );
         }
         dispatch(modalClosed());
       }}
