@@ -38,7 +38,7 @@ const defaultActivityState: ActivityState = {
   currentlyActive: null,
 };
 
-function deleteActivitiesFromStore(
+function deleteActivitiesFromState(
   state: ActivityState,
   ids: IdType[],
 ): ActivityState {
@@ -108,11 +108,11 @@ export default function activityReducer(
     }
     case DELETED_ACTIVITY: {
       const id = (action as IdAction).payload;
-      return deleteActivitiesFromStore(state, [id]);
+      return deleteActivitiesFromState(state, [id]);
     }
     case DELETED_ACTIVITIES: {
       const ids = (action as IdsAction).payload;
-      return deleteActivitiesFromStore(state, ids);
+      return deleteActivitiesFromState(state, ids);
     }
     case ADDED_SUBACTIVITIES: {
       const {parentId, children} = (action as ParentChildrenAction).payload;

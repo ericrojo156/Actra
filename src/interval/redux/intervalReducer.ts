@@ -34,7 +34,7 @@ function createIntervalStartingNow(parentActivityId: IdType): Interval {
   };
 }
 
-function deleteIntervalsOfActivity(
+function deleteIntervalsOfActivityFromState(
   state: IntervalState,
   deletedActivityId: IdType,
 ) {
@@ -105,13 +105,13 @@ export default function intervalReducer(
     }
     case DELETED_ACTIVITY: {
       const deletedActivitiyId: IdType = (action as IdAction).payload;
-      return deleteIntervalsOfActivity(state, deletedActivitiyId);
+      return deleteIntervalsOfActivityFromState(state, deletedActivitiyId);
     }
     case DELETED_ACTIVITIES: {
       const activityIds = (action as IdsAction).payload;
       const nextState = activityIds.reduce(
         (accState: IntervalState, deletedActivityId: IdType): IntervalState =>
-          deleteIntervalsOfActivity(accState, deletedActivityId),
+          deleteIntervalsOfActivityFromState(accState, deletedActivityId),
         state,
       );
       return nextState;
