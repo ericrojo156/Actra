@@ -4,6 +4,7 @@ import {StyleSheet, View, Text, Pressable, Animated} from 'react-native';
 import {ApplicationState} from '../redux/RootReducer';
 import {feedbackMessageCleared} from './FeedbackActions';
 import * as ColorPalette from '../ColorPalette';
+import {FlashMessageProps} from './FeedbackState';
 
 export const FEEDBACK_MESSAGE_DURATION_MS = 3500;
 const CLOSED_POSITION = 1000;
@@ -28,11 +29,22 @@ function animateY(initialY: Animated.Value, toValue: number) {
   });
 }
 
+export const emptyMessage: FlashMessageProps = {
+  message: '',
+  secondaryMessage: '',
+  feedbackType: 'info',
+  undoAction: null,
+};
+
 export function FeedbackMessage() {
   // note: might as well destruct them from one selector, since these properties are updated all together in one action for feedback messaging
-  const {message, secondaryMessage, feedbackType, undoAction} = useSelector(
-    (state: ApplicationState) => state.feedback,
+  const messagesArray = useSelector(
+    (state: ApplicationState) => state.feedback.messages,
   );
+  const latestMessage =
+    (messagesArray.length > 0 && messagesArray[messagesArray.length - 1]) ||
+    emptyMessage;
+  const {message, secondaryMessage, feedbackType} = latestMessage;
   const dispatch = useDispatch();
   const shouldShowMessage = message || secondaryMessage;
   const yPosition = useRef(new Animated.Value(CLOSED_POSITION)).current;
@@ -50,11 +62,14 @@ export function FeedbackMessage() {
     }
   }, [closeFlashMessage, dispatch, shouldShowMessage, yPosition]);
   const onPress = useCallback(async () => {
-    if (undoAction) {
-      dispatch(undoAction);
-      closeFlashMessage();
-    }
-  }, [closeFlashMessage, dispatch, undoAction]);
+    closeFlashMessage();
+    messagesArray.forEach(messageProps => {
+      const undoAction = messageProps.undoAction;
+      if (undoAction) {
+        dispatch(undoAction);
+      }
+    });
+  }, [closeFlashMessage, dispatch, messagesArray]);
   return (
     <Animated.View
       style={{

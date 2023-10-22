@@ -13,12 +13,9 @@ export default function FeedbackReducer(
 ) {
   switch (action.type) {
     case FEEDBACK_MESSAGE_INVOKED:
-      return produce(feedbackState, draft => {
-        const payload = (action as FeedbackMessageAction).payload;
-        draft.message = payload.message ?? '';
-        draft.secondaryMessage = payload.secondaryMessage ?? '';
-        draft.feedbackType = payload.type ?? 'info';
-        draft.undoAction = payload.undoAction ?? null;
+      return produce(feedbackState, (draft: FeedbackState) => {
+        const flashMessage = (action as FeedbackMessageAction).payload;
+        draft.messages.push({...flashMessage});
       });
     case FEEDBACK_MESSAGE_CLEARED:
       return {...defaultFeedbackState};

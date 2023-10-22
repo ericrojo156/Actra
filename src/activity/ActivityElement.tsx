@@ -120,6 +120,7 @@ export const ExpandedSection = React.memo(function (
       dispatch(removedSubactivity(subactivityId));
       dispatch(
         feedbackMessageInvoked({
+          feedbackType: 'info',
           message: translate('Subtrackable-Removed-From-Project'),
           secondaryMessage: translate('Press-Here-To-Undo'),
           undoAction: addedSubactivities(parentId, [subactivityId]),

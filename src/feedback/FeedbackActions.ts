@@ -1,23 +1,16 @@
-import {AnyAction} from 'redux';
 import {BaseAction} from '../types';
+import {FlashMessageProps} from './FeedbackState';
 export const FEEDBACK_MESSAGE_INVOKED = 'feedback_message_invoked';
 export const FEEDBACK_MESSAGE_CLEARED = 'feedback_message_cleared';
 
 export type FeedbackType = 'info' | 'error';
 
-export interface FeedbackMessagePayload {
-  message: string;
-  secondaryMessage: string;
-  type?: FeedbackType;
-  undoAction?: AnyAction;
-}
-
 export interface FeedbackMessageAction extends BaseAction {
-  payload: FeedbackMessagePayload;
+  payload: FlashMessageProps;
 }
 
 export const feedbackMessageInvoked = (
-  payload: FeedbackMessagePayload,
+  payload: FlashMessageProps,
 ): FeedbackMessageAction => {
   return {
     type: FEEDBACK_MESSAGE_INVOKED,
