@@ -20,6 +20,7 @@ import {
   addSubactivitiesRequested,
   ADD_SUBACTIVITIES_REQUESTED,
   CombinedActivitiesAction,
+  stoppedActivity,
 } from './activityActions';
 import {uuidv4} from '../../utils/uuid';
 import {ApplicationState} from '../../redux/rootReducer';
@@ -56,6 +57,15 @@ function* stopActivitySaga(action: IntervalAction): any {
 
 function* addSubactivitiesSaga(action: ParentChildrenAction) {
   const {parentId, children: selectedIds} = action.payload;
+  const parentIsActive: boolean = yield select(
+    (state: ApplicationState) => state.activity.currentlyActive === parentId,
+  );
+  if (parentIsActive) {
+    const currentlyActiveInterval: IdType = yield select(
+      (state: ApplicationState) => state.interval.currentlyActive,
+    );
+    yield put(stoppedActivity(parentId, currentlyActiveInterval));
+  }
   yield put(addedSubactivities(parentId, selectedIds));
   yield put(clearSelectedActivities());
 }

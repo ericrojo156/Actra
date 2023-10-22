@@ -22,11 +22,11 @@ import {
   SPACE_BETWEEN_ELEMENTS,
 } from '../constants';
 import TimerButton from './TimerButton';
-import {useDispatch, useSelector} from 'react-redux';
-import {ApplicationState} from '../redux/rootReducer';
+import {useDispatch} from 'react-redux';
 import {addedSubactivities, removedSubactivity} from './redux/activityActions';
 import {feedbackMessageInvoked} from '../feedback/FeedbackActions';
 import {useIntervals} from '../interval/useIntervals';
+import {useGetActivity} from './useActivities';
 
 export interface Activity {
   id: IdType;
@@ -169,6 +169,11 @@ export const ActivityElement = React.memo(function (
       backgroundColor: ColorProcessor.serialize(color),
     };
   }
+  const {getSubactivities} = useGetActivity();
+  const hasSubactivities: boolean = useMemo(
+    () => getSubactivities(id).length > 0,
+    [getSubactivities, id],
+  );
   return (
     <View style={activityStyle}>
       <Text
@@ -181,7 +186,7 @@ export const ActivityElement = React.memo(function (
       </Text>
       {!hideTracker && (
         <View style={styles.timerButtonPosition}>
-          <TimerButton id={id} />
+          {!hasSubactivities && <TimerButton id={id} />}
         </View>
       )}
     </View>
