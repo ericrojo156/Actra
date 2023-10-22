@@ -4,6 +4,7 @@ import {
   START_ACTIVITY,
   STOP_ACTIVITY,
   IntervalAction,
+  DELETED_ACTIVITIES,
 } from '../../activity/redux/activityActions';
 import {BaseAction, IdType} from '../../types';
 import {uuidv4} from '../../utils/uuid';
@@ -16,7 +17,7 @@ import {
   JOIN_INTERVALS_TO_ACTIVITY,
   JoinActivitiesAction,
 } from './intervalsActions';
-import {IdAction} from '../../redux/actions';
+import {IdAction, IdsAction} from '../../redux/actions';
 import {flatten} from '../../utils/array';
 
 const defaultIntervalState: IntervalState = {
@@ -31,6 +32,28 @@ function createIntervalStartingNow(parentActivityId: IdType): Interval {
     startTimeEpochMilliseconds: Date.now(),
     endTimeEpochMilliseconds: null,
   };
+}
+
+function deleteIntervalsOfActivity(
+  state: IntervalState,
+  deletedActivityId: IdType,
+) {
+  const nextState = produce(state, draft => {
+    const currentlyActiveIntervalId = state.currentlyActive;
+    const intervalsOfDeletedActivity: Interval[] = [
+      ...(state.activitiesIntervals.get(deletedActivityId)?.values() ?? []),
+    ];
+    if (
+      !intervalsOfDeletedActivity.every(
+        (interval: Interval) =>
+          currentlyActiveIntervalId !== (interval?.intervalId ?? null),
+      )
+    ) {
+      draft.currentlyActive = null;
+    }
+    draft.activitiesIntervals.delete(deletedActivityId);
+  });
+  return nextState;
 }
 
 export default function intervalReducer(
@@ -82,9 +105,15 @@ export default function intervalReducer(
     }
     case DELETED_ACTIVITY: {
       const deletedActivitiyId: IdType = (action as IdAction).payload;
-      const nextState = produce(state, draft => {
-        draft.activitiesIntervals.delete(deletedActivitiyId);
-      });
+      return deleteIntervalsOfActivity(state, deletedActivitiyId);
+    }
+    case DELETED_ACTIVITIES: {
+      const activityIds = (action as IdsAction).payload;
+      const nextState = activityIds.reduce(
+        (accState: IntervalState, deletedActivityId: IdType): IntervalState =>
+          deleteIntervalsOfActivity(accState, deletedActivityId),
+        state,
+      );
       return nextState;
     }
     case JOIN_INTERVALS_TO_ACTIVITY: {

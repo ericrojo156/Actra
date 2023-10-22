@@ -55,9 +55,13 @@ function deleteActivitiesFromStore(
     }
     activities.delete(id);
   });
+  const currentlyActive = !ids.every(id => state.currentlyActive !== id)
+    ? null
+    : state.currentlyActive;
   return {
     ...state,
     activities,
+    currentlyActive,
   };
 }
 
