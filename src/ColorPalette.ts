@@ -18,6 +18,8 @@ export const SoftBlack_RGBASerialized = `rgba(${SoftBlack.red}, ${SoftBlack.gree
 export const OffWhite = {red: 240, green: 240, blue: 240, alpha: 1};
 export const OffWhite_RGBSerialized = `rgba(${OffWhite.red}, ${OffWhite.green}, ${OffWhite.blue}, ${OffWhite.alpha})`;
 export const defaultTrackableColor = 'rgba(130, 130, 130, 1)';
+export const infoMessage = 'rgba(66, 135, 245, 1)';
+export const errorMessage = '#B00020';
 
 export const activityDefaultColor = {
   red: 255,

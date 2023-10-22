@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {View, Text, StyleSheet, StyleProp, ViewStyle} from 'react-native';
 import * as ColorPalette from '../ColorPalette';
 import CustomPressable from '../components/Pressable';
@@ -24,7 +24,8 @@ import {
 import TimerButton from './TimerButton';
 import {useDispatch, useSelector} from 'react-redux';
 import {ApplicationState} from '../redux/rootReducer';
-import {removedSubactivity} from './redux/activityActions';
+import {addedSubactivities, removedSubactivity} from './redux/activityActions';
+import {feedbackMessageInvoked} from '../feedback/FeedbackActions';
 
 export interface Activity {
   id: IdType;
@@ -112,11 +113,20 @@ export const ExpandedSection = React.memo(function (
   } = props;
   const dispatch = useDispatch();
   const subactivities = getSubactivities(id);
+  const {translate} = useTranslation();
   const onSwipeLeft = useCallback(
-    (id: IdType) => {
-      dispatch(removedSubactivity(id));
+    (subactivityId: IdType) => {
+      const parentId = id;
+      dispatch(removedSubactivity(subactivityId));
+      dispatch(
+        feedbackMessageInvoked({
+          message: translate('Subtrackable-Removed-From-Project'),
+          secondaryMessage: translate('Press-Here-To-Undo'),
+          undoAction: addedSubactivities(parentId, [subactivityId]),
+        }),
+      );
     },
-    [dispatch],
+    [dispatch, id, translate],
   );
   return (
     <CustomPressable
@@ -194,10 +204,13 @@ export const ExpandableActivityElement = React.memo(function (
     ...props,
     color: undefined,
   };
-  const pressableTrackingCallbacks = {
-    onPressIn: () => setCurrentlyPressingId?.(id),
-    onPressOut: () => setCurrentlyPressingId?.(null),
-  };
+  const pressableTrackingCallbacks = useMemo(
+    () => ({
+      onPressIn: () => setCurrentlyPressingId?.(id),
+      onPressOut: () => setCurrentlyPressingId?.(null),
+    }),
+    [id, setCurrentlyPressingId],
+  );
   return (
     <View style={{padding: SPACE_BETWEEN_ELEMENTS / 2}}>
       <CustomPressable

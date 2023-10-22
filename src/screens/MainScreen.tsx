@@ -8,6 +8,7 @@ import {useTranslation} from '../internationalization/useTranslation';
 import {ActivitiesList} from '../activity/ActivitiesList';
 import {FloatingCreateActivityButton} from '../activity/CreateActivityOption';
 import {SPACE_BETWEEN_ELEMENTS} from '../constants';
+import {FeedbackMessage} from '../feedback/FeedbackMessage';
 
 function MainScreen() {
   const {activities, getSubactivities, getActivity, canAddSubactivities} =
@@ -47,6 +48,7 @@ function MainScreen() {
           canAddSubactivities={canAddSubactivities}
         />
       </View>
+      <FeedbackMessage />
       <FloatingCreateActivityButton />
     </GradientBackground>
   );

@@ -3,7 +3,7 @@ import {Activity} from './ActivityElement';
 import * as ColorPalette from '../ColorPalette';
 import {ApplicationState} from '../redux/rootReducer';
 import {useDispatch, useSelector} from 'react-redux';
-import {activitiesLoaded} from './redux/activityActions';
+import {activitiesLoaded, addedSubactivities} from './redux/activityActions';
 import {IdType} from '../types';
 import {uniqueBy} from '../utils/array';
 
@@ -19,7 +19,6 @@ async function getMockActivities(): Promise<Activity[]> {
       currentlyActiveIntervalId: null,
       color: ColorPalette.activityDefaultColor,
     };
-
     activities.push(activity);
   }
 
@@ -111,11 +110,14 @@ export function useActivitiesFetch() {
     (async () => {
       try {
         setActivities(await getActivities());
+        setTimeout(() => {
+          dispatch(addedSubactivities('0', ['1', '2']));
+        }, 1000);
       } catch (e) {
         console.log(e);
       }
     })();
-  }, [getActivities, setActivities]);
+  }, [dispatch, getActivities, setActivities]);
 }
 
 export default function useActivities(parentId?: IdType): ActivitiesData {
