@@ -13,7 +13,7 @@ async function getMockActivities(): Promise<Activity[]> {
     const activity: Activity = {
       id: index.toString(),
       parentId: null,
-      name: `Item ${index}`,
+      name: `Activity ${index}`,
       subactivitiesIds: [],
       intervalsIds: [],
       currentlyActiveIntervalId: null,

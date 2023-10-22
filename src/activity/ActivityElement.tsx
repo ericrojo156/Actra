@@ -26,6 +26,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {ApplicationState} from '../redux/rootReducer';
 import {addedSubactivities, removedSubactivity} from './redux/activityActions';
 import {feedbackMessageInvoked} from '../feedback/FeedbackActions';
+import {useIntervals} from '../interval/useIntervals';
 
 export interface Activity {
   id: IdType;
@@ -56,10 +57,7 @@ const ActivityOptionsMenuBar = React.memo(function (
   props: ExpandableActivityProps,
 ) {
   const {id, width} = props;
-  const hasIntervals = useSelector(
-    (state: ApplicationState) =>
-      (state.interval.activitiesIntervals.get(id)?.size ?? 0) > 0,
-  );
+  const hasIntervals = useIntervals(id).intervals.length > 0;
   return (
     <View
       style={{
