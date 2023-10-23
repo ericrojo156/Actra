@@ -40,7 +40,6 @@ export function CurrentlyActiveActivityBanner() {
     return null;
   }
   const {id, name, color} = activity;
-
   return (
     <Pressable onPress={() => goToHistory(id)} style={styles.bannerContainer}>
       <View

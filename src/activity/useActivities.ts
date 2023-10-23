@@ -9,7 +9,7 @@ import {uniqueBy} from '../utils/array';
 
 async function getMockActivities(): Promise<Activity[]> {
   const activities: Activity[] = [];
-  for (let index = 0; index < 6; index++) {
+  for (let index = 0; index < 100; index++) {
     const activity: Activity = {
       id: index.toString(),
       parentId: null,
