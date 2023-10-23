@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React from 'react';
 import {View} from 'react-native';
 import * as ColorProcessor from '../ColorProcessor';
 import * as ColorPalette from '../ColorPalette';
@@ -11,11 +11,11 @@ import {
 } from '../constants';
 import CustomPressable from '../components/Pressable';
 import {useIntervals} from './useIntervals';
-import {useTimeString} from '../time/useTimeString';
 import {useGetActivity} from '../activity/useActivities';
 import RightArrow from '../../assets/RightArrow';
 import {IdType} from '../types';
-import {useTranslation} from '../internationalization/useTranslation';
+import {useIntervalRealTimeDuration} from '../time/useRealTimeIntervalDuration';
+import {TimeDisplay, DateTimeDisplay} from '../time/TimeDisplay';
 
 export interface ActivityIntervalRelation {
   intervalId: IdType;
@@ -30,85 +30,6 @@ export interface Interval extends ActivityIntervalRelation {
 export interface IntervalElementProps extends ActivityIntervalRelation {
   width?: number;
 }
-
-export type TimeUnit = 'days' | 'hours' | 'mins' | 'seconds';
-
-export interface MillisecondsProps {
-  milliseconds: number | null;
-}
-
-export const TimeDisplay = React.memo(function (props: MillisecondsProps) {
-  const {milliseconds} = props;
-  const {toDurationString} = useTimeString();
-  const {translate} = useTranslation();
-  if (milliseconds === null) {
-    return (
-      <View>
-        <Text style={{...styles.textStyle}}>{translate('Now')}</Text>
-      </View>
-    );
-  }
-  const timeDisplayString = toDurationString(milliseconds);
-  return <Text style={styles.textStyle}>{timeDisplayString}</Text>;
-});
-
-export const DateTimeDisplay = React.memo(function (props: MillisecondsProps) {
-  const {milliseconds} = props;
-  const {toDateTimeString} = useTimeString();
-  const {translate} = useTranslation();
-  if (milliseconds === null) {
-    return (
-      <View>
-        <Text style={{...styles.textStyle}}>{translate('Now')}</Text>
-      </View>
-    );
-  }
-  const {date, time} = toDateTimeString(milliseconds);
-  return (
-    <View>
-      <Text style={{...styles.textStyle, fontSize: 15}}>{date}</Text>
-      <Text style={{...styles.textStyle, fontSize: 15}}>{time}</Text>
-    </View>
-  );
-});
-
-function calcDuration(interval: Interval | null): number {
-  if (interval === null) {
-    return 0;
-  }
-  return (
-    (interval?.endTimeEpochMilliseconds ?? Date.now()) -
-    (interval?.startTimeEpochMilliseconds ?? Date.now())
-  );
-}
-
-function useIntervalRealTimeDuration(interval: Interval | null) {
-  const [durationMilliseconds, setDurationMilliseconds] = useState(
-    calcDuration(interval),
-  );
-  const recalculateDuration = useCallback(
-    () => setDurationMilliseconds(calcDuration(interval)),
-    [setDurationMilliseconds, interval],
-  );
-  useEffect(() => {
-    let cleanup = () => {};
-    if (interval?.endTimeEpochMilliseconds === null) {
-      const handle = setInterval(() => {
-        recalculateDuration();
-      }, 500);
-      cleanup = () => clearInterval(handle);
-    }
-    return () => {
-      cleanup();
-    };
-  }, [
-    interval?.endTimeEpochMilliseconds,
-    interval?.intervalId,
-    recalculateDuration,
-  ]);
-  return durationMilliseconds;
-}
-
 function IntervalElement(props: IntervalElementProps) {
   const {intervalId, parentActivityId, width} = props;
   const {getActivity} = useGetActivity();

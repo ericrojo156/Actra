@@ -28,6 +28,12 @@ interface TimeStringOut {
   toDurationString: (totalMilliseconds: number) => string;
 }
 
+export type TimeUnit = 'days' | 'hours' | 'mins' | 'seconds';
+
+export interface MillisecondsProps {
+  milliseconds: number | null;
+}
+
 export function useTimeString(): TimeStringOut {
   const {translate, locale} = useTranslation();
   const toDurationString = useCallback(

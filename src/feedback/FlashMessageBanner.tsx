@@ -36,7 +36,7 @@ export const emptyMessage: FlashMessageProps = {
   undoAction: null,
 };
 
-export function FeedbackMessage() {
+export function FlashMessageBanner() {
   // note: might as well destruct them from one selector, since these properties are updated all together in one action for feedback messaging
   const messagesArray = useSelector(
     (state: ApplicationState) => state.feedback.messages,

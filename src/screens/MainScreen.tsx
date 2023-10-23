@@ -8,7 +8,8 @@ import {useTranslation} from '../internationalization/useTranslation';
 import {ActivitiesList} from '../activity/ActivitiesList';
 import {FloatingCreateActivityButton} from '../activity/CreateActivityOption';
 import {SPACE_BETWEEN_ELEMENTS} from '../constants';
-import {FeedbackMessage} from '../feedback/FeedbackMessage';
+import {FlashMessageBanner} from '../feedback/FlashMessageBanner';
+import {CurrentlyActiveActivityBanner} from '../activity/CurrentlyActiveActivityBanner';
 
 function MainScreen() {
   const {activities, getSubactivities, getActivity, canAddSubactivities} =
@@ -39,6 +40,7 @@ function MainScreen() {
           }}>
           {headerText}
         </Text>
+        <CurrentlyActiveActivityBanner />
         <View style={{paddingTop: SPACE_BETWEEN_ELEMENTS * 3}} />
         <ActivitiesList
           listHeight={'85%'}
@@ -48,7 +50,7 @@ function MainScreen() {
           canAddSubactivities={canAddSubactivities}
         />
       </View>
-      <FeedbackMessage />
+      <FlashMessageBanner />
       <FloatingCreateActivityButton />
     </GradientBackground>
   );
