@@ -26,7 +26,7 @@ export function useIntervalRealTimeDuration(interval: Interval | null) {
     if (interval?.endTimeEpochMilliseconds === null) {
       const handle = setInterval(() => {
         recalculateDuration();
-      }, 500);
+      }, 100);
       cleanup = () => clearInterval(handle);
     }
     return () => {
