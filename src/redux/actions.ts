@@ -21,3 +21,10 @@ export interface ParentChildrenAction<T = IdType> extends BaseAction {
     children: T[];
   };
 }
+
+export interface CurrentlyActiveAction extends BaseAction {
+  payload: {
+    activityId: IdType;
+    intervalId: IdType;
+  };
+}

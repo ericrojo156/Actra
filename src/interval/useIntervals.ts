@@ -52,8 +52,11 @@ export function useMockIntervals(parentActivityId: IdType): IntervalsData {
 
 function getDescendantIntervalsEntries(
   state: ApplicationState,
-  parentActivityId: IdType,
+  parentActivityId?: IdType,
 ): [id: IdType, interval: Interval][] {
+  if (typeof parentActivityId === 'undefined') {
+    return getIntervalsEntries(state); // returns all the intervals in the store
+  }
   return flatten(
     [
       ...(state.activity.activities
@@ -67,8 +70,15 @@ function getDescendantIntervalsEntries(
 
 function getIntervalsEntries(
   state: ApplicationState,
-  parentActivityId: IdType,
+  parentActivityId?: IdType,
 ): [id: IdType, interval: Interval][] {
+  if (typeof parentActivityId === 'undefined') {
+    return flatten(
+      [...state.interval.activitiesIntervals.values()].map(intervalsRecord => [
+        ...intervalsRecord.values(),
+      ]),
+    ).map(interval => [interval.intervalId, interval]);
+  }
   return (
     [
       ...(state.interval.activitiesIntervals.get(parentActivityId)?.values() ??
@@ -77,7 +87,7 @@ function getIntervalsEntries(
   );
 }
 
-export function useIntervals(parentActivityId: IdType) {
+export function useIntervals(parentActivityId?: IdType) {
   const intervalsMap = useSelector((state: ApplicationState) => {
     const directIntervals: [id: IdType, interval: Interval][] =
       getIntervalsEntries(state, parentActivityId);

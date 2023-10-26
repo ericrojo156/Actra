@@ -17,8 +17,14 @@ import {
   REMOVED_SUBACTIVITY,
   ACTIVITIES_SELECTED,
   CLEAR_SELECTED_ACTIVITIES,
+  SET_CURRENTLY_ACTIVE,
 } from './activityActions';
-import {IdAction, IdsAction, ParentChildrenAction} from '../../redux/actions';
+import {
+  CurrentlyActiveAction,
+  IdAction,
+  IdsAction,
+  ParentChildrenAction,
+} from '../../redux/actions';
 import {getNonNullProjections} from '../../utils/projections';
 import {ActivityForest} from '../dataStructures/activityForest';
 
@@ -146,6 +152,13 @@ export default function activityReducer(
       return {
         ...state,
         currentlyActive: id,
+      };
+    }
+    case SET_CURRENTLY_ACTIVE: {
+      const {activityId} = (action as CurrentlyActiveAction).payload;
+      return {
+        ...state,
+        currentlyActive: activityId,
       };
     }
     case STOP_ACTIVITY: {

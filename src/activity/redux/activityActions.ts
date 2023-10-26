@@ -1,6 +1,7 @@
 import {Activity} from '../ActivityElement';
 import {BaseAction, IdType} from '../../types';
 import {
+  CurrentlyActiveAction,
   IdAction,
   IdsAction,
   ParentChildAction,
@@ -12,6 +13,7 @@ export const EDITED_ACTIVITY = 'EDITED_ACTIVITY';
 export const LOADED_ACTIVITIES = 'LOADED_ACTIVITIES';
 export const START_ACTIVITY = 'START_ACTIVITY';
 export const STOP_ACTIVITY = 'STOP_ACTIVITY';
+export const SET_CURRENTLY_ACTIVE = 'SET_CURRENTLY_ACTIVE';
 export const STARTED_ACTIVITY = 'STARTED_ACTIVITY';
 export const STOPPED_ACTIVITY = 'STOPPED_ACTIVITY';
 export const ADD_SUBACTIVITIES_REQUESTED = 'ADD_SUBACTIVITIES_REQUESTED';
@@ -130,7 +132,7 @@ export function activityWasEdited(data: ActivityFormData): ActivityFormAction {
   };
 }
 
-export function activitiesLoaded(activities: Activity[]): ActivitiesAction {
+export function loadedActivities(activities: Activity[]): ActivitiesAction {
   return {
     type: LOADED_ACTIVITIES,
     payload: activities,
@@ -197,5 +199,18 @@ export function activitiesSelected(ids: IdType[]): IdsAction {
   return {
     type: ACTIVITIES_SELECTED,
     payload: ids,
+  };
+}
+
+export function setCurrentlyActive(
+  activityId: IdType,
+  intervalId: IdType,
+): CurrentlyActiveAction {
+  return {
+    type: SET_CURRENTLY_ACTIVE,
+    payload: {
+      activityId,
+      intervalId,
+    },
   };
 }

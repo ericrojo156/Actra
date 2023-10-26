@@ -25,6 +25,7 @@ import {
 import {uuidv4} from '../../utils/uuid';
 import {ApplicationState} from '../../redux/rootReducer';
 import {IdType} from '../../types';
+import {storeSaveRequested} from '../../store/redux/storeActions';
 
 function* startActivitySaga(action: IntervalAction): any {
   const previouslyActiveActivity = yield select(
@@ -39,6 +40,7 @@ function* startActivitySaga(action: IntervalAction): any {
   yield put(
     startActivity(action.payload.activityId, action.payload.intervalId),
   );
+  yield put(storeSaveRequested());
 }
 
 function* stopActivitySaga(action: IntervalAction): any {

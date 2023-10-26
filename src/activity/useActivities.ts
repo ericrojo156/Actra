@@ -1,29 +1,28 @@
-import {useEffect, useCallback} from 'react';
+import {useCallback} from 'react';
 import {Activity} from './ActivityElement';
-import * as ColorPalette from '../ColorPalette';
 import {ApplicationState} from '../redux/rootReducer';
-import {useDispatch, useSelector} from 'react-redux';
-import {activitiesLoaded, addedSubactivities} from './redux/activityActions';
+import {useSelector} from 'react-redux';
 import {IdType} from '../types';
 import {uniqueBy} from '../utils/array';
+//import * as ColorPalette from '../ColorPalette';
+//
+// async function getMockActivities(): Promise<Activity[]> {
+//   const activities: Activity[] = [];
+//   for (let index = 0; index < 100; index++) {
+//     const activity: Activity = {
+//       id: index.toString(),
+//       parentId: null,
+//       name: `Activity ${index}`,
+//       subactivitiesIds: [],
+//       intervalsIds: [],
+//       currentlyActiveIntervalId: null,
+//       color: ColorPalette.activityDefaultColor,
+//     };
+//     activities.push(activity);
+//   }
 
-async function getMockActivities(): Promise<Activity[]> {
-  const activities: Activity[] = [];
-  for (let index = 0; index < 100; index++) {
-    const activity: Activity = {
-      id: index.toString(),
-      parentId: null,
-      name: `Activity ${index}`,
-      subactivitiesIds: [],
-      intervalsIds: [],
-      currentlyActiveIntervalId: null,
-      color: ColorPalette.activityDefaultColor,
-    };
-    activities.push(activity);
-  }
-
-  return activities;
-}
+//   return activities;
+// }
 
 export type GetActivity = (id: IdType) => Activity | null;
 export type GetActivityName = (id: IdType) => string;
@@ -35,7 +34,6 @@ interface ActivitiesData extends ActivitiesGetters {
 interface ActivitiesGetters {
   getActivity: GetActivity;
   getActivityName: GetActivityName;
-  getActivities: () => Promise<Activity[]>;
   getSubactivities: (id: IdType) => Activity[];
   isChildOf: (id: IdType, parentId: IdType) => boolean;
   isDescendantOf: (id: IdType, parentId: IdType) => boolean;
@@ -67,8 +65,6 @@ export function useGetActivity(): ActivitiesGetters {
     [getActivity],
   );
 
-  const getActivities = useCallback(getMockActivities, []);
-
   const isChildOf = (id: IdType, parentId: IdType): boolean =>
     !!activityForest.getChildrenIds(parentId).find(childId => childId === id);
   const getSubactivities = useCallback(
@@ -96,35 +92,11 @@ export function useGetActivity(): ActivitiesGetters {
     isChildOf,
     getActivity,
     getActivityName,
-    getActivities,
     isDescendantOf,
     isAncestorOf,
     canAddSubactivities,
     getParent,
   };
-}
-
-export function useActivitiesFetch() {
-  const dispatch = useDispatch();
-  const setActivities = useCallback(
-    (payload: Activity[]) => {
-      dispatch(activitiesLoaded(payload));
-    },
-    [dispatch],
-  );
-  const {getActivities} = useGetActivity();
-  useEffect(() => {
-    (async () => {
-      try {
-        setActivities(await getActivities());
-        setTimeout(() => {
-          dispatch(addedSubactivities('0', ['1', '2']));
-        }, 1000);
-      } catch (e) {
-        console.log(e);
-      }
-    })();
-  }, [dispatch, getActivities, setActivities]);
 }
 
 export default function useActivities(parentId?: IdType): ActivitiesData {

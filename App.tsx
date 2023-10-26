@@ -7,14 +7,15 @@ import {enableMapSet} from 'immer';
 import rootReducer from './src/redux/rootReducer';
 import {configureStore} from '@reduxjs/toolkit';
 import activitiesSagas from './src/activity/redux/activitySagas';
+import storeSagas from './src/store/redux/storeSagas';
 import {NavigationContainer} from '@react-navigation/native';
 import * as ColorPalette from './src/ColorPalette';
 import MainScreen from './src/screens/MainScreen';
 import {useTranslation} from './src/internationalization/useTranslation';
-import {useActivitiesFetch} from './src/activity/useActivities';
 import History from './src/screens/History';
 import {IdProp} from './src/types';
 import {commonStyles} from './src/commonStyles';
+import {useLoadedStore} from './src/store/usePersistentStore';
 
 enableMapSet();
 
@@ -26,6 +27,7 @@ let store = configureStore({
 });
 
 sagaMiddleware.run(activitiesSagas);
+sagaMiddleware.run(storeSagas);
 
 export type RootStackParamsList = {
   Main: {};
@@ -35,7 +37,7 @@ export type RootStackParamsList = {
 const RootStack = createStackNavigator<RootStackParamsList>();
 
 function Screens() {
-  useActivitiesFetch();
+  useLoadedStore();
   const {translate} = useTranslation();
   return (
     <NavigationContainer>

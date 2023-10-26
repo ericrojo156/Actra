@@ -2,7 +2,7 @@ import {IntervalAction} from '../../activity/redux/activityActions';
 import {BaseAction, IdType} from '../../types';
 import {Interval} from '../IntervalElement';
 
-export const INTERVALS_LOADED = 'INTERVALS_LOADED';
+export const LOADED_INTERVALS = 'LOADED_INTERVALS';
 export const JOIN_INTERVALS_TO_ACTIVITY = 'JOIN_INTERVALS_TO_ACTIVITY';
 export const DELETE_INTERVAL = 'DELETE_INTERVAL';
 
@@ -14,9 +14,9 @@ export interface JoinActivitiesAction extends BaseAction {
   payload: {combinedActivityId: IdType; activitiesToJoin: IdType[]};
 }
 
-export function intervalsLoaded(intervals: Interval[]): IntervalsAction {
+export function loadedIntervals(intervals: Interval[]): IntervalsAction {
   return {
-    type: INTERVALS_LOADED,
+    type: LOADED_INTERVALS,
     payload: intervals,
   };
 }
