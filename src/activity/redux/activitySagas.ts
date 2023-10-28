@@ -55,6 +55,7 @@ function* stopActivitySaga(action: IntervalAction): any {
     // if the duration is less than a second, then don't bother with the interval... delete it from the store
     yield put(deleteInterval(activityId, intervalId));
   }
+  yield put(storeSaveRequested());
 }
 
 function* addSubactivitiesSaga(action: ParentChildrenAction) {
@@ -70,6 +71,7 @@ function* addSubactivitiesSaga(action: ParentChildrenAction) {
   }
   yield put(addedSubactivities(parentId, selectedIds));
   yield put(clearSelectedActivities());
+  yield put(storeSaveRequested());
 }
 
 function* createAndAddSubactivitySaga(
@@ -83,6 +85,7 @@ function* createAndAddSubactivitySaga(
     ],
   );
   yield put(addSubactivitiesRequested(parentId, [child.id, ...selectedIds]));
+  yield put(storeSaveRequested());
 }
 
 function* joinActivities(action: CombinedActivitiesAction) {
@@ -101,6 +104,7 @@ function* joinActivities(action: CombinedActivitiesAction) {
   yield put(addedSubactivities(targetParentId, [combinedActivityId]));
   yield put(joinIntervalsToActivity(combinedActivityId, ids));
   yield put(deletedActivities(ids));
+  yield put(storeSaveRequested());
 }
 
 export default function* rootSaga() {
