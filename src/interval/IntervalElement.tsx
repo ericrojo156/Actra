@@ -16,16 +16,14 @@ import RightArrow from '../../assets/RightArrow';
 import {IdType} from '../types';
 import {useIntervalRealTimeDuration} from '../time/useRealTimeIntervalDuration';
 import {TimeDisplay, DateTimeDisplay} from '../time/TimeDisplay';
+import {TimeSpan} from '../time/types';
 
 export interface ActivityIntervalRelation {
   intervalId: IdType;
   parentActivityId: IdType;
 }
 
-export interface Interval extends ActivityIntervalRelation {
-  startTimeEpochMilliseconds: number;
-  endTimeEpochMilliseconds: number | null;
-}
+export type Interval = ActivityIntervalRelation & TimeSpan;
 
 export interface IntervalElementProps extends ActivityIntervalRelation {
   width?: number;

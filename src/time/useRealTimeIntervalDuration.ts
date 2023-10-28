@@ -2,16 +2,8 @@ import {useState, useCallback, useEffect} from 'react';
 import {Interval} from '../interval/IntervalElement';
 import {useSelector} from 'react-redux';
 import {ApplicationState} from '../redux/rootReducer';
-
-function calcDuration(interval: Interval | null): number {
-  if (interval === null) {
-    return 0;
-  }
-  return (
-    (interval?.endTimeEpochMilliseconds ?? Date.now()) -
-    (interval?.startTimeEpochMilliseconds ?? Date.now())
-  );
-}
+import {calcDuration} from './utils';
+import {STANDARD_TICK_MS} from './constants';
 
 export function useIntervalRealTimeDuration(interval: Interval | null) {
   const [durationMilliseconds, setDurationMilliseconds] = useState(
@@ -26,7 +18,7 @@ export function useIntervalRealTimeDuration(interval: Interval | null) {
     if (interval?.endTimeEpochMilliseconds === null) {
       const handle = setInterval(() => {
         recalculateDuration();
-      }, 100);
+      }, STANDARD_TICK_MS);
       cleanup = () => clearInterval(handle);
     }
     return () => {

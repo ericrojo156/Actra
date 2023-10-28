@@ -16,6 +16,9 @@ import History from './src/screens/History';
 import {IdProp} from './src/types';
 import {commonStyles} from './src/commonStyles';
 import {useLoadedStore} from './src/store/usePersistentStore';
+import {useAnalytics} from './src/analytics/useAnalytics';
+import {getTimeSpanSincePrevious6AM} from './src/time/utils';
+import {TimeSpan} from './src/time/types';
 
 enableMapSet();
 
@@ -37,6 +40,11 @@ export type RootStackParamsList = {
 const RootStack = createStackNavigator<RootStackParamsList>();
 
 function Screens() {
+  // ---- FOR VALIDATION DURING DEVELOPMENT ----
+  const timeSpanSincePrevious6AM: TimeSpan = getTimeSpanSincePrevious6AM();
+  const analyticsChartProps = useAnalytics(timeSpanSincePrevious6AM);
+  console.log(analyticsChartProps);
+  // -------------------------
   useLoadedStore();
   const {translate} = useTranslation();
   return (
