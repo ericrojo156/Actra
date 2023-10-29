@@ -17,6 +17,8 @@ import {IdProp} from './src/types';
 import {commonStyles} from './src/commonStyles';
 import {useLoadedStore} from './src/store/usePersistentStore';
 import {FlashMessageBanner} from './src/feedback/FlashMessageBanner';
+import {EditInterval} from './src/screens/EditInterval';
+import {Interval} from './src/interval/types';
 
 enableMapSet();
 
@@ -33,6 +35,7 @@ sagaMiddleware.run(storeSagas);
 export type RootStackParamsList = {
   Main: {};
   History: IdProp;
+  EditInterval: {interval: Interval | null};
 };
 
 const RootStack = createStackNavigator<RootStackParamsList>();
@@ -57,6 +60,17 @@ function Screens() {
         <RootStack.Screen
           name="History"
           component={History}
+          options={{
+            headerTitle: '',
+            headerTransparent: true,
+            headerBackTitle: translate('Back'),
+            headerTintColor: ColorPalette.OffWhite_RGBSerialized,
+            headerTitleStyle: commonStyles.headerTextStyle,
+          }}
+        />
+        <RootStack.Screen
+          name="EditInterval"
+          component={EditInterval}
           options={{
             headerTitle: '',
             headerTransparent: true,

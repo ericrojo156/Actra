@@ -1,9 +1,9 @@
 import {useSelector} from 'react-redux';
 import {IdType} from '../types';
-import {Interval} from './IntervalElement';
 import {useCallback, useMemo} from 'react';
 import {ApplicationState} from '../redux/rootReducer';
 import {flatten} from '../utils/array';
+import {Interval} from './types';
 
 interface IntervalsData {
   intervals: Interval[];

@@ -1,5 +1,5 @@
 import {BaseAction, IdType} from '../../types';
-import {Interval} from '../IntervalElement';
+import {Interval} from '../types';
 
 export const LOADED_INTERVALS = 'LOADED_INTERVALS';
 export const JOIN_INTERVALS_TO_ACTIVITY = 'JOIN_INTERVALS_TO_ACTIVITY';

@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {View} from 'react-native';
 import * as ColorProcessor from '../ColorProcessor';
 import * as ColorPalette from '../ColorPalette';
@@ -16,16 +16,8 @@ import RightArrow from '../../assets/RightArrow';
 import {IdType} from '../types';
 import {useIntervalRealTimeDuration} from '../time/useRealTimeIntervalDuration';
 import {TimeDisplay, DateTimeDisplay} from '../time/TimeDisplay';
-
-export interface ActivityIntervalRelation {
-  intervalId: IdType;
-  parentActivityId: IdType;
-}
-
-export interface Interval extends ActivityIntervalRelation {
-  startTimeEpochMilliseconds: number;
-  endTimeEpochMilliseconds: number | null;
-}
+import {useNavigation} from '@react-navigation/native';
+import {ActivityIntervalRelation, Interval} from './types';
 
 export interface IntervalElementProps extends ActivityIntervalRelation {
   width?: number;
@@ -47,13 +39,21 @@ function IntervalElement(props: IntervalElementProps) {
     width: width ?? STANDARD_ELEMENT_WIDTH,
     backgroundColor: ColorProcessor.serialize(activity.color),
   };
-
+  const navigation = useNavigation();
+  const goToEditInterval = useCallback(
+    (intervalId: IdType): void => {
+      // @ts-ignore
+      navigation.navigate('EditInterval', {interval: getInterval(intervalId)});
+    },
+    [getInterval, navigation],
+  );
   const pressableTrackingCallbacks = useMemo(
     () => ({
+      onPress: () => goToEditInterval(intervalId),
       onPressIn: () => setCurrentlyPressingId?.(intervalId),
       onPressOut: () => setCurrentlyPressingId?.(null),
     }),
-    [intervalId, setCurrentlyPressingId],
+    [intervalId, goToEditInterval, setCurrentlyPressingId],
   );
 
   if (interval === null) {

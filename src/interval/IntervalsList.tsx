@@ -1,7 +1,7 @@
 import React, {useCallback, useMemo} from 'react';
 import {LayoutAnimation, View, FlatList, StyleSheet} from 'react-native';
 import {ELEMENT_HEIGHT} from '../constants';
-import IntervalElement, {Interval} from './IntervalElement';
+import IntervalElement from './IntervalElement';
 import {IdType} from '../types';
 import {PanGestureRecognizer} from '../components/PanGestureRecognizer';
 import {useDispatch} from 'react-redux';
@@ -9,6 +9,7 @@ import {deletedInterval, undoDeletedInterval} from './redux/intervalsActions';
 import {usePressingMutex} from '../activity/hooks/usePressingMutex';
 import {useTranslation} from '../internationalization/useTranslation';
 import {feedbackMessageInvoked} from '../feedback/FeedbackActions';
+import {Interval} from './types';
 
 type ListItemProps = {item: Interval};
 

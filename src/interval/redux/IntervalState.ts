@@ -1,5 +1,5 @@
 import {IdType} from '../../types';
-import {Interval} from '../IntervalElement';
+import {Interval} from '../types';
 
 export type IntervalsRecord = Map<IdType, Interval>;
 
