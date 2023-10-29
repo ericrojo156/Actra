@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {View} from 'react-native';
 import * as ColorProcessor from '../ColorProcessor';
 import * as ColorPalette from '../ColorPalette';
@@ -29,9 +29,10 @@ export interface Interval extends ActivityIntervalRelation {
 
 export interface IntervalElementProps extends ActivityIntervalRelation {
   width?: number;
+  setCurrentlyPressingId?: (id: IdType) => void;
 }
 function IntervalElement(props: IntervalElementProps) {
-  const {intervalId, parentActivityId, width} = props;
+  const {intervalId, parentActivityId, width, setCurrentlyPressingId} = props;
   const {getActivity} = useGetActivity();
   const {getInterval} = useIntervals(parentActivityId);
   const activity = getActivity(parentActivityId) ?? {
@@ -47,12 +48,21 @@ function IntervalElement(props: IntervalElementProps) {
     backgroundColor: ColorProcessor.serialize(activity.color),
   };
 
+  const pressableTrackingCallbacks = useMemo(
+    () => ({
+      onPressIn: () => setCurrentlyPressingId?.(intervalId),
+      onPressOut: () => setCurrentlyPressingId?.(null),
+    }),
+    [intervalId, setCurrentlyPressingId],
+  );
+
   if (interval === null) {
     return null;
   }
+
   return (
     <View style={{paddingTop: PADDING_BETWEEN_ELEMENTS}}>
-      <CustomPressable style={intervalStyle}>
+      <CustomPressable {...pressableTrackingCallbacks} style={intervalStyle}>
         <Text style={styles.textStyle}>
           <TimeDisplay milliseconds={durationMilliseconds} />
         </Text>

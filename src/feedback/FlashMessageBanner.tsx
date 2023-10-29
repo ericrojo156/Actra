@@ -8,7 +8,7 @@ import {FlashMessageProps} from './FeedbackState';
 
 export const FEEDBACK_MESSAGE_DURATION_MS = 3500;
 const CLOSED_POSITION = 1000;
-const OPENED_POSITION = 350;
+const OPENED_POSITION = 730;
 
 const bannerBackgroundColors = new Map([
   ['info', ColorPalette.infoMessage],

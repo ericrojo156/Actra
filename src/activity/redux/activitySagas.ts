@@ -1,7 +1,8 @@
 import {put, select, takeEvery, takeLatest} from 'redux-saga/effects';
 import {ParentChildAction, ParentChildrenAction} from '../../redux/actions';
 import {
-  deleteInterval,
+  IntervalAction,
+  deletedInterval,
   joinIntervalsToActivity,
 } from '../../interval/redux/intervalsActions';
 import {
@@ -12,7 +13,6 @@ import {
   JOINED_ACTIVITIES,
   STARTED_ACTIVITY,
   STOPPED_ACTIVITY,
-  IntervalAction,
   stopActivity,
   startActivity,
   deletedActivities,
@@ -53,7 +53,7 @@ function* stopActivitySaga(action: IntervalAction): any {
     interval.endTimeEpochMilliseconds - interval.startTimeEpochMilliseconds;
   if (duration < 1000) {
     // if the duration is less than a second, then don't bother with the interval... delete it from the store
-    yield put(deleteInterval(activityId, intervalId));
+    yield put(deletedInterval(interval, false));
   }
   yield put(storeSaveRequested());
 }

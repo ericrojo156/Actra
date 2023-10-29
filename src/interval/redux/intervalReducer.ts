@@ -3,7 +3,6 @@ import {
   DELETED_ACTIVITY,
   START_ACTIVITY,
   STOP_ACTIVITY,
-  IntervalAction,
   DELETED_ACTIVITIES,
   SET_CURRENTLY_ACTIVE,
 } from '../../activity/redux/activityActions';
@@ -17,6 +16,9 @@ import {
   IntervalsAction,
   JOIN_INTERVALS_TO_ACTIVITY,
   JoinActivitiesAction,
+  UNDO_INTERVAL_DELETION,
+  IntervalAction,
+  DeletedIntervalAction,
 } from './intervalsActions';
 import {CurrentlyActiveAction, IdAction, IdsAction} from '../../redux/actions';
 import {flatten} from '../../utils/array';
@@ -146,13 +148,36 @@ export default function intervalReducer(
       return nextState;
     }
     case DELETE_INTERVAL: {
-      const {activityId, intervalId} = (action as IntervalAction).payload;
+      const {deletedInterval, wasActive} = (action as DeletedIntervalAction)
+        .payload;
       return produce(state, draft => {
-        const intervals = draft.activitiesIntervals.get(activityId);
+        const intervals = draft.activitiesIntervals.get(
+          deletedInterval.parentActivityId,
+        );
         if (!intervals) {
           return;
         }
-        intervals.delete(intervalId);
+        if (wasActive) {
+          draft.currentlyActive = null;
+        }
+        intervals.delete(deletedInterval.intervalId);
+      });
+    }
+    case UNDO_INTERVAL_DELETION: {
+      const {deletedInterval, wasActive} = (action as DeletedIntervalAction)
+        .payload;
+      return produce(state, draft => {
+        const parentActivityId = deletedInterval?.parentActivityId ?? null;
+        if (wasActive) {
+          draft.currentlyActive = deletedInterval.intervalId;
+        }
+        const intervals =
+          draft.activitiesIntervals.get(parentActivityId) ?? new Map();
+        const newInterval: Interval = {
+          ...deletedInterval,
+        };
+        intervals.set(newInterval.intervalId, newInterval);
+        draft.activitiesIntervals.set(parentActivityId, intervals);
       });
     }
     default: {

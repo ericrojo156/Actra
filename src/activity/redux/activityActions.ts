@@ -7,7 +7,7 @@ import {
   ParentChildAction,
   ParentChildrenAction,
 } from '../../redux/actions';
-
+import {IntervalAction} from '../../interval/redux/intervalsActions';
 export const CREATED_ACTIVITY = 'CREATED_ACTIVITY';
 export const EDITED_ACTIVITY = 'EDITED_ACTIVITY';
 export const LOADED_ACTIVITIES = 'LOADED_ACTIVITIES';
@@ -28,13 +28,6 @@ export const ACTIVITIES_SELECTED = 'ACTIVITIES_SELECTED';
 
 export interface ActivitiesAction extends BaseAction {
   payload: Activity[];
-}
-
-export interface IntervalAction extends BaseAction {
-  payload: {
-    activityId: IdType;
-    intervalId: IdType;
-  };
 }
 
 export interface ActivityFormData {

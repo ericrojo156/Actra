@@ -1,10 +1,24 @@
-import {IntervalAction} from '../../activity/redux/activityActions';
 import {BaseAction, IdType} from '../../types';
 import {Interval} from '../IntervalElement';
 
 export const LOADED_INTERVALS = 'LOADED_INTERVALS';
 export const JOIN_INTERVALS_TO_ACTIVITY = 'JOIN_INTERVALS_TO_ACTIVITY';
 export const DELETE_INTERVAL = 'DELETE_INTERVAL';
+export const UNDO_INTERVAL_DELETION = 'UNDO_INTERVAL_DELETION';
+
+export interface DeletedIntervalAction extends BaseAction {
+  payload: {
+    deletedInterval: Interval;
+    wasActive: boolean;
+  };
+}
+
+export interface IntervalAction extends BaseAction {
+  payload: {
+    activityId: IdType;
+    intervalId: IdType;
+  };
+}
 
 export interface IntervalsAction extends BaseAction {
   payload: Interval[];
@@ -34,15 +48,28 @@ export function joinIntervalsToActivity(
   };
 }
 
-export function deleteInterval(
-  activityId: IdType,
-  intervalId: IdType,
-): IntervalAction {
+export function deletedInterval(
+  deletedInterval: Interval,
+  wasActive: boolean,
+): DeletedIntervalAction {
   return {
     type: DELETE_INTERVAL,
     payload: {
-      activityId,
-      intervalId,
+      deletedInterval,
+      wasActive,
+    },
+  };
+}
+
+export function undoDeletedInterval(
+  deletedInterval: Interval,
+  wasActive: boolean,
+): DeletedIntervalAction {
+  return {
+    type: UNDO_INTERVAL_DELETION,
+    payload: {
+      deletedInterval,
+      wasActive,
     },
   };
 }

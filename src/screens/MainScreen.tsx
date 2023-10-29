@@ -8,7 +8,6 @@ import {useTranslation} from '../internationalization/useTranslation';
 import {ActivitiesList} from '../activity/ActivitiesList';
 import {FloatingCreateActivityButton} from '../activity/CreateActivityOption';
 import {SPACE_BETWEEN_ELEMENTS} from '../constants';
-import {FlashMessageBanner} from '../feedback/FlashMessageBanner';
 import {CurrentlyActiveActivityBanner} from '../activity/CurrentlyActiveActivityBanner';
 import {useSelector} from 'react-redux';
 import {ApplicationState} from '../redux/rootReducer';
@@ -62,7 +61,6 @@ function MainScreen() {
           canAddSubactivities={canAddSubactivities}
         />
       </View>
-      <FlashMessageBanner />
       <FloatingCreateActivityButton />
     </GradientBackground>
   );

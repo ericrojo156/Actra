@@ -37,6 +37,7 @@ const englishDict: LanguageDict = new Map<string, string>([
   ['Create-Subactivity', 'Create Subactivity'],
   ['Subtrackable-Removed-From-Project', 'Subtrackable Removed From Project'],
   ['Press-Here-To-Undo', 'Press Here To Undo'],
+  ['Deleted-Interval', 'Deleted Interval'],
 ]);
 
 const languages = new Map<Locale, LanguageDict>([['en-US', englishDict]]);

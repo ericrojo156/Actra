@@ -10,7 +10,6 @@ import {
   ActivitiesAction,
   ActivityFormAction,
   ADDED_SUBACTIVITIES,
-  IntervalAction,
   START_ACTIVITY,
   STOP_ACTIVITY,
   DELETED_ACTIVITIES,
@@ -27,6 +26,13 @@ import {
 } from '../../redux/actions';
 import {getNonNullProjections} from '../../utils/projections';
 import {ActivityForest} from '../dataStructures/activityForest';
+import {
+  DELETE_INTERVAL,
+  DeletedIntervalAction,
+  IntervalAction,
+  UNDO_INTERVAL_DELETION,
+} from '../../interval/redux/intervalsActions';
+import {produce} from 'immer';
 
 export const emptyActivity: Activity = {
   id: null,
@@ -179,6 +185,46 @@ export default function activityReducer(
         ...state,
         selectedActivitiesIds: new Set(),
       };
+    }
+    case DELETE_INTERVAL: {
+      const {deletedInterval, wasActive} = (action as DeletedIntervalAction)
+        .payload;
+      return produce(state, draft => {
+        if (wasActive) {
+          draft.currentlyActive = null;
+        }
+        const activity = draft.activities.getData(
+          deletedInterval.parentActivityId,
+        );
+        if (activity === null) {
+          return;
+        }
+        if (!activity.intervalsIds) {
+          activity!.intervalsIds = [];
+        }
+        activity.intervalsIds = activity.intervalsIds.filter(
+          intervalId => intervalId !== deletedInterval.intervalId,
+        );
+      });
+    }
+    case UNDO_INTERVAL_DELETION: {
+      const {deletedInterval, wasActive} = (action as DeletedIntervalAction)
+        .payload;
+      return produce(state, draft => {
+        if (wasActive) {
+          draft.currentlyActive = deletedInterval.parentActivityId;
+        }
+        const activity = draft.activities.getData(
+          deletedInterval.parentActivityId,
+        );
+        if (activity === null) {
+          return;
+        }
+        if (!activity.intervalsIds) {
+          activity!.intervalsIds = [];
+        }
+        activity.intervalsIds.push(deletedInterval.intervalId);
+      });
     }
     default: {
       return state;
