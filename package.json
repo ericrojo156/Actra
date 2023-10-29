@@ -11,6 +11,7 @@
     "doctor": "react-native doctor"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "^7.6.1",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
     "@react-navigation/stack": "^6.3.17",

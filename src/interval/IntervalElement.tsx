@@ -18,6 +18,9 @@ import {useIntervalRealTimeDuration} from '../time/useRealTimeIntervalDuration';
 import {TimeDisplay, DateTimeDisplay} from '../time/TimeDisplay';
 import {useNavigation} from '@react-navigation/native';
 import {ActivityIntervalRelation, Interval} from './types';
+import {TimeSpan} from '../time/types';
+
+export type Interval = ActivityIntervalRelation & TimeSpan;
 
 export interface IntervalElementProps extends ActivityIntervalRelation {
   width?: number;

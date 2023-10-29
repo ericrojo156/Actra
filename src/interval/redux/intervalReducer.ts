@@ -180,6 +180,9 @@ export default function intervalReducer(
         draft.activitiesIntervals.set(parentActivityId, intervals);
       });
     }
+    case EDITED_INTERVAL: {
+        
+    }
     default: {
       return state;
     }

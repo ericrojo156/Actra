@@ -1,10 +1,12 @@
 import {BaseAction, IdType} from '../../types';
 import {Interval} from '../types';
+import {TimeSpan} from '../../time/types';
 
 export const LOADED_INTERVALS = 'LOADED_INTERVALS';
 export const JOIN_INTERVALS_TO_ACTIVITY = 'JOIN_INTERVALS_TO_ACTIVITY';
 export const DELETE_INTERVAL = 'DELETE_INTERVAL';
 export const UNDO_INTERVAL_DELETION = 'UNDO_INTERVAL_DELETION';
+export const EDITED_INTERVAL = 'EDITED_INTERVAL';
 
 export interface DeletedIntervalAction extends BaseAction {
   payload: {
@@ -22,6 +24,10 @@ export interface IntervalAction extends BaseAction {
 
 export interface IntervalsAction extends BaseAction {
   payload: Interval[];
+}
+
+export interface TimeSpanAction extends BaseAction {
+  payload: TimeSpan;
 }
 
 export interface JoinActivitiesAction extends BaseAction {
@@ -73,3 +79,5 @@ export function undoDeletedInterval(
     },
   };
 }
+
+export function editedInterval(updatedTimeSpan: Timespan): TimeSpan;
