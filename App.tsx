@@ -16,6 +16,7 @@ import History from './src/screens/History';
 import {IdProp} from './src/types';
 import {commonStyles} from './src/commonStyles';
 import {useLoadedStore} from './src/store/usePersistentStore';
+import {FlashMessageBanner} from './src/feedback/FlashMessageBanner';
 
 enableMapSet();
 
@@ -65,6 +66,7 @@ function Screens() {
           }}
         />
       </RootStack.Navigator>
+      <FlashMessageBanner />
     </NavigationContainer>
   );
 }
