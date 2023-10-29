@@ -3,7 +3,6 @@ import {IdType} from '../types';
 import {Activity} from '../activity/ActivityElement';
 import {TimeSpan} from '../time/types';
 import useActivities from '../activity/useActivities';
-import {Interval} from '../interval/IntervalElement';
 import {useIntervals} from '../interval/useIntervals';
 import {calcDuration} from '../time/utils';
 import {IntervalsRecord} from '../interval/redux/IntervalState';
@@ -11,6 +10,7 @@ import {getNonNullProjections} from '../utils/projections';
 import {flatten} from '../utils/array';
 import {STANDARD_TICK_MS} from '../time/constants';
 import * as TimeSpanTrim from './timeSpanTrim';
+import {Interval} from '../interval/types';
 
 export interface TimePortion {
   percent: number;
@@ -64,7 +64,7 @@ function calculateAnalyticsChartProps(
   const trimmedActivitiesIntervalsWithinTimeSpan: Map<IdType, IntervalsRecord> =
     new Map();
   intervals
-    .map(interval => trimIntervalWithTimeSpan(interval, timeSpan))
+    .map(interval => trimIntervalWithTimeSpan({...interval}, timeSpan))
     .filter(trimmedInterval => calcDuration(trimmedInterval) > 0)
     .forEach(trimmedInterval => {
       const intervalsRecord: IntervalsRecord =

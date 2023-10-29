@@ -18,7 +18,7 @@ import {
   UNDO_INTERVAL_DELETION,
   IntervalAction,
   DeletedIntervalAction,
-  EDITED_INTERVAL,
+  EDIT_INTERVAL,
 } from './intervalsActions';
 import {CurrentlyActiveAction, IdAction, IdsAction} from '../../redux/actions';
 import {flatten} from '../../utils/array';
@@ -181,7 +181,7 @@ export default function intervalReducer(
         draft.activitiesIntervals.set(parentActivityId, intervals);
       });
     }
-    case EDITED_INTERVAL: {
+    case EDIT_INTERVAL: {
       const updatedInterval = (action as IntervalAction).payload;
       return produce(state, draft => {
         draft.activitiesIntervals

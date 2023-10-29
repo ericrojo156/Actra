@@ -1,9 +1,9 @@
 import {useState, useCallback, useEffect} from 'react';
-import {Interval} from '../interval/IntervalElement';
 import {useSelector} from 'react-redux';
 import {ApplicationState} from '../redux/rootReducer';
 import {calcDuration} from './utils';
 import {STANDARD_TICK_MS} from './constants';
+import {Interval} from '../interval/types';
 
 export function useIntervalRealTimeDuration(interval: Interval | null) {
   const [durationMilliseconds, setDurationMilliseconds] = useState(

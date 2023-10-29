@@ -8,6 +8,7 @@ import rootReducer from './src/redux/rootReducer';
 import {configureStore} from '@reduxjs/toolkit';
 import activitiesSagas from './src/activity/redux/activitySagas';
 import storeSagas from './src/store/redux/storeSagas';
+import intervalsSaga from './src/interval/redux/IntervalsSagas';
 import {NavigationContainer} from '@react-navigation/native';
 import * as ColorPalette from './src/ColorPalette';
 import MainScreen from './src/screens/MainScreen';
@@ -34,6 +35,7 @@ let store = configureStore({
 
 sagaMiddleware.run(activitiesSagas);
 sagaMiddleware.run(storeSagas);
+sagaMiddleware.run(intervalsSaga);
 
 export type RootStackParamsList = {
   Main: {};

@@ -48,22 +48,25 @@ export function EditInterval(
 ) {
   const {interval} = props.route.params;
   const {translate} = useTranslation();
-  const [startTimeEpochMilliseconds, setStartTimeEpochMilliseconds] = useState<
-    number | null
-  >(interval?.startTimeEpochMilliseconds ?? Date.now());
+  const [startTimeEpochMilliseconds, setStartTimeEpochMilliseconds] =
+    useState<number>(interval?.startTimeEpochMilliseconds ?? Date.now());
   const [endTimeEpochMilliseconds, setEndTimeEpochMilliseconds] = useState<
     number | null
-  >(interval?.endTimeEpochMilliseconds ?? Date.now());
+  >(interval?.endTimeEpochMilliseconds ?? null);
+  const duration: number =
+    (endTimeEpochMilliseconds ?? Date.now()) - startTimeEpochMilliseconds;
   const headerText = translate('Edit-Interval');
   const confirmationText = translate('Save');
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const isActive = useSelector(
-    (state: ApplicationState) =>
-      state.interval.currentlyActive === interval?.intervalId ?? null,
-  );
+  const isActive = useSelector((state: ApplicationState) => {
+    return (
+      state.interval.currentlyActive !== null &&
+      state.interval.currentlyActive === interval?.intervalId
+    );
+  });
   const handleSubmit = useCallback(() => {
-    if (interval && startTimeEpochMilliseconds !== null) {
+    if (interval && duration >= 0) {
       const updatedInterval: Interval = {
         ...interval,
         startTimeEpochMilliseconds,
@@ -80,6 +83,7 @@ export function EditInterval(
     endTimeEpochMilliseconds,
     dispatch,
     navigation,
+    duration,
   ]);
   return (
     <GradientBackground>
@@ -91,11 +95,13 @@ export function EditInterval(
             epochMilliseconds={startTimeEpochMilliseconds}
             setEpochMilliseconds={setStartTimeEpochMilliseconds}
           />
-          <DateTimePicker
-            label={translate('End')}
-            epochMilliseconds={endTimeEpochMilliseconds}
-            setEpochMilliseconds={setEndTimeEpochMilliseconds}
-          />
+          {!isActive && (
+            <DateTimePicker
+              label={translate('End')}
+              epochMilliseconds={endTimeEpochMilliseconds}
+              setEpochMilliseconds={setEndTimeEpochMilliseconds}
+            />
+          )}
         </View>
         <View style={styles.saveButtonContainer}>
           <CustomPressable style={styles.saveButton} onPress={handleSubmit}>

@@ -7,6 +7,7 @@ export const JOIN_INTERVALS_TO_ACTIVITY = 'JOIN_INTERVALS_TO_ACTIVITY';
 export const DELETE_INTERVAL = 'DELETE_INTERVAL';
 export const UNDO_INTERVAL_DELETION = 'UNDO_INTERVAL_DELETION';
 export const EDITED_INTERVAL = 'EDITED_INTERVAL';
+export const EDIT_INTERVAL = 'EDIT_INTERVAL';
 
 export interface DeletedIntervalAction extends BaseAction {
   payload: {
@@ -80,6 +81,13 @@ export function undoDeletedInterval(
 export function editedInterval(interval: Interval): IntervalAction {
   return {
     type: EDITED_INTERVAL,
+    payload: interval,
+  };
+}
+
+export function editInterval(interval: Interval): IntervalAction {
+  return {
+    type: EDIT_INTERVAL,
     payload: interval,
   };
 }
