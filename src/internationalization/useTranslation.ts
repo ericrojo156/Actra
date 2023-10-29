@@ -39,8 +39,8 @@ const englishDict: LanguageDict = new Map<string, string>([
   ['Press-Here-To-Undo', 'Press Here To Undo'],
   ['Deleted-Interval', 'Deleted Interval'],
   ['Edit-Interval', 'Edit Interval'],
-  ['Start-Time', 'Start Time'],
-  ['End-Time', 'End Time'],
+  ['Start', 'Start'],
+  ['End', 'End'],
 ]);
 
 const languages = new Map<Locale, LanguageDict>([['en-US', englishDict]]);

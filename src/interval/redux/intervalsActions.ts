@@ -16,10 +16,7 @@ export interface DeletedIntervalAction extends BaseAction {
 }
 
 export interface IntervalAction extends BaseAction {
-  payload: {
-    activityId: IdType;
-    intervalId: IdType;
-  };
+  payload: Interval;
 }
 
 export interface IntervalsAction extends BaseAction {
@@ -80,4 +77,9 @@ export function undoDeletedInterval(
   };
 }
 
-export function editedInterval(updatedTimeSpan: Timespan): TimeSpan;
+export function editedInterval(interval: Interval): IntervalAction {
+  return {
+    type: EDITED_INTERVAL,
+    payload: interval,
+  };
+}

@@ -38,7 +38,7 @@ sagaMiddleware.run(storeSagas);
 export type RootStackParamsList = {
   Main: {};
   History: IdProp;
-  EditInterval: {interval: Interval | null};
+  EditInterval: {interval: Interval};
 };
 
 const RootStack = createStackNavigator<RootStackParamsList>();

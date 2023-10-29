@@ -1,3 +1,4 @@
+import {TimeSpan} from '../time/types';
 import {IdType} from '../types';
 
 export interface ActivityIntervalRelation {
@@ -5,7 +6,4 @@ export interface ActivityIntervalRelation {
   parentActivityId: IdType;
 }
 
-export interface Interval extends ActivityIntervalRelation {
-  startTimeEpochMilliseconds: number;
-  endTimeEpochMilliseconds: number | null;
-}
+export type Interval = ActivityIntervalRelation & TimeSpan;

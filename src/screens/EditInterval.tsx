@@ -5,10 +5,15 @@ import {StyleSheet, Text, View} from 'react-native';
 import {commonStyles} from '../commonStyles';
 import {Interval} from '../interval/types';
 import GradientBackground from './GradientBackground';
-import DateTimePickerRN from '@react-native-community/datetimepicker';
+import DateTimePickerRN, {
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
 import CustomPressable from '../components/Pressable';
 import * as ColorPalette from '../ColorPalette';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {editedInterval} from '../interval/redux/intervalsActions';
+import {useNavigation} from '@react-navigation/native';
+import {ApplicationState} from '../redux/rootReducer';
 
 interface DateTimePickerProps {
   label: string;
@@ -17,26 +22,29 @@ interface DateTimePickerProps {
 }
 
 function DateTimePicker(props: DateTimePickerProps) {
-  const {label, epochMilliseconds} = props;
-  const [date, setDate] = useState(
-    epochMilliseconds ? new Date(epochMilliseconds) : new Date(),
-  );
-
-  const onChange = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate;
-    setDate(currentDate);
+  const {label, epochMilliseconds, setEpochMilliseconds} = props;
+  const date = epochMilliseconds ? new Date(epochMilliseconds) : new Date();
+  const onChange = (
+    _event: DateTimePickerEvent,
+    selectedDate: Date | undefined,
+  ) => {
+    setEpochMilliseconds((selectedDate ?? date).getTime());
   };
-
   return (
     <View style={styles.dateTimePickerContainer}>
       <Text style={{...commonStyles.textStyle, fontSize: 25}}>{label}</Text>
-      <DateTimePickerRN mode={'datetime'} value={date} onChange={onChange} />
+      <DateTimePickerRN
+        themeVariant="dark"
+        mode={'datetime'}
+        value={date}
+        onChange={onChange}
+      />
     </View>
   );
 }
 
 export function EditInterval(
-  props: NavigationScreenProps<{interval: Interval | null}>,
+  props: NavigationScreenProps<{interval: Interval}>,
 ) {
   const {interval} = props.route.params;
   const {translate} = useTranslation();
@@ -47,30 +55,53 @@ export function EditInterval(
     number | null
   >(interval?.endTimeEpochMilliseconds ?? Date.now());
   const headerText = translate('Edit-Interval');
-  const confirmationText = translate('Save-Changes');
+  const confirmationText = translate('Save');
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const isActive = useSelector(
+    (state: ApplicationState) =>
+      state.interval.currentlyActive === interval?.intervalId ?? null,
+  );
   const handleSubmit = useCallback(() => {
-    dispatch(editedInterval);
-  }, [dispatch]);
+    if (interval && startTimeEpochMilliseconds !== null) {
+      const updatedInterval: Interval = {
+        ...interval,
+        startTimeEpochMilliseconds,
+        endTimeEpochMilliseconds: !isActive ? endTimeEpochMilliseconds : null,
+      };
+      dispatch(editedInterval(updatedInterval));
+      // @ts-ignore
+      navigation.navigate('History', {id: interval.parentActivityId});
+    }
+  }, [
+    interval,
+    startTimeEpochMilliseconds,
+    isActive,
+    endTimeEpochMilliseconds,
+    dispatch,
+    navigation,
+  ]);
   return (
     <GradientBackground>
       <View style={styles.container}>
         <Text style={{...commonStyles.headerTextStyle}}>{headerText}</Text>
         <View style={styles.inputSection}>
           <DateTimePicker
-            label={translate('Start-Time')}
+            label={translate('Start')}
             epochMilliseconds={startTimeEpochMilliseconds}
             setEpochMilliseconds={setStartTimeEpochMilliseconds}
           />
           <DateTimePicker
-            label={translate('End-Time')}
+            label={translate('End')}
             epochMilliseconds={endTimeEpochMilliseconds}
             setEpochMilliseconds={setEndTimeEpochMilliseconds}
           />
         </View>
-        <CustomPressable style={styles.saveButton} onPress={handleSubmit}>
-          <Text style={styles.buttonTextStyle}>{confirmationText}</Text>
-        </CustomPressable>
+        <View style={styles.saveButtonContainer}>
+          <CustomPressable style={styles.saveButton} onPress={handleSubmit}>
+            <Text style={styles.buttonTextStyle}>{confirmationText}</Text>
+          </CustomPressable>
+        </View>
       </View>
     </GradientBackground>
   );
@@ -78,7 +109,11 @@ export function EditInterval(
 
 const styles = StyleSheet.create({
   container: {padding: 100, flex: 1, alignItems: 'center'},
-  inputSection: {paddingTop: 90, paddingBottom: 30},
+  inputSection: {
+    height: '100%',
+    justifyContent: 'center',
+    paddingBottom: 200,
+  },
   dateTimePickerContainer: {
     padding: 20,
     flexDirection: 'row',
@@ -92,5 +127,8 @@ const styles = StyleSheet.create({
   buttonTextStyle: {
     fontSize: 25,
     color: ColorPalette.OffWhite_RGBSerialized,
+  },
+  saveButtonContainer: {
+    transform: [{translateY: -100}],
   },
 });

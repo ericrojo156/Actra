@@ -1,5 +1,9 @@
 import {put, select, takeEvery, takeLatest} from 'redux-saga/effects';
-import {ParentChildAction, ParentChildrenAction} from '../../redux/actions';
+import {
+  IdAction,
+  ParentChildAction,
+  ParentChildrenAction,
+} from '../../redux/actions';
 import {
   IntervalAction,
   deletedInterval,
@@ -26,48 +30,58 @@ import {uuidv4} from '../../utils/uuid';
 import {ApplicationState} from '../../redux/rootReducer';
 import {IdType} from '../../types';
 import {storeSaveRequested} from '../../store/redux/storeActions';
+import {Interval} from '../../interval/types';
 
-function* startActivitySaga(action: IntervalAction): any {
-  const previouslyActiveActivity = yield select(
-    (state: ApplicationState) => state.activity.currentlyActive,
+function* startActivitySaga(action: IdAction): any {
+  const activityIdToStart: IdType = action.payload;
+  const previouslyActiveInterval: Interval | null = yield select(
+    (state: ApplicationState) => {
+      const currentlyActiveIntervalId = state.interval.currentlyActive;
+      return (
+        state.interval.activitiesIntervals.get(currentlyActiveIntervalId) ??
+        null
+      );
+    },
   );
-  const previouslyActiveInterval = yield select(
-    (state: ApplicationState) => state.interval.currentlyActive,
-  );
-  if (previouslyActiveActivity !== null && previouslyActiveInterval !== null) {
-    yield put(stopActivity(previouslyActiveActivity, previouslyActiveInterval));
+  if (previouslyActiveInterval !== null) {
+    yield put(stopActivity(previouslyActiveInterval));
   }
-  yield put(
-    startActivity(action.payload.activityId, action.payload.intervalId),
-  );
+  yield put(startActivity(activityIdToStart));
   yield put(storeSaveRequested());
 }
 
 function* stopActivitySaga(action: IntervalAction): any {
-  const {activityId, intervalId} = action.payload;
-  yield put(stopActivity(activityId, intervalId));
-  const interval = yield select((state: ApplicationState) =>
-    state.interval.activitiesIntervals.get(activityId)?.get(intervalId),
-  );
-  const duration =
-    interval.endTimeEpochMilliseconds - interval.startTimeEpochMilliseconds;
+  const intervalToStop: Interval = action.payload;
+  yield put(stopActivity(intervalToStop));
+  const duration = Date.now() - intervalToStop.startTimeEpochMilliseconds;
   if (duration < 1000) {
     // if the duration is less than a second, then don't bother with the interval... delete it from the store
-    yield put(deletedInterval(interval, false));
+    yield put(deletedInterval(intervalToStop, false));
   }
   yield put(storeSaveRequested());
 }
 
 function* addSubactivitiesSaga(action: ParentChildrenAction) {
   const {parentId, children: selectedIds} = action.payload;
-  const parentIsActive: boolean = yield select(
-    (state: ApplicationState) => state.activity.currentlyActive === parentId,
+  const currentlyActiveActivityId: IdType = yield select(
+    (state: ApplicationState) => state.activity.currentlyActive,
   );
+  const parentIsActive: boolean = currentlyActiveActivityId === parentId;
   if (parentIsActive) {
-    const currentlyActiveInterval: IdType = yield select(
-      (state: ApplicationState) => state.interval.currentlyActive,
+    const currentlyActiveInterval: Interval | null = yield select(
+      (state: ApplicationState) => {
+        const currentlyActiveIntervalId: IdType =
+          state.interval.currentlyActive;
+        const currentlyActiveInterval: Interval | null =
+          state.interval.activitiesIntervals
+            .get(currentlyActiveActivityId)
+            ?.get(currentlyActiveIntervalId) ?? null;
+        return currentlyActiveInterval;
+      },
     );
-    yield put(stoppedActivity(parentId, currentlyActiveInterval));
+    if (currentlyActiveInterval !== null) {
+      yield put(stoppedActivity(currentlyActiveInterval));
+    }
   }
   yield put(addedSubactivities(parentId, selectedIds));
   yield put(clearSelectedActivities());

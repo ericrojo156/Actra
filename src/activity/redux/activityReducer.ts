@@ -29,7 +29,6 @@ import {ActivityForest} from '../dataStructures/activityForest';
 import {
   DELETE_INTERVAL,
   DeletedIntervalAction,
-  IntervalAction,
   UNDO_INTERVAL_DELETION,
 } from '../../interval/redux/intervalsActions';
 import {produce} from 'immer';
@@ -154,10 +153,10 @@ export default function activityReducer(
       };
     }
     case START_ACTIVITY: {
-      const {activityId: id} = (action as IntervalAction).payload;
+      const activityId = (action as IdAction).payload;
       return {
         ...state,
-        currentlyActive: id,
+        currentlyActive: activityId,
       };
     }
     case SET_CURRENTLY_ACTIVE: {

@@ -8,7 +8,6 @@ import {
 } from '../../activity/redux/activityActions';
 import {BaseAction, IdType} from '../../types';
 import {uuidv4} from '../../utils/uuid';
-import {Interval} from '../IntervalElement';
 import {IntervalState} from './IntervalState';
 import {
   DELETE_INTERVAL,
@@ -19,9 +18,11 @@ import {
   UNDO_INTERVAL_DELETION,
   IntervalAction,
   DeletedIntervalAction,
+  EDITED_INTERVAL,
 } from './intervalsActions';
 import {CurrentlyActiveAction, IdAction, IdsAction} from '../../redux/actions';
 import {flatten} from '../../utils/array';
+import {Interval} from '../types';
 
 const defaultIntervalState: IntervalState = {
   currentlyActive: null,
@@ -81,7 +82,7 @@ export default function intervalReducer(
       return nextState;
     }
     case START_ACTIVITY: {
-      const {activityId: parentActivityId} = (action as IntervalAction).payload;
+      const parentActivityId = (action as IdAction).payload;
       const nextState = produce(state, draft => {
         const intervals =
           draft.activitiesIntervals.get(parentActivityId) ?? new Map();
@@ -94,7 +95,7 @@ export default function intervalReducer(
       return nextState;
     }
     case STOP_ACTIVITY: {
-      const {activityId: id, intervalId: currentlyActiveIntervalId} = (
+      const {parentActivityId: id, intervalId: currentlyActiveIntervalId} = (
         action as IntervalAction
       ).payload;
       const nextState = produce(state, draft => {
@@ -181,7 +182,12 @@ export default function intervalReducer(
       });
     }
     case EDITED_INTERVAL: {
-        
+      const updatedInterval = (action as IntervalAction).payload;
+      return produce(state, draft => {
+        draft.activitiesIntervals
+          .get(updatedInterval.parentActivityId)
+          ?.set(updatedInterval.intervalId, {...updatedInterval});
+      });
     }
     default: {
       return state;

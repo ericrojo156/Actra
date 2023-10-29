@@ -8,6 +8,7 @@ import {
   ParentChildrenAction,
 } from '../../redux/actions';
 import {IntervalAction} from '../../interval/redux/intervalsActions';
+import {Interval} from '../../interval/types';
 export const CREATED_ACTIVITY = 'CREATED_ACTIVITY';
 export const EDITED_ACTIVITY = 'EDITED_ACTIVITY';
 export const LOADED_ACTIVITIES = 'LOADED_ACTIVITIES';
@@ -132,49 +133,31 @@ export function loadedActivities(activities: Activity[]): ActivitiesAction {
   };
 }
 
-export function startActivity(
-  activityId: IdType,
-  intervalId: IdType,
-): IntervalAction {
+export function startActivity(activityId: IdType): IdAction {
   return {
     type: START_ACTIVITY,
-    payload: {activityId, intervalId},
+    payload: activityId,
   };
 }
 
-export function stopActivity(
-  id: IdType,
-  currentlyActiveInterval: IdType,
-): IntervalAction {
+export function stopActivity(intervalToStop: Interval): IntervalAction {
   return {
     type: STOP_ACTIVITY,
-    payload: {
-      activityId: id,
-      intervalId: currentlyActiveInterval,
-    },
+    payload: intervalToStop,
   };
 }
 
-export function startedActivity(
-  activityId: IdType,
-  intervalId: IdType,
-): IntervalAction {
+export function startedActivity(activityId: IdType): IdAction {
   return {
     type: STARTED_ACTIVITY,
-    payload: {activityId, intervalId},
+    payload: activityId,
   };
 }
 
-export function stoppedActivity(
-  id: IdType,
-  currentlyActiveInterval: IdType,
-): IntervalAction {
+export function stoppedActivity(intervalToStop: Interval): IntervalAction {
   return {
     type: STOPPED_ACTIVITY,
-    payload: {
-      activityId: id,
-      intervalId: currentlyActiveInterval,
-    },
+    payload: intervalToStop,
   };
 }
 
