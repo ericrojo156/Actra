@@ -4,7 +4,7 @@ export type FeedbackType = 'info' | 'error';
 
 export interface FlashMessageProps {
   message: string;
-  secondaryMessage: string;
+  secondaryMessage?: string;
   feedbackType: FeedbackType;
   undoAction: AnyAction | null;
 }

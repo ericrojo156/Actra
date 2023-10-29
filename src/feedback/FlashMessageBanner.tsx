@@ -49,8 +49,8 @@ export function FlashMessageBanner() {
   const shouldShowMessage = message || secondaryMessage;
   const yPosition = useRef(new Animated.Value(CLOSED_POSITION)).current;
   const closeFlashMessage = useCallback(async () => {
-    dispatch(feedbackMessageCleared());
     await animateY(yPosition, CLOSED_POSITION);
+    dispatch(feedbackMessageCleared());
   }, [dispatch, yPosition]);
   useEffect(() => {
     if (shouldShowMessage) {

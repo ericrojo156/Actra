@@ -14,6 +14,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {editedInterval} from '../interval/redux/intervalsActions';
 import {useNavigation} from '@react-navigation/native';
 import {ApplicationState} from '../redux/rootReducer';
+import {feedbackMessageInvoked} from '../feedback/FeedbackActions';
 
 interface DateTimePickerProps {
   label: string;
@@ -66,7 +67,17 @@ export function EditInterval(
     );
   });
   const handleSubmit = useCallback(() => {
-    if (interval && duration >= 0) {
+    if (duration <= 0) {
+      dispatch(
+        feedbackMessageInvoked({
+          feedbackType: 'error',
+          message: translate('Start-time-cannot-be-after-end-time'),
+          undoAction: null,
+        }),
+      );
+      return;
+    }
+    if (interval) {
       const updatedInterval: Interval = {
         ...interval,
         startTimeEpochMilliseconds,
@@ -77,13 +88,14 @@ export function EditInterval(
       navigation.navigate('History', {id: interval.parentActivityId});
     }
   }, [
+    duration,
     interval,
+    dispatch,
+    translate,
     startTimeEpochMilliseconds,
     isActive,
     endTimeEpochMilliseconds,
-    dispatch,
     navigation,
-    duration,
   ]);
   return (
     <GradientBackground>

@@ -108,6 +108,7 @@ export default function intervalReducer(
         currentInterval.endTimeEpochMilliseconds = Date.now();
         intervals.set(currentlyActiveIntervalId, currentInterval);
         draft.activitiesIntervals.set(id, intervals);
+        draft.currentlyActive = null;
       });
       return nextState;
     }

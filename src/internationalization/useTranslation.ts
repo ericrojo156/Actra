@@ -41,6 +41,10 @@ const englishDict: LanguageDict = new Map<string, string>([
   ['Edit-Interval', 'Edit Interval'],
   ['Start', 'Start'],
   ['End', 'End'],
+  [
+    'Start-time-cannot-be-after-end-time',
+    'Start time cannot be after end time',
+  ],
 ]);
 
 const languages = new Map<Locale, LanguageDict>([['en-US', englishDict]]);
