@@ -72,20 +72,27 @@ export function useGetActivity(): ActivitiesGetters {
     [activityForest],
   );
 
-  const isDescendantOf = (id: IdType, parentId: IdType): boolean =>
-    !!activityForest.getDescendantsSet(parentId).has(id);
-
-  const isAncestorOf = (possibleParentId: IdType, id: IdType): boolean => {
-    const ancestors = activityForest.getAncestors(id);
-    return ancestors.has(possibleParentId);
+  const isDescendantOf = (id1: IdType, id2: IdType): boolean => {
+    const descendants = activityForest.getDescendantsSet(id2);
+    return descendants.has(id1);
   };
 
-  const canAddSubactivities = (id: IdType): boolean =>
-    !(
-      activityForest.getAncestors(id).size > 5 ||
-      (activityForest.roots.length === 1 &&
-        isDescendantOf(id, activityForest.roots[0]?.id))
-    );
+  const isAncestorOf = (id1: IdType, id2: IdType): boolean => {
+    const ancestors = activityForest.getAncestors(id2);
+    return ancestors.has(id1);
+  };
+
+  const canAddSubactivities = (id: IdType): boolean => {
+    const isWithinTreeDepthLimit = activityForest.getAncestors(id).size <= 5;
+    const thereExistsASubactivityCandidate: boolean =
+      !!activityForest.dataList
+        .filter(activity => activity.id !== id)
+        .find(
+          activity =>
+            !isAncestorOf(id, activity.id) && !isDescendantOf(id, activity.id),
+        ) ?? false;
+    return isWithinTreeDepthLimit && !!thereExistsASubactivityCandidate;
+  };
 
   return {
     getSubactivities,
