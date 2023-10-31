@@ -20,9 +20,6 @@ import {useLoadedStore} from './src/store/usePersistentStore';
 import {FlashMessageBanner} from './src/feedback/FlashMessageBanner';
 import {EditInterval} from './src/screens/EditInterval';
 import {Interval} from './src/interval/types';
-import {useAnalytics} from './src/analytics/useAnalytics';
-import {getTimeSpanSincePrevious6AM} from './src/time/utils';
-import {TimeSpan} from './src/time/types';
 
 enableMapSet();
 
@@ -46,11 +43,6 @@ export type RootStackParamsList = {
 const RootStack = createStackNavigator<RootStackParamsList>();
 
 function Screens() {
-  // ---- FOR VALIDATION DURING DEVELOPMENT ----
-  const timeSpanSincePrevious6AM: TimeSpan = getTimeSpanSincePrevious6AM();
-  const analyticsChartProps = useAnalytics(timeSpanSincePrevious6AM);
-  console.log(analyticsChartProps);
-  // -------------------------
   useLoadedStore();
   const {translate} = useTranslation();
   return (
