@@ -7,7 +7,6 @@ import {useIntervals} from '../interval/useIntervals';
 import {calcDuration} from '../time/utils';
 import {IntervalsRecord} from '../interval/redux/IntervalState';
 import {getNonNullProjections} from '../utils/projections';
-import {flatten} from '../utils/array';
 import {STANDARD_TICK_MS} from '../time/constants';
 import * as TimeSpanTrim from './timeSpanTrim';
 import {Interval} from '../interval/types';
@@ -15,6 +14,7 @@ import {Interval} from '../interval/types';
 export interface TimePortion {
   percent: number;
   activity: Activity;
+  trimmedIntervals: Interval[];
 }
 
 // Returns an interval with duration of zero (whereby start and end times are both zero) when the interval doesn't lie within the timespan
@@ -81,26 +81,21 @@ function calculateAnalyticsChartProps(
     [...trimmedActivitiesIntervalsWithinTimeSpan.keys()],
     getActivityById,
   );
-  const totalTimeMilliseconds: number = flatten(
-    [...trimmedActivitiesIntervalsWithinTimeSpan.values()].map(
-      intervalsRecord => [...intervalsRecord.values()],
-    ),
-  ).reduce(
-    (total: number, interval: Interval) => total + calcDuration(interval),
-    0,
-  );
+  const totalTimeMilliseconds: number =
+    (timeSpan.endTimeEpochMilliseconds ?? Date.now()) -
+    timeSpan.startTimeEpochMilliseconds;
 
   const timePortionsMap: Map<IdType, TimePortion> = new Map(
-    activitiesWithinTimeSpan.map(activity => [
-      activity.id,
-      {
+    activitiesWithinTimeSpan.map(activity => {
+      const trimmedIntervalsOfActivity = [
+        ...(
+          trimmedActivitiesIntervalsWithinTimeSpan.get(activity.id) ?? []
+        )?.values(),
+      ];
+      const timePortion: TimePortion = {
         percent:
           (100 *
-            [
-              ...(
-                trimmedActivitiesIntervalsWithinTimeSpan.get(activity.id) ?? []
-              )?.values(),
-            ].reduce(
+            trimmedIntervalsOfActivity.reduce(
               (
                 totalActivityTrimmedDuration: number,
                 interval: Interval,
@@ -110,8 +105,10 @@ function calculateAnalyticsChartProps(
             )) /
           totalTimeMilliseconds,
         activity,
-      },
-    ]),
+        trimmedIntervals: trimmedIntervalsOfActivity,
+      };
+      return [activity.id, timePortion];
+    }),
   );
   return {totalTimeMilliseconds, timePortionsMap};
 }

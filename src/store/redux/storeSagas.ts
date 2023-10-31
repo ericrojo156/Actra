@@ -8,11 +8,11 @@ import {
 } from '../../activity/redux/activityActions';
 import {loadedIntervals} from '../../interval/redux/intervalsActions';
 import {ApplicationState} from '../../redux/rootReducer';
-import {Interval} from '../../interval/IntervalElement';
 import {flatten} from '../../utils/array';
 import {Activity} from '../../activity/ActivityElement';
 import {IdType} from '../../types';
 import {createActraStore} from '../actraStore';
+import {Interval} from '../../interval/types';
 
 function* storeLoadSaga() {
   const store: IActraStore = yield call(() => new IosStorePersistence().load());
