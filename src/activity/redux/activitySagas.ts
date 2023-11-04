@@ -37,9 +37,11 @@ function* startActivitySaga(action: IdAction): any {
   const previouslyActiveInterval: Interval | null = yield select(
     (state: ApplicationState) => {
       const currentlyActiveIntervalId = state.interval.currentlyActive;
+      const currentlyActiveActivityId = state.activity.currentlyActive;
       return (
-        state.interval.activitiesIntervals.get(currentlyActiveIntervalId) ??
-        null
+        state.interval.activitiesIntervals
+          .get(currentlyActiveActivityId)
+          ?.get(currentlyActiveIntervalId) ?? null
       );
     },
   );
