@@ -4,14 +4,16 @@ import {Activity} from '../activity/ActivityElement';
 import {TimeSpan} from '../time/types';
 import useActivities from '../activity/useActivities';
 import {useIntervals} from '../interval/useIntervals';
-import {calcDuration} from '../time/utils';
+import {getDuration} from '../time/utils';
 import {IntervalsRecord} from '../interval/redux/IntervalState';
 import {getNonNullProjections} from '../utils/projections';
 import {STANDARD_TICK_MS} from '../time/constants';
-import * as TimeSpanTrim from './timeSpanTrim';
+import * as TimeSpanTrim from './utils';
 import {Interval} from '../interval/types';
+import {useTranslation} from '../internationalization/useTranslation';
 
 export interface TimePortion {
+  totalTimeMilliseconds: number;
   percent: number;
   activity: Activity;
   trimmedIntervals: Interval[];
@@ -46,26 +48,21 @@ function trimIntervalWithTimeSpan(
   return trimmedInterval;
 }
 
-export interface AnalyticsChartProps {
-  totalTimeMilliseconds: number;
-  timePortionsMap: Map<IdType, TimePortion>;
-}
+export type TimePortions = Map<IdType, TimePortion>;
 
-export const defaultAnalyticsChartProps: AnalyticsChartProps = {
-  totalTimeMilliseconds: 0,
-  timePortionsMap: new Map(),
-};
+export const defaultAnalyticsChartProps: TimePortions = new Map();
 
-function calculateAnalyticsChartProps(
+function calculateTimePortions(
   intervals: Interval[],
   getActivityById: (id: IdType) => Activity | null,
   timeSpan: TimeSpan,
-): AnalyticsChartProps {
+  untrackedActivityLabel: string,
+): TimePortions {
   const trimmedActivitiesIntervalsWithinTimeSpan: Map<IdType, IntervalsRecord> =
     new Map();
   intervals
     .map(interval => trimIntervalWithTimeSpan({...interval}, timeSpan))
-    .filter(trimmedInterval => calcDuration(trimmedInterval) > 0)
+    .filter(trimmedInterval => getDuration(trimmedInterval) > 0)
     .forEach(trimmedInterval => {
       const intervalsRecord: IntervalsRecord =
         trimmedActivitiesIntervalsWithinTimeSpan.get(
@@ -81,11 +78,8 @@ function calculateAnalyticsChartProps(
     [...trimmedActivitiesIntervalsWithinTimeSpan.keys()],
     getActivityById,
   );
-  const totalTimeMilliseconds: number =
-    (timeSpan.endTimeEpochMilliseconds ?? Date.now()) -
-    timeSpan.startTimeEpochMilliseconds;
-
-  const timePortionsMap: Map<IdType, TimePortion> = new Map(
+  const totalTimeMilliseconds: number = getDuration(timeSpan);
+  const timePortions: Map<IdType, TimePortion> = new Map(
     activitiesWithinTimeSpan.map(activity => {
       const trimmedIntervalsOfActivity = [
         ...(
@@ -99,38 +93,65 @@ function calculateAnalyticsChartProps(
               (
                 totalActivityTrimmedDuration: number,
                 interval: Interval,
-              ): number =>
-                totalActivityTrimmedDuration + calcDuration(interval),
+              ): number => totalActivityTrimmedDuration + getDuration(interval),
               0,
             )) /
           totalTimeMilliseconds,
         activity,
         trimmedIntervals: trimmedIntervalsOfActivity,
+        totalTimeMilliseconds,
       };
       return [activity.id, timePortion];
     }),
   );
-  return {totalTimeMilliseconds, timePortionsMap};
+  const totalTrackedTimeMilliseconds: number = [...timePortions.values()]
+    .flatMap((timePortion: TimePortion) => timePortion.trimmedIntervals)
+    .reduce(
+      (acc: number, trimmedInterval: Interval) =>
+        acc + getDuration(trimmedInterval),
+      0,
+    );
+  timePortions.set('untracked', {
+    percent: 100 * (totalTrackedTimeMilliseconds / totalTimeMilliseconds),
+    activity: {
+      id: 'untracked',
+      parentId: null,
+      name: untrackedActivityLabel,
+      currentlyActiveIntervalId: null,
+    },
+    trimmedIntervals: [],
+    totalTimeMilliseconds,
+  });
+  return timePortions;
 }
 
-export function useAnalytics(timeSpan: TimeSpan): {
-  analyticsChartProps: AnalyticsChartProps;
+export function useTimePortions(timeSpan: TimeSpan): {
+  totalTimeMilliseconds: number;
+  timePortions: TimePortions;
 } {
-  const [analyticsChartProps, setAnalyticsChartProps] =
-    useState<AnalyticsChartProps>(defaultAnalyticsChartProps);
+  const [timePortions, setTimePortions] = useState<TimePortions>(
+    defaultAnalyticsChartProps,
+  );
   const {getActivity} = useActivities();
   const {intervals} = useIntervals();
+  const {translate} = useTranslation();
   useEffect(() => {
     const handle = setInterval(() => {
-      setAnalyticsChartProps(
-        calculateAnalyticsChartProps(intervals, getActivity, timeSpan),
+      setTimePortions(
+        calculateTimePortions(
+          intervals,
+          getActivity,
+          timeSpan,
+          translate('Untracked-Time'),
+        ),
       );
     }, STANDARD_TICK_MS);
     return () => {
       clearInterval(handle);
     };
-  }, [getActivity, intervals, timeSpan]);
+  }, [getActivity, intervals, timeSpan, translate]);
   return {
-    analyticsChartProps,
+    totalTimeMilliseconds: getDuration(timeSpan),
+    timePortions,
   };
 }

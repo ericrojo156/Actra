@@ -1,5 +1,4 @@
 import {IdType, IdPropWithParentId} from '../types';
-import {flatten} from '../utils/array';
 import {getNonNullProjections} from '../utils/projections';
 
 export interface TreeNode<T> {
@@ -202,21 +201,21 @@ export class Forest<T extends IdPropWithParentId>
   }
   getDescendants(parentId: IdType): TreeNode<T>[] {
     const children = this.getChildren(parentId);
-    const result = children.map(child => [
+    const result = children.flatMap(child => [
       child,
       ...this.getDescendants(child.id),
     ]);
-    return flatten(result);
+    return result;
   }
   get ids(): IdType[] {
     return this.nodes.map((node: TreeNode<T>) => node.id);
   }
   get nodes(): TreeNode<T>[] {
-    const trees = this.rootNodes.map((node: TreeNode<T>) => [
+    const trees = this.rootNodes.flatMap((node: TreeNode<T>) => [
       node,
       ...this.getDescendants(node.id),
     ]);
-    return flatten(trees);
+    return trees;
   }
   get dataList(): T[] {
     return this.nodes.map(node => node.data);

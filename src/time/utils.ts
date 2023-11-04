@@ -1,6 +1,6 @@
 import {TimeSpan} from './types';
 
-export function calcDuration(timeSpan: TimeSpan | null): number {
+export function getDuration(timeSpan: TimeSpan | null): number {
   if (timeSpan === null) {
     return 0;
   }
