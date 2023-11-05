@@ -41,6 +41,9 @@ const englishDict: LanguageDict = new Map<string, string>([
   ['Edit-Interval', 'Edit Interval'],
   ['Start', 'Start'],
   ['End', 'End'],
+  ['Time-Chart', 'Time Chart'],
+  ['Activities-List', 'Activities List'],
+  ['Untracked-Time', 'Untracked Time'],
   [
     'Start-time-cannot-be-after-end-time',
     'Start time cannot be after end time',

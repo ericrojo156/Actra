@@ -1,13 +1,13 @@
 import React, {useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import {TimeSpan} from '../time/types';
 import {TimePortion, useTimePortions} from './useTimePortions';
 import {STANDARD_ELEMENT_WIDTH} from '../constants';
 import {activityDefaultColor_RGBSerialized} from '../ColorPalette';
 import * as ColorProcessor from '../ColorProcessor';
-import {STANDARD_ELEMENT_BORDER_RADIUS} from '../commonStyles';
+import {STANDARD_ELEMENT_BORDER_RADIUS, commonStyles} from '../commonStyles';
 
-const CHART_HEIGHT = 700;
+const CHART_HEIGHT = 650;
 const CHART_WIDTH = STANDARD_ELEMENT_WIDTH;
 
 export interface TimePortionsChartProps {
@@ -41,8 +41,16 @@ function TimePortionElement(props: TimePortionElementProps) {
           ColorProcessor.serialize(activity.color) ??
           activityDefaultColor_RGBSerialized,
         ...borderRadiusStyleProps,
-      }}
-    />
+      }}>
+      <Text style={{...commonStyles.textStyle, ...styles.timePortionFont}}>
+        {activity.name}
+      </Text>
+      <Text
+        style={{
+          ...commonStyles.textStyle,
+          ...styles.timePortionFont,
+        }}>{`${percent}%`}</Text>
+    </View>
   );
 }
 
@@ -53,12 +61,15 @@ export function TimePortionsChart(props: TimePortionsChartProps) {
     () => [...timePortions.values()],
     [timePortions],
   );
+  const isTopElement = (index: number) => index === 0;
+  const isBottomElement = (index: number) =>
+    index === timePortionsList.length - 1;
   return (
-    <View>
+    <View style={{marginTop: 30}}>
       {timePortionsList.map((timePortion: TimePortion, index: number) => (
         <TimePortionElement
-          isTopElement={index === 0}
-          isBottomElement={index === timePortionsList.length - 1}
+          isTopElement={isTopElement(index)}
+          isBottomElement={isBottomElement(index)}
           {...timePortion}
         />
       ))}
@@ -67,5 +78,12 @@ export function TimePortionsChart(props: TimePortionsChartProps) {
 }
 
 const styles = StyleSheet.create({
-  timePortionElement: {width: CHART_WIDTH},
+  timePortionElement: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: CHART_WIDTH,
+  },
+  timePortionFont: {
+    fontSize: 20,
+  },
 });

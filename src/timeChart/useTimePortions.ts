@@ -112,12 +112,13 @@ function calculateTimePortions(
       0,
     );
   timePortions.set('untracked', {
-    percent: 100 * (totalTrackedTimeMilliseconds / totalTimeMilliseconds),
+    percent: 100 * (1 - totalTrackedTimeMilliseconds / totalTimeMilliseconds),
     activity: {
       id: 'untracked',
       parentId: null,
       name: untrackedActivityLabel,
       currentlyActiveIntervalId: null,
+      color: {red: 104, green: 104, blue: 104, alpha: 1},
     },
     trimmedIntervals: [],
     totalTimeMilliseconds,

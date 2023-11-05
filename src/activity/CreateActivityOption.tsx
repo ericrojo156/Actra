@@ -55,7 +55,7 @@ export function FloatingCreateActivityButton(props: {
   const {
     parentId = null,
     shouldCreate,
-    translateY = 350,
+    translateY = 330,
     translateX = 90,
   } = props;
   return (
