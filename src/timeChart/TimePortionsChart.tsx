@@ -1,11 +1,15 @@
 import React, {useMemo} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Pressable} from 'react-native';
 import {TimeSpan} from '../time/types';
 import {TimePortion, useTimePortions} from './useTimePortions';
 import {STANDARD_ELEMENT_WIDTH} from '../constants';
 import {activityDefaultColor_RGBSerialized} from '../ColorPalette';
 import * as ColorProcessor from '../ColorProcessor';
 import {STANDARD_ELEMENT_BORDER_RADIUS, commonStyles} from '../commonStyles';
+import {TimeDisplay} from '../time/TimeDisplay';
+import * as ColorPalette from '../ColorPalette';
+import useActivityOptionCallbacks from '../activity/useActivityOptionsActions';
+import {useTimeSpan} from './useTimeSpan';
 
 const CHART_HEIGHT = 650;
 const CHART_WIDTH = STANDARD_ELEMENT_WIDTH;
@@ -20,7 +24,14 @@ interface TimePortionElementProps extends TimePortion {
 }
 
 function TimePortionElement(props: TimePortionElementProps) {
-  const {isTopElement, isBottomElement, percent, activity} = props;
+  const {
+    totalTimeMilliseconds,
+    isTopElement,
+    isBottomElement,
+    percent,
+    activity,
+  } = props;
+  const {timeSpan} = useTimeSpan();
   const calculatedHeight = CHART_HEIGHT * (percent / 100);
   const borderRadiusStyleProps = {
     borderTopLeftRadius: isTopElement ? STANDARD_ELEMENT_BORDER_RADIUS : 0,
@@ -32,8 +43,10 @@ function TimePortionElement(props: TimePortionElementProps) {
       ? STANDARD_ELEMENT_BORDER_RADIUS
       : 0,
   };
+  const {goToActivityHistory} = useActivityOptionCallbacks();
   return (
-    <View
+    <Pressable
+      onPress={() => goToActivityHistory(activity.id, timeSpan)}
       style={{
         ...styles.timePortionElement,
         height: calculatedHeight,
@@ -45,12 +58,15 @@ function TimePortionElement(props: TimePortionElementProps) {
       <Text style={{...commonStyles.textStyle, ...styles.timePortionFont}}>
         {activity.name}
       </Text>
+      <TimeDisplay milliseconds={(totalTimeMilliseconds * percent) / 100} />
       <Text
         style={{
           ...commonStyles.textStyle,
           ...styles.timePortionFont,
-        }}>{`${percent}%`}</Text>
-    </View>
+        }}>
+        {`${Math.round(percent * 10) / 10}%`}
+      </Text>
+    </Pressable>
   );
 }
 
@@ -61,11 +77,13 @@ export function TimePortionsChart(props: TimePortionsChartProps) {
     () => [...timePortions.values()],
     [timePortions],
   );
+  console.log('----');
+
   const isTopElement = (index: number) => index === 0;
   const isBottomElement = (index: number) =>
     index === timePortionsList.length - 1;
   return (
-    <View style={{marginTop: 30}}>
+    <View>
       {timePortionsList.map((timePortion: TimePortion, index: number) => (
         <TimePortionElement
           isTopElement={isTopElement(index)}
@@ -79,6 +97,8 @@ export function TimePortionsChart(props: TimePortionsChartProps) {
 
 const styles = StyleSheet.create({
   timePortionElement: {
+    borderWidth: 1,
+    borderColor: ColorPalette.SoftBlack_RGBASerialized,
     alignItems: 'center',
     justifyContent: 'center',
     width: CHART_WIDTH,

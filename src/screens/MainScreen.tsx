@@ -114,6 +114,7 @@ function MainScreen() {
         component={ChartScreen}
       />
       <Tab.Screen
+        options={{title: translate('Activities')}}
         name={'ActivitiesListScreen'}
         component={ActivitiesListScreen}
       />

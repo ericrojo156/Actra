@@ -36,6 +36,9 @@ function trimIntervalWithTimeSpan(
     TimeSpanTrim.handleTimeSpanOverlapCase4,
     TimeSpanTrim.handleTimeSpanOverlapCase5,
     TimeSpanTrim.handleTimeSpanOverlapCase6,
+    TimeSpanTrim.handleTimeSpanOverlapCase7,
+    TimeSpanTrim.handleTimeSpanOverlapCase8,
+    TimeSpanTrim.handleTimeSpanOverlapCase9,
   ].forEach((handleCase: TimeSpanTrim.TimeSpanOverlapCaseHandler) => {
     const result: TimeSpanTrim.TimeSpanOverlapCaseResult = handleCase(
       interval,
@@ -52,6 +55,18 @@ export type TimePortions = Map<IdType, TimePortion>;
 
 export const defaultAnalyticsChartProps: TimePortions = new Map();
 
+export function getTrimmedIntervalsWithinTimeSpan(
+  intervals: Interval[],
+  timeSpan: TimeSpan | null = null,
+): Interval[] {
+  if (timeSpan === null) {
+    return intervals;
+  }
+  return intervals
+    .map(interval => trimIntervalWithTimeSpan({...interval}, timeSpan))
+    .filter(trimmedInterval => getDuration(trimmedInterval) > 0);
+}
+
 function calculateTimePortions(
   intervals: Interval[],
   getActivityById: (id: IdType) => Activity | null,
@@ -60,10 +75,8 @@ function calculateTimePortions(
 ): TimePortions {
   const trimmedActivitiesIntervalsWithinTimeSpan: Map<IdType, IntervalsRecord> =
     new Map();
-  intervals
-    .map(interval => trimIntervalWithTimeSpan({...interval}, timeSpan))
-    .filter(trimmedInterval => getDuration(trimmedInterval) > 0)
-    .forEach(trimmedInterval => {
+  getTrimmedIntervalsWithinTimeSpan(intervals, timeSpan).forEach(
+    trimmedInterval => {
       const intervalsRecord: IntervalsRecord =
         trimmedActivitiesIntervalsWithinTimeSpan.get(
           trimmedInterval.parentActivityId,
@@ -73,7 +86,8 @@ function calculateTimePortions(
         trimmedInterval.parentActivityId,
         intervalsRecord,
       );
-    });
+    },
+  );
   const activitiesWithinTimeSpan = getNonNullProjections(
     [...trimmedActivitiesIntervalsWithinTimeSpan.keys()],
     getActivityById,

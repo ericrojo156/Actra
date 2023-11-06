@@ -62,6 +62,6 @@ export function calculateMillisecondsSince6AM(): number {
 export function getTimeSpanSincePrevious6AM(): TimeSpan {
   return {
     startTimeEpochMilliseconds: Date.now() - calculateMillisecondsSince6AM(),
-    endTimeEpochMilliseconds: Date.now(),
+    endTimeEpochMilliseconds: null,
   };
 }

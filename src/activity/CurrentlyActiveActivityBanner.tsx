@@ -31,10 +31,11 @@ export function CurrentlyActiveActivityBanner() {
     }
     return state.activity.activities.getData(currentlyActiveId);
   });
-  const {onHistoryActivityOption} = useActivityOptionCallbacks();
+  const {goToActivityHistory: goToActivityHistory} =
+    useActivityOptionCallbacks();
   const goToHistory = useCallback(
-    (id: IdType) => onHistoryActivityOption(id),
-    [onHistoryActivityOption],
+    (id: IdType) => goToActivityHistory(id),
+    [goToActivityHistory],
   );
   if (activity === null) {
     return null;
