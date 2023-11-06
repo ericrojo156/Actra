@@ -13,7 +13,7 @@ import {STANDARD_ELEMENT_BORDER_RADIUS, commonStyles} from '../commonStyles';
 import {TimeDisplay} from '../time/TimeDisplay';
 import * as ColorPalette from '../ColorPalette';
 import useActivityOptionCallbacks from '../activity/useActivityOptionsActions';
-import {useTimeSpan} from './useTimeSpan';
+import {useTimeSpan, useTimeSpanRealTimeDurationMs} from './useTimeSpan';
 
 const CHART_HEIGHT = 650;
 const CHART_WIDTH = STANDARD_ELEMENT_WIDTH;
@@ -28,13 +28,7 @@ interface TimePortionElementProps extends TimePortion {
 }
 
 function TimePortionElement(props: TimePortionElementProps) {
-  const {
-    totalTimeMilliseconds,
-    isTopElement,
-    isBottomElement,
-    percent,
-    activity,
-  } = props;
+  const {isTopElement, isBottomElement, percent, activity} = props;
   const {timeSpan} = useTimeSpan();
   const calculatedHeight = CHART_HEIGHT * (percent / 100);
   const borderRadiusStyleProps = {
@@ -47,6 +41,7 @@ function TimePortionElement(props: TimePortionElementProps) {
       ? STANDARD_ELEMENT_BORDER_RADIUS
       : 0,
   };
+  const {timeSpanDurationMs} = useTimeSpanRealTimeDurationMs();
   const {goToActivityHistory} = useActivityOptionCallbacks();
   return (
     <Pressable
@@ -68,7 +63,7 @@ function TimePortionElement(props: TimePortionElementProps) {
       <Text style={{...commonStyles.textStyle, ...styles.timePortionFont}}>
         {activity.name}
       </Text>
-      <TimeDisplay milliseconds={(totalTimeMilliseconds * percent) / 100} />
+      <TimeDisplay milliseconds={(timeSpanDurationMs * percent) / 100} />
       <Text
         style={{
           ...commonStyles.textStyle,

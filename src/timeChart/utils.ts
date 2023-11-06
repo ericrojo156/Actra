@@ -23,11 +23,12 @@ export function handleTimeSpanOverlapCase1(
     wasCase: false,
     trimmedTimeSpan: timeSpan1,
   };
+  const dateNow = Date.now();
   if (
     timeSpan1.startTimeEpochMilliseconds <
       timeSpan2.startTimeEpochMilliseconds &&
-    (timeSpan1.endTimeEpochMilliseconds ?? Date.now()) <
-      (timeSpan2.endTimeEpochMilliseconds ?? Date.now())
+    (timeSpan1.endTimeEpochMilliseconds ?? dateNow) <
+      (timeSpan2.endTimeEpochMilliseconds ?? dateNow)
   ) {
     result.wasCase = true;
     result.trimmedTimeSpan.startTimeEpochMilliseconds =
@@ -49,15 +50,16 @@ export function handleTimeSpanOverlapCase2(
     wasCase: false,
     trimmedTimeSpan: timeSpan1,
   };
+  const dateNow = Date.now();
   if (
     timeSpan2.startTimeEpochMilliseconds <
       timeSpan1.startTimeEpochMilliseconds &&
-    (timeSpan2.endTimeEpochMilliseconds ?? Date.now()) <
-      (timeSpan1.endTimeEpochMilliseconds ?? Date.now())
+    (timeSpan2.endTimeEpochMilliseconds ?? dateNow) <
+      (timeSpan1.endTimeEpochMilliseconds ?? dateNow)
   ) {
     result.wasCase = true;
     result.trimmedTimeSpan.endTimeEpochMilliseconds =
-      timeSpan2.endTimeEpochMilliseconds ?? Date.now();
+      timeSpan2.endTimeEpochMilliseconds ?? dateNow;
   }
   return result;
 }
@@ -76,8 +78,9 @@ export function handleTimeSpanOverlapCase3(
     wasCase: false,
     trimmedTimeSpan: timeSpan1,
   };
+  const dateNow = Date.now();
   if (
-    (timeSpan2.endTimeEpochMilliseconds ?? Date.now()) <
+    (timeSpan2.endTimeEpochMilliseconds ?? dateNow) <
     timeSpan1.startTimeEpochMilliseconds
   ) {
     result.wasCase = true;
@@ -100,8 +103,9 @@ export function handleTimeSpanOverlapCase4(
     wasCase: false,
     trimmedTimeSpan: timeSpan1,
   };
+  const dateNow = Date.now();
   if (
-    (timeSpan1.endTimeEpochMilliseconds ?? Date.now()) <
+    (timeSpan1.endTimeEpochMilliseconds ?? dateNow) <
     timeSpan2.startTimeEpochMilliseconds
   ) {
     result.wasCase = true;
@@ -124,11 +128,12 @@ export function handleTimeSpanOverlapCase5(
     wasCase: false,
     trimmedTimeSpan: timeSpan1,
   };
+  const dateNow = Date.now();
   if (
     timeSpan2.startTimeEpochMilliseconds <
       timeSpan1.startTimeEpochMilliseconds &&
-    (timeSpan1.endTimeEpochMilliseconds ?? Date.now()) <
-      (timeSpan2.endTimeEpochMilliseconds ?? Date.now())
+    (timeSpan1.endTimeEpochMilliseconds ?? dateNow) <
+      (timeSpan2.endTimeEpochMilliseconds ?? dateNow)
   ) {
     result.wasCase = true;
   }
@@ -148,17 +153,18 @@ export function handleTimeSpanOverlapCase6(
     wasCase: false,
     trimmedTimeSpan: timeSpan1,
   };
+  const dateNow = Date.now();
   if (
     timeSpan1.startTimeEpochMilliseconds <
       timeSpan2.startTimeEpochMilliseconds &&
-    (timeSpan2.endTimeEpochMilliseconds ?? Date.now()) <
-      (timeSpan1.endTimeEpochMilliseconds ?? Date.now())
+    (timeSpan2.endTimeEpochMilliseconds ?? dateNow) <
+      (timeSpan1.endTimeEpochMilliseconds ?? dateNow)
   ) {
     result.wasCase = true;
     result.trimmedTimeSpan.startTimeEpochMilliseconds =
       timeSpan2.startTimeEpochMilliseconds;
     result.trimmedTimeSpan.endTimeEpochMilliseconds =
-      timeSpan2.endTimeEpochMilliseconds ?? Date.now();
+      timeSpan2.endTimeEpochMilliseconds;
   }
   return result;
 }

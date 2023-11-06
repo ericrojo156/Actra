@@ -65,3 +65,29 @@ export function getTimeSpanSincePrevious6AM(): TimeSpan {
     endTimeEpochMilliseconds: null,
   };
 }
+
+export interface TimeObject {
+  days: number;
+  hours: number;
+  mins: number;
+  secs: number;
+}
+
+export function toTimeObject(totalMilliseconds: number): TimeObject {
+  const totalSeconds = Math.floor(totalMilliseconds / 1000);
+  const secondsPerMinute = 60;
+  const secondsPerHour = 60 * secondsPerMinute;
+  const secondsPerDay = 24 * secondsPerHour;
+  const days = Math.floor(totalSeconds / secondsPerDay);
+  const hours = Math.floor((totalSeconds % secondsPerDay) / secondsPerHour);
+  const minutes = Math.floor(
+    (totalSeconds % secondsPerHour) / secondsPerMinute,
+  );
+  const remainingSeconds = totalSeconds % secondsPerMinute;
+  return {
+    days,
+    hours,
+    mins: minutes,
+    secs: remainingSeconds,
+  };
+}

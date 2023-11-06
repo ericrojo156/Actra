@@ -1,5 +1,6 @@
 import {useCallback} from 'react';
 import {useTranslation} from '../internationalization/useTranslation';
+import {toTimeObject} from './utils';
 
 const resolveTranslationKey = (key: string, value: number): string => {
   // Replace this with your actual translation logic
@@ -38,16 +39,12 @@ export function useTimeString(): TimeStringOut {
   const {translate, locale} = useTranslation();
   const toDurationString = useCallback(
     (totalMilliseconds: number): string => {
-      const totalSeconds = Math.floor(totalMilliseconds / 1000);
-      const secondsPerMinute = 60;
-      const secondsPerHour = 60 * secondsPerMinute;
-      const secondsPerDay = 24 * secondsPerHour;
-      const days = Math.floor(totalSeconds / secondsPerDay);
-      const hours = Math.floor((totalSeconds % secondsPerDay) / secondsPerHour);
-      const minutes = Math.floor(
-        (totalSeconds % secondsPerHour) / secondsPerMinute,
-      );
-      const remainingSeconds = totalSeconds % secondsPerMinute;
+      const {
+        days,
+        hours,
+        mins: minutes,
+        secs: remainingSeconds,
+      } = toTimeObject(totalMilliseconds);
 
       const timeStringParts = [];
 
