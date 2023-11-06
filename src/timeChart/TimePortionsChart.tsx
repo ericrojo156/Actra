@@ -1,7 +1,11 @@
 import React, {useMemo} from 'react';
 import {StyleSheet, View, Text, Pressable} from 'react-native';
 import {TimeSpan} from '../time/types';
-import {TimePortion, useTimePortions} from './useTimePortions';
+import {
+  TimePortion,
+  UNTRACKED_ACTIVITY_ID,
+  useTimePortions,
+} from './useTimePortions';
 import {STANDARD_ELEMENT_WIDTH} from '../constants';
 import {activityDefaultColor_RGBSerialized} from '../ColorPalette';
 import * as ColorProcessor from '../ColorProcessor';
@@ -46,7 +50,13 @@ function TimePortionElement(props: TimePortionElementProps) {
   const {goToActivityHistory} = useActivityOptionCallbacks();
   return (
     <Pressable
-      onPress={() => goToActivityHistory(activity.id, timeSpan)}
+      onPress={
+        activity.id !== UNTRACKED_ACTIVITY_ID
+          ? () => {
+              goToActivityHistory(activity.id, timeSpan);
+            }
+          : () => {}
+      }
       style={{
         ...styles.timePortionElement,
         height: calculatedHeight,
@@ -77,8 +87,6 @@ export function TimePortionsChart(props: TimePortionsChartProps) {
     () => [...timePortions.values()],
     [timePortions],
   );
-  console.log('----');
-
   const isTopElement = (index: number) => index === 0;
   const isBottomElement = (index: number) =>
     index === timePortionsList.length - 1;

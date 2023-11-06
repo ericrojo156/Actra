@@ -19,6 +19,8 @@ export interface TimePortion {
   trimmedIntervals: Interval[];
 }
 
+export const UNTRACKED_ACTIVITY_ID = 'untracked_id';
+
 // Returns an interval with duration of zero (whereby start and end times are both zero) when the interval doesn't lie within the timespan
 function trimIntervalWithTimeSpan(
   interval: Interval,
@@ -125,10 +127,10 @@ function calculateTimePortions(
         acc + getDuration(trimmedInterval),
       0,
     );
-  timePortions.set('untracked', {
+  timePortions.set(UNTRACKED_ACTIVITY_ID, {
     percent: 100 * (1 - totalTrackedTimeMilliseconds / totalTimeMilliseconds),
     activity: {
-      id: 'untracked',
+      id: UNTRACKED_ACTIVITY_ID,
       parentId: null,
       name: untrackedActivityLabel,
       currentlyActiveIntervalId: null,
