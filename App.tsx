@@ -14,12 +14,13 @@ import * as ColorPalette from './src/ColorPalette';
 import MainScreen from './src/screens/MainScreen';
 import {useTranslation} from './src/internationalization/useTranslation';
 import History from './src/screens/History';
-import {IdProp} from './src/types';
+import {IdType} from './src/types';
 import {commonStyles} from './src/commonStyles';
 import {useLoadedStore} from './src/store/usePersistentStore';
 import {FlashMessageBanner} from './src/feedback/FlashMessageBanner';
 import {EditInterval} from './src/screens/EditInterval';
 import {Interval} from './src/interval/types';
+import {TimeSpan} from './src/time/types';
 
 enableMapSet();
 
@@ -36,7 +37,7 @@ sagaMiddleware.run(intervalsSaga);
 
 export type RootStackParamsList = {
   Main: {};
-  History: IdProp;
+  History: {id: IdType; timeSpan: TimeSpan | null};
   EditInterval: {interval: Interval};
 };
 

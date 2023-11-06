@@ -1,6 +1,6 @@
 import {TimeSpan} from './types';
 
-export function calcDuration(timeSpan: TimeSpan | null): number {
+export function getDuration(timeSpan: TimeSpan | null): number {
   if (timeSpan === null) {
     return 0;
   }
@@ -62,6 +62,6 @@ export function calculateMillisecondsSince6AM(): number {
 export function getTimeSpanSincePrevious6AM(): TimeSpan {
   return {
     startTimeEpochMilliseconds: Date.now() - calculateMillisecondsSince6AM(),
-    endTimeEpochMilliseconds: Date.now(),
+    endTimeEpochMilliseconds: null,
   };
 }

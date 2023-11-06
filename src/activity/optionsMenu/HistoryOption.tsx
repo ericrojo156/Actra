@@ -7,10 +7,11 @@ import useActivityOptionCallbacks from '../useActivityOptionsActions';
 function HistoryOption(props: OptionProps) {
   const {style, id} = props;
   const {translate} = useTranslation();
-  const {onHistoryActivityOption} = useActivityOptionCallbacks();
+  const {goToActivityHistory: goToActivityHistory} =
+    useActivityOptionCallbacks();
   const onPress = useCallback(
-    () => onHistoryActivityOption(id),
-    [onHistoryActivityOption, id],
+    () => goToActivityHistory(id),
+    [goToActivityHistory, id],
   );
   return (
     <PressableIcon

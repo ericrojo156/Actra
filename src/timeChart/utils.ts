@@ -162,3 +162,81 @@ export function handleTimeSpanOverlapCase6(
   }
   return result;
 }
+
+/*
+...............case 7......................
+    <------------timeSpan1-------------now
+        <------timeSpan2---------------now
+*/
+export function handleTimeSpanOverlapCase7(
+  timeSpan1: TimeSpan,
+  timeSpan2: TimeSpan,
+): TimeSpanOverlapCaseResult {
+  const result: TimeSpanOverlapCaseResult = {
+    wasCase: false,
+    trimmedTimeSpan: timeSpan1,
+  };
+  if (
+    timeSpan1.startTimeEpochMilliseconds <
+      timeSpan2.startTimeEpochMilliseconds &&
+    timeSpan1.endTimeEpochMilliseconds === null &&
+    timeSpan2.endTimeEpochMilliseconds === null
+  ) {
+    result.wasCase = true;
+    result.trimmedTimeSpan.startTimeEpochMilliseconds =
+      timeSpan2.startTimeEpochMilliseconds;
+    result.trimmedTimeSpan.endTimeEpochMilliseconds = null;
+  }
+  return result;
+}
+
+/*
+...............case 8......................
+        <--------timeSpan1-------------now
+    <----------timeSpan2---------------now
+*/
+export function handleTimeSpanOverlapCase8(
+  timeSpan1: TimeSpan,
+  timeSpan2: TimeSpan,
+): TimeSpanOverlapCaseResult {
+  const result: TimeSpanOverlapCaseResult = {
+    wasCase: false,
+    trimmedTimeSpan: timeSpan1,
+  };
+  if (
+    timeSpan1.startTimeEpochMilliseconds >
+      timeSpan2.startTimeEpochMilliseconds &&
+    timeSpan1.endTimeEpochMilliseconds === null &&
+    timeSpan2.endTimeEpochMilliseconds === null
+  ) {
+    result.wasCase = true;
+    result.trimmedTimeSpan.startTimeEpochMilliseconds =
+      timeSpan1.startTimeEpochMilliseconds;
+    result.trimmedTimeSpan.endTimeEpochMilliseconds = null;
+  }
+  return result;
+}
+
+/*
+...............case 9......................
+    <------------timeSpan1------------->
+    <----------timeSpan2--------------->
+*/
+export function handleTimeSpanOverlapCase9(
+  timeSpan1: TimeSpan,
+  timeSpan2: TimeSpan,
+): TimeSpanOverlapCaseResult {
+  const result: TimeSpanOverlapCaseResult = {
+    wasCase: false,
+    trimmedTimeSpan: timeSpan1,
+  };
+  if (
+    timeSpan1.startTimeEpochMilliseconds ===
+      timeSpan2.startTimeEpochMilliseconds &&
+    timeSpan1.endTimeEpochMilliseconds === timeSpan2.endTimeEpochMilliseconds
+  ) {
+    result.wasCase = true;
+    result.trimmedTimeSpan = {...timeSpan1};
+  }
+  return result;
+}

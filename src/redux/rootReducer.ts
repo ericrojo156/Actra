@@ -9,6 +9,8 @@ import intervalReducer from '../interval/redux/intervalReducer';
 import {IntervalState} from '../interval/redux/IntervalState';
 import feedbackReducer from '../feedback/FeedbackReducer';
 import {FeedbackState} from '../feedback/FeedbackState';
+import {TimeChartState} from '../timeChart/redux/timeChartState';
+import {timeChartReducer} from '../timeChart/redux/timeChartReducer';
 
 export interface ApplicationState {
   interval: IntervalState;
@@ -16,6 +18,7 @@ export interface ApplicationState {
   modal: ModalState;
   internationalization: InternationalizationState;
   feedback: FeedbackState;
+  timeChart: TimeChartState;
 }
 
 export default combineReducers({
@@ -24,4 +27,5 @@ export default combineReducers({
   modal: modalReducer,
   internationalization: internationalizationReducer,
   feedback: feedbackReducer,
+  timeChart: timeChartReducer,
 });

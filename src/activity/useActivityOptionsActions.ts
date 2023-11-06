@@ -15,6 +15,7 @@ import {
   addSubactivitiesRequested,
   deletedActivity,
 } from './redux/activityActions';
+import {TimeSpan} from '../time/types';
 
 export function joinActivities(
   targetParentId: IdType,
@@ -73,10 +74,10 @@ export default function useActivityOptionCallbacks() {
     },
     [dispatch],
   );
-  const onHistoryActivityOption = useCallback(
-    (id: IdType) => {
+  const goToActivityHistory = useCallback(
+    (id: IdType, timeSpan: TimeSpan | null = null) => {
       // @ts-ignore
-      navigation.navigate('History', {id});
+      navigation.navigate('History', {id, timeSpan: timeSpan});
     },
     [navigation],
   );
@@ -106,7 +107,7 @@ export default function useActivityOptionCallbacks() {
     onDeleteActivityOption,
     onJoinActivityOption,
     onEditActivityOption,
-    onHistoryActivityOption,
+    goToActivityHistory,
     onAddSubactivityOption,
     onCreateActivityOption,
   };

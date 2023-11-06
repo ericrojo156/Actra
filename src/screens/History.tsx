@@ -2,16 +2,20 @@ import React, {useMemo} from 'react';
 import {Text, View} from 'react-native';
 import GradientBackground from './GradientBackground';
 import {useIntervals} from '../interval/useIntervals';
-import {IdProp, NavigationScreenProps} from '../types';
+import {IdType, NavigationScreenProps} from '../types';
 import {IntervalsList} from '../interval/IntervalsList';
 import {reverseArray} from '../utils/array';
 import {useSelector} from 'react-redux';
 import {ApplicationState} from '../redux/rootReducer';
 import {commonStyles} from '../commonStyles';
 import {useTranslation} from '../internationalization/useTranslation';
+import {TimeSpan} from '../time/types';
+import {getTrimmedIntervalsWithinTimeSpan} from '../timeChart/useTimePortions';
 
-function History(props: NavigationScreenProps<IdProp>) {
-  const {id: parentActivityId} = props.route.params;
+function History(
+  props: NavigationScreenProps<{id: IdType; timeSpan: TimeSpan | null}>,
+) {
+  const {id: parentActivityId, timeSpan} = props.route.params;
   const {translate} = useTranslation();
   const historyLabel = translate('History');
   const name = useSelector(
@@ -20,8 +24,8 @@ function History(props: NavigationScreenProps<IdProp>) {
   );
   const {intervals} = useIntervals(parentActivityId);
   const intervalsSortedNewestFirst = useMemo(
-    () => reverseArray(intervals),
-    [intervals],
+    () => reverseArray(getTrimmedIntervalsWithinTimeSpan(intervals, timeSpan)),
+    [intervals, timeSpan],
   );
   return (
     <GradientBackground>

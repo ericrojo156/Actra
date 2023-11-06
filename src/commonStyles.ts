@@ -1,6 +1,8 @@
 import {StyleSheet} from 'react-native';
 import * as ColorPalette from './ColorPalette';
 
+export const STANDARD_ELEMENT_BORDER_RADIUS = 10;
+
 export const commonStyles = StyleSheet.create({
   container: {
     display: 'flex',
@@ -18,6 +20,6 @@ export const commonStyles = StyleSheet.create({
   roundedElementBorder: {
     borderWidth: 1,
     borderColor: ColorPalette.SoftBlack_RGBASerialized,
-    borderRadius: 10,
+    borderRadius: STANDARD_ELEMENT_BORDER_RADIUS,
   },
 });
