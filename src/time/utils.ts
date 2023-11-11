@@ -73,8 +73,15 @@ export function getOneWeekTimeSpan(): TimeSpan {
   };
 }
 
+export function getOneWeekTimeSpanExcludingToday(): TimeSpan {
+  return {
+    startTimeEpochMilliseconds: getOneWeekTimeSpan().startTimeEpochMilliseconds,
+    endTimeEpochMilliseconds: Date.now() - 1000 * 60 * 60 * 24,
+  };
+}
+
 export function getDefaultTimeSpan(): TimeSpan {
-  return getOneWeekTimeSpan();
+  return getTimeSpanSincePrevious6AM();
 }
 
 export interface TimeObject {
