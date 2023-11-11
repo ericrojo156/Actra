@@ -3,19 +3,19 @@ import {useSelector} from 'react-redux';
 import {ApplicationState} from '../redux/rootReducer';
 import {getDuration} from './utils';
 import {STANDARD_TICK_MS} from './constants';
-import {Interval} from '../interval/types';
+import {TimeSpan} from './types';
 
-export function useIntervalRealTimeDuration(interval: Interval | null) {
+export function useRealTimeDuration(timeSpan: TimeSpan | null) {
   const [durationMilliseconds, setDurationMilliseconds] = useState(
-    getDuration(interval),
+    getDuration(timeSpan),
   );
   const recalculateDuration = useCallback(
-    () => setDurationMilliseconds(getDuration(interval)),
-    [setDurationMilliseconds, interval],
+    () => setDurationMilliseconds(getDuration(timeSpan)),
+    [setDurationMilliseconds, timeSpan],
   );
   useEffect(() => {
     let cleanup = () => {};
-    if (interval?.endTimeEpochMilliseconds === null) {
+    if (timeSpan?.endTimeEpochMilliseconds === null) {
       const handle = setInterval(() => {
         recalculateDuration();
       }, STANDARD_TICK_MS);
@@ -24,11 +24,7 @@ export function useIntervalRealTimeDuration(interval: Interval | null) {
     return () => {
       cleanup();
     };
-  }, [
-    interval?.endTimeEpochMilliseconds,
-    interval?.intervalId,
-    recalculateDuration,
-  ]);
+  }, [timeSpan?.endTimeEpochMilliseconds, recalculateDuration]);
   return durationMilliseconds;
 }
 
@@ -44,5 +40,5 @@ export function useCurrentIntervalRealTimeDuration() {
         ?.get(currentlyActiveIntervalId) ?? null
     );
   });
-  return useIntervalRealTimeDuration(currentlyActiveInterval);
+  return useRealTimeDuration(currentlyActiveInterval);
 }

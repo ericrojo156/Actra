@@ -9,7 +9,7 @@ import {Activity, ActivityElement} from '../activity/ActivityElement';
 import {commonStyles} from '../commonStyles';
 import CustomPressable from '../components/Pressable';
 import {SelectionList} from '../components/SelectionList';
-import {ELEMENT_HEIGHT, SPACE_BETWEEN_ELEMENTS} from '../constants';
+import {STANDARD_ELEMENT_HEIGHT, SPACE_BETWEEN_ELEMENTS} from '../constants';
 import {IdType} from '../types';
 import {ArrayFilters} from '../utils/array';
 import {FloatingCreateActivityButton} from '../activity/CreateActivityOption';
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   confirmButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: ELEMENT_HEIGHT,
+    height: STANDARD_ELEMENT_HEIGHT,
     backgroundColor: ColorPalette.actionColorSerialized,
     paddingHorizontal: 20,
   },

@@ -66,6 +66,17 @@ export function getTimeSpanSincePrevious6AM(): TimeSpan {
   };
 }
 
+export function getOneWeekTimeSpan(): TimeSpan {
+  return {
+    startTimeEpochMilliseconds: Date.now() - 1000 * 60 * 60 * 24 * 7,
+    endTimeEpochMilliseconds: null,
+  };
+}
+
+export function getDefaultTimeSpan(): TimeSpan {
+  return getOneWeekTimeSpan();
+}
+
 export interface TimeObject {
   days: number;
   hours: number;

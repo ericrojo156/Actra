@@ -2,10 +2,10 @@ import {produce} from 'immer';
 import {BaseAction} from '../../types';
 import {TIME_SPAN_CHANGED, TimeSpanAction} from './timeChartActions';
 import {TimeChartState} from './timeChartState';
-import {getTimeSpanSincePrevious6AM} from '../../time/utils';
+import {getDefaultTimeSpan} from '../../time/utils';
 
 const defaultTimeChartState: TimeChartState = {
-  timeSpan: getTimeSpanSincePrevious6AM(),
+  timeSpan: getDefaultTimeSpan(),
 };
 
 export function timeChartReducer(

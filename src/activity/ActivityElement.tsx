@@ -18,7 +18,7 @@ import {ActivitiesList} from './ActivitiesList';
 import {
   STANDARD_ELEMENT_WIDTH,
   SUBACTIVITY_LEVEL_WIDTH_DECREMENT,
-  ELEMENT_HEIGHT,
+  STANDARD_ELEMENT_HEIGHT,
   SPACE_BETWEEN_ELEMENTS,
 } from '../constants';
 import TimerButton from './TimerButton';
@@ -239,7 +239,7 @@ export const styles = StyleSheet.create({
   },
   activityElement: {
     width: STANDARD_ELEMENT_WIDTH,
-    height: ELEMENT_HEIGHT,
+    height: STANDARD_ELEMENT_HEIGHT,
   },
   textStyle: {
     fontSize: 25,

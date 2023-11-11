@@ -3,7 +3,7 @@ import {Pressable, Text, View} from 'react-native';
 import {useSelector} from 'react-redux';
 import {
   STANDARD_ELEMENT_WIDTH,
-  ELEMENT_HEIGHT,
+  STANDARD_ELEMENT_HEIGHT,
   SPACE_BETWEEN_ELEMENTS,
 } from '../constants';
 import {ApplicationState} from '../redux/rootReducer';
@@ -11,7 +11,7 @@ import {Activity} from './ActivityElement';
 import * as ColorProcessor from '../ColorProcessor';
 import * as ColorPalette from '../ColorPalette';
 import {StyleSheet} from 'react-native';
-import {useCurrentIntervalRealTimeDuration} from '../time/useRealTimeIntervalDuration';
+import {useCurrentIntervalRealTimeDuration} from '../time/useRealTimeDuration';
 import {commonStyles} from '../commonStyles';
 import {TimeDisplay} from '../time/TimeDisplay';
 import TimerButton from './TimerButton';
@@ -64,7 +64,7 @@ export function CurrentlyActiveActivityBanner() {
           position: 'absolute',
           transform: [
             {translateX: STANDARD_ELEMENT_WIDTH - SPACE_BETWEEN_ELEMENTS * 4},
-            {translateY: ELEMENT_HEIGHT * 0.25},
+            {translateY: STANDARD_ELEMENT_HEIGHT * 0.25},
           ],
         }}>
         <TimerButton id={id} />
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     borderColor: ColorPalette.SoftBlack_RGBASerialized,
     borderRadius: 5,
     width: STANDARD_ELEMENT_WIDTH * 1.1,
-    height: ELEMENT_HEIGHT,
+    height: STANDARD_ELEMENT_HEIGHT,
   },
   innerContainer: {
     justifyContent: 'center',

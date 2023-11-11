@@ -1,28 +1,29 @@
 import React, {useCallback, useMemo} from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 import * as ColorProcessor from '../ColorProcessor';
 import * as ColorPalette from '../ColorPalette';
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {commonStyles} from '../commonStyles';
 import {
   STANDARD_ELEMENT_WIDTH,
-  ELEMENT_HEIGHT,
+  STANDARD_ELEMENT_HEIGHT,
   PADDING_BETWEEN_ELEMENTS,
 } from '../constants';
 import CustomPressable from '../components/Pressable';
 import {useIntervals} from './useIntervals';
 import {useGetActivity} from '../activity/useActivities';
-import RightArrow from '../../assets/RightArrow';
 import {IdType} from '../types';
-import {useIntervalRealTimeDuration} from '../time/useRealTimeIntervalDuration';
-import {TimeDisplay, DateTimeDisplay} from '../time/TimeDisplay';
 import {useNavigation} from '@react-navigation/native';
 import {ActivityIntervalRelation, Interval} from './types';
+import {TimeSpanElement} from '../time/TimeSpanElement';
+import {useRealTimeDuration} from '../time/useRealTimeDuration';
+import {TimeDisplay} from '../time/TimeDisplay';
 
 export interface IntervalElementProps extends ActivityIntervalRelation {
   width?: number;
   setCurrentlyPressingId?: (id: IdType) => void;
 }
+
 function IntervalElement(props: IntervalElementProps) {
   const {intervalId, parentActivityId, width, setCurrentlyPressingId} = props;
   const {getActivity} = useGetActivity();
@@ -31,7 +32,6 @@ function IntervalElement(props: IntervalElementProps) {
     color: ColorPalette.activityDefaultColor,
   };
   const interval: Interval | null = getInterval(intervalId);
-  const durationMilliseconds = useIntervalRealTimeDuration(interval);
   const intervalStyle = {
     ...commonStyles.container,
     ...commonStyles.roundedElementBorder,
@@ -55,6 +55,7 @@ function IntervalElement(props: IntervalElementProps) {
     }),
     [intervalId, goToEditInterval, setCurrentlyPressingId],
   );
+  const durationMilliseconds = useRealTimeDuration(interval);
 
   if (interval === null) {
     return null;
@@ -66,11 +67,7 @@ function IntervalElement(props: IntervalElementProps) {
         <Text style={styles.textStyle}>
           <TimeDisplay milliseconds={durationMilliseconds} />
         </Text>
-        <View style={{flexDirection: 'row'}}>
-          <DateTimeDisplay milliseconds={interval.startTimeEpochMilliseconds} />
-          <RightArrow />
-          <DateTimeDisplay milliseconds={interval.endTimeEpochMilliseconds} />
-        </View>
+        <TimeSpanElement timeSpan={interval} />
       </CustomPressable>
     </View>
   );
@@ -79,7 +76,7 @@ function IntervalElement(props: IntervalElementProps) {
 export const styles = StyleSheet.create({
   intervalElement: {
     width: STANDARD_ELEMENT_WIDTH,
-    minHeight: ELEMENT_HEIGHT,
+    minHeight: STANDARD_ELEMENT_HEIGHT,
     padding: 10,
   },
   textStyle: {

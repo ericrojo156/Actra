@@ -8,7 +8,7 @@ import {
   joinActivitiesModalOpened,
 } from '../modal/modalActions';
 import {
-  ELEMENT_HEIGHT,
+  STANDARD_ELEMENT_HEIGHT,
   SPACE_BETWEEN_ELEMENTS,
   STANDARD_ELEMENT_WIDTH,
 } from '../constants';
@@ -115,7 +115,7 @@ export function SelectionList<T extends SelectableItem>(
       windowSize={5}
       getItemLayout={(_data, index) => ({
         length: 100,
-        offset: ELEMENT_HEIGHT * index,
+        offset: STANDARD_ELEMENT_HEIGHT * index,
         index,
       })}
       contentContainerStyle={styles.listContainer}

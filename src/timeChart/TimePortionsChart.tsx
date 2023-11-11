@@ -15,7 +15,7 @@ import * as ColorPalette from '../ColorPalette';
 import useActivityOptionCallbacks from '../activity/useActivityOptionsActions';
 import {useTimeSpan, useTimeSpanRealTimeDurationMs} from './useTimeSpan';
 
-const CHART_HEIGHT = 650;
+const CHART_HEIGHT = 600;
 const CHART_WIDTH = STANDARD_ELEMENT_WIDTH;
 
 export interface TimePortionsChartProps {

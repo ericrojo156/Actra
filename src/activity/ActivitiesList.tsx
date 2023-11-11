@@ -12,7 +12,7 @@ import {
   ActivityElementProps,
 } from './ActivityElement';
 import {GetActivity} from './useActivities';
-import {STANDARD_ELEMENT_WIDTH, ELEMENT_HEIGHT} from '../constants';
+import {STANDARD_ELEMENT_WIDTH, STANDARD_ELEMENT_HEIGHT} from '../constants';
 import {IdType} from '../types';
 import {PanGestureRecognizer} from '../components/PanGestureRecognizer';
 import {usePressingMutex} from './hooks/usePressingMutex';
@@ -118,7 +118,7 @@ export const ActivitiesList = React.memo((props: ActivitiesListProps) => {
         windowSize={5}
         getItemLayout={(data, index) => ({
           length: STANDARD_ELEMENT_WIDTH,
-          offset: ELEMENT_HEIGHT * index,
+          offset: STANDARD_ELEMENT_HEIGHT * index,
           index,
         })}
       />

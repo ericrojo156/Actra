@@ -1,6 +1,6 @@
 import React, {useCallback, useMemo} from 'react';
 import {LayoutAnimation, View, FlatList, StyleSheet} from 'react-native';
-import {ELEMENT_HEIGHT} from '../constants';
+import {STANDARD_ELEMENT_HEIGHT} from '../constants';
 import IntervalElement from './IntervalElement';
 import {IdType} from '../types';
 import {PanGestureRecognizer} from '../components/PanGestureRecognizer';
@@ -41,8 +41,8 @@ export const IntervalsList = React.memo((props: IntervalsListProps) => {
   useLayoutAnimation();
   const getItemLayout = useCallback(
     (_data: any, index: number) => ({
-      length: ELEMENT_HEIGHT,
-      offset: ELEMENT_HEIGHT * index,
+      length: STANDARD_ELEMENT_HEIGHT,
+      offset: STANDARD_ELEMENT_HEIGHT * index,
       index,
     }),
     [],

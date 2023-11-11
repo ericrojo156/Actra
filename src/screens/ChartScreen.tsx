@@ -20,7 +20,7 @@ function ChartScreen() {
         <TimeDisplay milliseconds={timeSpanDisplayMs} />
         <View style={{paddingTop: 10}} />
         <TimePortionsChart timeSpan={timeSpan} />
-        <TimeSpanPickerControls setTimeSpan={setTimeSpan} />
+        <TimeSpanPickerControls timeSpan={timeSpan} setTimeSpan={setTimeSpan} />
       </View>
     </GradientBackground>
   );
