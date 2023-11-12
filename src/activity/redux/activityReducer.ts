@@ -4,19 +4,20 @@ import {ActivityState} from './ActivityState';
 import * as ColorPalette from '../../ColorPalette';
 import {
   LOADED_ACTIVITIES,
-  CREATED_ACTIVITY,
-  DELETED_ACTIVITY,
-  EDITED_ACTIVITY,
+  CREATE_ACTIVITY,
+  DELETE_ACTIVITY,
+  EDIT_ACTIVITY,
   ActivitiesAction,
   ActivityFormAction,
-  ADDED_SUBACTIVITIES,
+  ADD_SUBACTIVITIES,
   START_ACTIVITY,
   STOP_ACTIVITY,
-  DELETED_ACTIVITIES,
-  REMOVED_SUBACTIVITY,
+  DELETE_ACTIVITIES,
+  REMOVE_SUBACTIVITY,
   ACTIVITIES_SELECTED,
   CLEAR_SELECTED_ACTIVITIES,
   SET_CURRENTLY_ACTIVE,
+  ActivityIntervalAction,
 } from './activityActions';
 import {
   CurrentlyActiveAction,
@@ -89,7 +90,7 @@ export default function activityReducer(
         activities: activitiesForest,
       };
     }
-    case CREATED_ACTIVITY: {
+    case CREATE_ACTIVITY: {
       const formData = (action as ActivityFormAction).payload;
       const activity: Activity = {
         ...emptyActivity,
@@ -102,7 +103,7 @@ export default function activityReducer(
         activities,
       };
     }
-    case EDITED_ACTIVITY: {
+    case EDIT_ACTIVITY: {
       const activities = ActivityForest.copy(state.activities);
       const formData = (action as ActivityFormAction).payload;
       const activityToUpdate = activities.getData(formData.id);
@@ -117,15 +118,15 @@ export default function activityReducer(
         activities,
       };
     }
-    case DELETED_ACTIVITY: {
+    case DELETE_ACTIVITY: {
       const id = (action as IdAction).payload;
       return deleteActivitiesFromState(state, [id]);
     }
-    case DELETED_ACTIVITIES: {
+    case DELETE_ACTIVITIES: {
       const ids = (action as IdsAction).payload;
       return deleteActivitiesFromState(state, ids);
     }
-    case ADDED_SUBACTIVITIES: {
+    case ADD_SUBACTIVITIES: {
       const {parentId, children} = (action as ParentChildrenAction).payload;
       const activities = ActivityForest.copy(state.activities);
       const parent = activities.getData(parentId);
@@ -143,7 +144,7 @@ export default function activityReducer(
         activities,
       };
     }
-    case REMOVED_SUBACTIVITY: {
+    case REMOVE_SUBACTIVITY: {
       const id = (action as IdAction).payload;
       const activities = ActivityForest.copy(state.activities);
       activities.removeFromParent(id);
@@ -153,16 +154,13 @@ export default function activityReducer(
       };
     }
     case START_ACTIVITY: {
-      const activityId = (action as IdAction).payload;
+      const {activityId, intervalId} = (action as ActivityIntervalAction)
+        .payload;
+      const activities = ActivityForest.copy(state.activities);
+      activities.addIntervalToActivity(activityId, intervalId);
       return {
         ...state,
-        currentlyActive: activityId,
-      };
-    }
-    case SET_CURRENTLY_ACTIVE: {
-      const {activityId} = (action as CurrentlyActiveAction).payload;
-      return {
-        ...state,
+        activities,
         currentlyActive: activityId,
       };
     }
@@ -170,6 +168,13 @@ export default function activityReducer(
       return {
         ...state,
         currentlyActive: null,
+      };
+    }
+    case SET_CURRENTLY_ACTIVE: {
+      const {activityId} = (action as CurrentlyActiveAction).payload;
+      return {
+        ...state,
+        currentlyActive: activityId,
       };
     }
     case ACTIVITIES_SELECTED: {

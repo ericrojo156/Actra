@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import PressableIcon from '../components/PressableIcon';
 import {IdProp} from '../types';
 import {useDispatch, useSelector} from 'react-redux';
-import {startedActivity, stoppedActivity} from './redux/activityActions';
+import activityActions from './redux/activityActions';
 import {ApplicationState} from '../redux/rootReducer';
 import {StyleSheet} from 'react-native';
 import {Interval} from '../interval/types';
@@ -16,7 +16,7 @@ function PlayButton(props: IdProp) {
   const dispatch = useDispatch();
   const onPressPlay = useCallback(() => {
     setTimeout(() => {
-      dispatch(startedActivity(id));
+      dispatch(activityActions.startActivity.request(id));
     }, PRESS_ANIMATION_DURATION);
   }, [dispatch, id]);
   return (
@@ -44,7 +44,7 @@ function StopButton(props: IdProp) {
   const onPressStop = useCallback(() => {
     setTimeout(() => {
       if (intervalToStop !== null) {
-        dispatch(stoppedActivity(intervalToStop));
+        dispatch(activityActions.stopActivity.request(intervalToStop));
       }
     }, PRESS_ANIMATION_DURATION);
   }, [dispatch, intervalToStop]);

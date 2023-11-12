@@ -11,12 +11,9 @@ import {commonStyles} from '../commonStyles';
 import * as ColorPalette from '../ColorPalette';
 import {useDispatch, useSelector} from 'react-redux';
 import {modalClosed} from '../modal/modalActions';
-import {
+import activityActions, {
   ActivityFormAction,
   ActivityFormData,
-  createdActivity,
-  activityWasEdited,
-  createdSubactivity,
 } from '../activity/redux/activityActions';
 import {uuidv4} from '../utils/uuid';
 import {ApplicationState} from '../redux/rootReducer';
@@ -93,8 +90,9 @@ export function CreateActivity() {
   const submitForm = useMemo(
     () =>
       shouldAddAsSubactivity
-        ? (data: ActivityFormData) => createdSubactivity(data, parentId)
-        : createdActivity,
+        ? (data: ActivityFormData) =>
+            activityActions.createSubactivity.request(data, parentId)
+        : activityActions.createActivity.request,
     [parentId, shouldAddAsSubactivity],
   );
   const {translate} = useTranslation();
@@ -118,7 +116,7 @@ export function EditActivity(props: IdProp) {
   return (
     <GradientBackground>
       <ActivityForm
-        getActivityFormSubmissionAction={activityWasEdited}
+        getActivityFormSubmissionAction={activityActions.editActivity.request}
         id={id}
         name={name}
       />

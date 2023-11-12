@@ -1,5 +1,5 @@
 import {Activity} from '../activity/ActivityElement';
-import {Interval} from '../interval/IntervalElement';
+import {Interval} from '../interval/types';
 import {ACTRA_VERSION, CurrentlyActive, IActraStore} from './IActraStore';
 
 export function createActraStore(

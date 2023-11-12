@@ -10,11 +10,7 @@ import {
 } from '../modal/modalActions';
 import {useNavigation} from '@react-navigation/native';
 import {IdType} from '../types';
-import {
-  joinedActivities,
-  addSubactivitiesRequested,
-  deletedActivity,
-} from './redux/activityActions';
+import activityActions from './redux/activityActions';
 import {TimeSpan} from '../time/types';
 
 export function joinActivities(
@@ -22,7 +18,7 @@ export function joinActivities(
   ids: IdType[],
   dispatch: Dispatch<AnyAction>,
 ): void {
-  dispatch(joinedActivities(targetParentId, ids));
+  dispatch(activityActions.activitiesJoin.request(targetParentId, ids));
 }
 
 export function addSubactivitiesToActivity(
@@ -30,7 +26,9 @@ export function addSubactivitiesToActivity(
   subactivitiesIds: IdType[],
   dispatch: Dispatch<AnyAction>,
 ): void {
-  dispatch(addSubactivitiesRequested(parentId, subactivitiesIds));
+  dispatch(
+    activityActions.addSubactivities.request(parentId, subactivitiesIds),
+  );
 }
 
 export default function useActivityOptionCallbacks() {
@@ -50,7 +48,7 @@ export default function useActivityOptionCallbacks() {
           if (buttonIndex === 0) {
             // cancel action
           } else if (buttonIndex === 1) {
-            dispatch(deletedActivity(id));
+            dispatch(activityActions.deleteActivity.request(id));
           }
         },
       );

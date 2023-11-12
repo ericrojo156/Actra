@@ -23,7 +23,7 @@ import {
 } from '../constants';
 import TimerButton from './TimerButton';
 import {useDispatch} from 'react-redux';
-import {addedSubactivities, removedSubactivity} from './redux/activityActions';
+import activityActions from './redux/activityActions';
 import {feedbackMessageInvoked} from '../feedback/FeedbackActions';
 import {useIntervals} from '../interval/useIntervals';
 import {useGetActivity} from './useActivities';
@@ -115,13 +115,15 @@ export const ExpandedSection = React.memo(function (
   const onSwipeLeft = useCallback(
     (subactivityId: IdType) => {
       const parentId = id;
-      dispatch(removedSubactivity(subactivityId));
+      dispatch(activityActions.removeSubactivity.request(subactivityId));
       dispatch(
         feedbackMessageInvoked({
           feedbackType: 'info',
           message: translate('Subtrackable-Removed-From-Project'),
           secondaryMessage: translate('Press-Here-To-Undo'),
-          undoAction: addedSubactivities(parentId, [subactivityId]),
+          undoAction: activityActions.addSubactivities.request(parentId, [
+            subactivityId,
+          ]),
         }),
       );
     },

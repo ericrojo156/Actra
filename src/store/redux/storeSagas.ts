@@ -16,6 +16,7 @@ import {Interval} from '../../interval/types';
 
 function* storeLoadSaga() {
   const store: IActraStore = yield call(() => new IosStorePersistence().load());
+  console.log(`store loaded: ${JSON.stringify(store)}`);
   const {activities, intervals, currentlyActive} = store.data;
   yield put(loadedActivities(activities));
   yield put(loadedIntervals(intervals));
@@ -50,6 +51,7 @@ function* storeSaveSaga() {
     currentlyActive,
   );
   yield call(() => new IosStorePersistence().save(actraStore));
+  console.log(`store saved: ${JSON.stringify(actraStore)}`);
 }
 
 export default function* rootSaga() {

@@ -78,6 +78,15 @@ export class ActivityForest
     }
     this.forest.addNode(nodeToAdd, targetParentId);
   }
+  addIntervalToActivity(activityId: IdType, intervalId: IdType): void {
+    const activityToUpdate = this.forest.getData(activityId);
+    if (!activityToUpdate) {
+      return;
+    }
+    const updatedIntervals = activityToUpdate.intervalsIds ?? [];
+    updatedIntervals.push(intervalId);
+    activityToUpdate.intervalsIds = updatedIntervals;
+  }
   updateActivity(activity: Activity): void {
     const nodeToUpdate = this.forest.getNode(activity.id);
     if (nodeToUpdate) {

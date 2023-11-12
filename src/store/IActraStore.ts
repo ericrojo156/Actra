@@ -1,5 +1,5 @@
 import {Activity} from '../activity/ActivityElement';
-import {Interval} from '../interval/IntervalElement';
+import {Interval} from '../interval/types';
 import {IdType} from '../types';
 
 export const ACTRA_VERSION = '1.0';

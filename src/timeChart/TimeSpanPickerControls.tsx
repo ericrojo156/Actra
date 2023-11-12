@@ -1,5 +1,5 @@
-import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, {useCallback} from 'react';
+import {Pressable, StyleSheet, View} from 'react-native';
 import {TimeSpan} from '../time/types';
 import * as ColorPalette from '../ColorPalette';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -19,6 +19,9 @@ export function TimeSpanPickerControls(props: TimeSpanPickerControlsProps) {
     ...commonStyles.roundedElementBorder,
     ...styles.timeSpanElement,
   };
+  const openCalendarPicker = useCallback(() => {
+    
+  }, []);
   return (
     <View
       style={{
@@ -30,7 +33,9 @@ export function TimeSpanPickerControls(props: TimeSpanPickerControlsProps) {
         color={ColorPalette.OffWhite_RGBSerialized}
         size={40}
       />
-      <TimeSpanElement style={timeSpanElementStyle} timeSpan={timeSpan} />
+      <Pressable onPress={openCalendarPicker}>
+        <TimeSpanElement style={timeSpanElementStyle} timeSpan={timeSpan} />
+      </Pressable>
       <MaterialCommunityIcons
         name="chevron-right"
         color={ColorPalette.OffWhite_RGBSerialized}

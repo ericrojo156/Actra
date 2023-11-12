@@ -9,23 +9,34 @@ import {
 } from '../../redux/actions';
 import {IntervalAction} from '../../interval/redux/intervalsActions';
 import {Interval} from '../../interval/types';
-export const CREATED_ACTIVITY = 'CREATED_ACTIVITY';
-export const EDITED_ACTIVITY = 'EDITED_ACTIVITY';
-export const LOADED_ACTIVITIES = 'LOADED_ACTIVITIES';
+
+export const CREATE_ACTIVITY_REQUESTED = 'CREATE_ACTIVITY_REQUESTED';
+export const EDIT_ACTIVITY_REQUESTED = 'EDIT_ACTIVITY_REQUESTED';
+export const START_ACTIVITY_REQUESTED = 'START_ACTIVITY_REQUESTED';
+export const STOP_ACTIVITY_REQUESTED = 'STOP_ACTIVITY_REQUESTED';
+export const ADD_SUBACTIVITIES_REQUESTED = 'ADD_SUBACTIVITIES_REQUESTED';
+export const ADD_CREATED_SUBACTIVITY_REQUESTED =
+  'ADD_CREATED_SUBACTIVITY_REQUESTED';
+export const REMOVE_SUBACTIVITY_REQUESTED = 'REMOVE_SUBACTIVITY_REQUESTED';
+export const DELETE_ACTIVITY_REQUESTED = 'DELETE_ACTIVITY_REQUESTED';
+export const DELETE_ACTIVITIES_REQUESTED = 'DELETE_ACTIVITIES_REQUESTED';
+export const ACTIVITIES_JOIN_REQUESTED = 'ACTIVITIES_JOIN_REQUESTED';
+
+export const CREATE_ACTIVITY = 'CREATE_ACTIVITY';
+export const EDIT_ACTIVITY = 'EDIT_ACTIVITY';
 export const START_ACTIVITY = 'START_ACTIVITY';
 export const STOP_ACTIVITY = 'STOP_ACTIVITY';
-export const SET_CURRENTLY_ACTIVE = 'SET_CURRENTLY_ACTIVE';
-export const STARTED_ACTIVITY = 'STARTED_ACTIVITY';
-export const STOPPED_ACTIVITY = 'STOPPED_ACTIVITY';
-export const ADD_SUBACTIVITIES_REQUESTED = 'ADD_SUBACTIVITIES_REQUESTED';
-export const ADDED_SUBACTIVITIES = 'ADDED_SUBACTIVITY';
-export const CLEAR_SELECTED_ACTIVITIES = 'CLEAR_SELECTED_ACTIVITIES';
-export const ADDED_CREATED_SUBACTIVITY = 'ADDED_CREATED_SUBACTIVITY';
-export const REMOVED_SUBACTIVITY = 'REMOVED_SUBACTIVITY';
-export const JOINED_ACTIVITIES = 'JOINED_ACTIVITIES';
-export const DELETED_ACTIVITY = 'DELETED_ACTIVITY';
-export const DELETED_ACTIVITIES = 'DELETED_ACTIVITIES';
+export const ADD_SUBACTIVITIES = 'ADD_SUBACTIVITIES';
+export const ADD_CREATED_SUBACTIVITY = 'ADD_CREATED_SUBACTIVITY';
+export const REMOVE_SUBACTIVITY = 'REMOVE_SUBACTIVITY';
+export const DELETE_ACTIVITY = 'DELETE_ACTIVITY';
+export const DELETE_ACTIVITIES = 'DELETE_ACTIVITIES';
+export const ACTIVITIES_JOIN = 'ACTIVITIES_JOIN';
 export const ACTIVITIES_SELECTED = 'ACTIVITIES_SELECTED';
+
+export const LOADED_ACTIVITIES = 'LOADED_ACTIVITIES';
+export const CLEAR_SELECTED_ACTIVITIES = 'CLEAR_SELECTED_ACTIVITIES';
+export const SET_CURRENTLY_ACTIVE = 'SET_CURRENTLY_ACTIVE';
 
 export interface ActivitiesAction extends BaseAction {
   payload: Activity[];
@@ -49,38 +60,45 @@ export type ActivityFormAction = BaseAction & {
   payload: ActivityFormData;
 };
 
-export function createdActivity(data: ActivityFormData): ActivityFormAction {
+export interface ActivityIntervalAction extends BaseAction {
+  payload: {
+    activityId: IdType;
+    intervalId: IdType;
+  };
+}
+
+function createActivityRequested(data: ActivityFormData): ActivityFormAction {
   return {
-    type: CREATED_ACTIVITY,
+    type: CREATE_ACTIVITY_REQUESTED,
     payload: data,
   };
 }
 
-export function createdSubactivity(
+function createSubactivityRequested(
   data: ActivityFormData,
   parentId: IdType,
 ): ParentChildAction<ActivityFormData> {
   return {
-    type: ADDED_CREATED_SUBACTIVITY,
+    type: ADD_CREATED_SUBACTIVITY_REQUESTED,
     payload: {parentId, child: data},
   };
 }
 
-export function deletedActivity(id: IdType): IdAction {
+function deleteActivityRequested(id: IdType): IdAction {
   return {
-    type: DELETED_ACTIVITY,
+    type: DELETE_ACTIVITY_REQUESTED,
     payload: id,
   };
 }
 
-export function deletedActivities(ids: IdType[]): IdsAction {
+function deleteActivitiesRequested(ids: IdType[]): IdsAction {
   return {
-    type: DELETED_ACTIVITIES,
+    type: DELETE_ACTIVITIES_REQUESTED,
     payload: ids,
   };
 }
 
-export function addSubactivitiesRequested(
+function addSubactivitiesRequested(
   parentId: IdType,
   subactivities: IdType[],
 ): ParentChildrenAction {
@@ -93,12 +111,80 @@ export function addSubactivitiesRequested(
   };
 }
 
-export function addedSubactivities(
+function removeSubactivityRequested(child: IdType): IdAction {
+  return {
+    type: REMOVE_SUBACTIVITY_REQUESTED,
+    payload: child,
+  };
+}
+
+function editActivityRequested(data: ActivityFormData): ActivityFormAction {
+  return {
+    type: EDIT_ACTIVITY_REQUESTED,
+    payload: data,
+  };
+}
+
+function startActivityRequested(activityId: IdType): IdAction {
+  return {
+    type: START_ACTIVITY_REQUESTED,
+    payload: activityId,
+  };
+}
+
+function stopActivityRequested(intervalToStop: Interval): IntervalAction {
+  return {
+    type: STOP_ACTIVITY_REQUESTED,
+    payload: intervalToStop,
+  };
+}
+
+function activitiesJoinRequested(
+  targetParentId: IdType,
+  ids: IdType[],
+): CombinedActivitiesAction {
+  return {
+    type: ACTIVITIES_JOIN_REQUESTED,
+    payload: {targetParentId, ids},
+  };
+}
+function createActivity(data: ActivityFormData): ActivityFormAction {
+  return {
+    type: CREATE_ACTIVITY,
+    payload: data,
+  };
+}
+
+function createSubactivity(
+  data: ActivityFormData,
+  parentId: IdType,
+): ParentChildAction<ActivityFormData> {
+  return {
+    type: ADD_CREATED_SUBACTIVITY,
+    payload: {parentId, child: data},
+  };
+}
+
+function deleteActivity(id: IdType): IdAction {
+  return {
+    type: DELETE_ACTIVITY,
+    payload: id,
+  };
+}
+
+function deleteActivities(ids: IdType[]): IdsAction {
+  return {
+    type: DELETE_ACTIVITIES,
+    payload: ids,
+  };
+}
+
+function addSubactivities(
   parentId: IdType,
   subactivities: IdType[],
 ): ParentChildrenAction {
   return {
-    type: ADDED_SUBACTIVITIES,
+    type: ADD_SUBACTIVITIES,
     payload: {
       parentId,
       children: subactivities,
@@ -106,67 +192,43 @@ export function addedSubactivities(
   };
 }
 
-export function clearSelectedActivities(): BaseAction {
+function removeSubactivity(child: IdType): IdAction {
   return {
-    type: CLEAR_SELECTED_ACTIVITIES,
-  };
-}
-
-export function removedSubactivity(child: IdType): IdAction {
-  return {
-    type: REMOVED_SUBACTIVITY,
+    type: REMOVE_SUBACTIVITY,
     payload: child,
   };
 }
 
-export function activityWasEdited(data: ActivityFormData): ActivityFormAction {
+function editActivity(data: ActivityFormData): ActivityFormAction {
   return {
-    type: EDITED_ACTIVITY,
+    type: EDIT_ACTIVITY,
     payload: data,
   };
 }
 
-export function loadedActivities(activities: Activity[]): ActivitiesAction {
-  return {
-    type: LOADED_ACTIVITIES,
-    payload: activities,
-  };
-}
-
-export function startActivity(activityId: IdType): IdAction {
+function startActivity(
+  activityId: IdType,
+  intervalId: IdType,
+): ActivityIntervalAction {
   return {
     type: START_ACTIVITY,
-    payload: activityId,
+    payload: {activityId, intervalId},
   };
 }
 
-export function stopActivity(intervalToStop: Interval): IntervalAction {
+function stopActivity(intervalToStop: Interval): IntervalAction {
   return {
     type: STOP_ACTIVITY,
     payload: intervalToStop,
   };
 }
 
-export function startedActivity(activityId: IdType): IdAction {
-  return {
-    type: STARTED_ACTIVITY,
-    payload: activityId,
-  };
-}
-
-export function stoppedActivity(intervalToStop: Interval): IntervalAction {
-  return {
-    type: STOPPED_ACTIVITY,
-    payload: intervalToStop,
-  };
-}
-
-export function joinedActivities(
+function activitiesJoin(
   targetParentId: IdType,
   ids: IdType[],
 ): CombinedActivitiesAction {
   return {
-    type: JOINED_ACTIVITIES,
+    type: ACTIVITIES_JOIN,
     payload: {targetParentId, ids},
   };
 }
@@ -190,3 +252,59 @@ export function setCurrentlyActive(
     },
   };
 }
+
+export function clearSelectedActivities(): BaseAction {
+  return {
+    type: CLEAR_SELECTED_ACTIVITIES,
+  };
+}
+
+export function loadedActivities(activities: Activity[]): ActivitiesAction {
+  return {
+    type: LOADED_ACTIVITIES,
+    payload: activities,
+  };
+}
+
+export default {
+  createActivity: {
+    request: createActivityRequested,
+    action: createActivity,
+  },
+  createSubactivity: {
+    request: createSubactivityRequested,
+    action: createSubactivity,
+  },
+  deleteActivities: {
+    request: deleteActivitiesRequested,
+    action: deleteActivities,
+  },
+  deleteActivity: {
+    request: deleteActivityRequested,
+    action: deleteActivity,
+  },
+  addSubactivities: {
+    request: addSubactivitiesRequested,
+    action: addSubactivities,
+  },
+  removeSubactivity: {
+    request: removeSubactivityRequested,
+    action: removeSubactivity,
+  },
+  editActivity: {
+    request: editActivityRequested,
+    action: editActivity,
+  },
+  startActivity: {
+    request: startActivityRequested,
+    action: startActivity,
+  },
+  stopActivity: {
+    request: stopActivityRequested,
+    action: stopActivity,
+  },
+  activitiesJoin: {
+    request: activitiesJoinRequested,
+    action: activitiesJoin,
+  },
+};

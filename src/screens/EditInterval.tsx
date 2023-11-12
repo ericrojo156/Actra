@@ -11,7 +11,7 @@ import DateTimePickerRN, {
 import CustomPressable from '../components/Pressable';
 import * as ColorPalette from '../ColorPalette';
 import {useDispatch, useSelector} from 'react-redux';
-import {editedInterval} from '../interval/redux/intervalsActions';
+import intervalsActions from '../interval/redux/intervalsActions';
 import {useNavigation} from '@react-navigation/native';
 import {ApplicationState} from '../redux/rootReducer';
 import {feedbackMessageInvoked} from '../feedback/FeedbackActions';
@@ -83,7 +83,7 @@ export function EditInterval(
         startTimeEpochMilliseconds,
         endTimeEpochMilliseconds: !isActive ? endTimeEpochMilliseconds : null,
       };
-      dispatch(editedInterval(updatedInterval));
+      dispatch(intervalsActions.editInterval.request(updatedInterval));
       // @ts-ignore
       navigation.navigate('History', {id: interval.parentActivityId});
     }

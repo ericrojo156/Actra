@@ -5,7 +5,7 @@ import IntervalElement from './IntervalElement';
 import {IdType} from '../types';
 import {PanGestureRecognizer} from '../components/PanGestureRecognizer';
 import {useDispatch} from 'react-redux';
-import {deletedInterval, undoDeletedInterval} from './redux/intervalsActions';
+import intervalsActions from './redux/intervalsActions';
 import {usePressingMutex} from '../activity/hooks/usePressingMutex';
 import {useTranslation} from '../internationalization/useTranslation';
 import {feedbackMessageInvoked} from '../feedback/FeedbackActions';
@@ -57,13 +57,18 @@ export const IntervalsList = React.memo((props: IntervalsListProps) => {
         return;
       }
       const wasActive = intervalToDelete.endTimeEpochMilliseconds === null;
-      dispatch(deletedInterval(intervalToDelete, wasActive));
+      dispatch(
+        intervalsActions.deleteInterval.request(intervalToDelete, wasActive),
+      );
       dispatch(
         feedbackMessageInvoked({
           feedbackType: 'info',
           message: translate('Deleted-Interval'),
           secondaryMessage: translate('Press-Here-To-Undo'),
-          undoAction: undoDeletedInterval(intervalToDelete, wasActive),
+          undoAction: intervalsActions.undoDeleteInterval.request(
+            intervalToDelete,
+            wasActive,
+          ),
         }),
       );
     },
