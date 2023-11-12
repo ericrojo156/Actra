@@ -12,8 +12,16 @@ export function useTimeSpan() {
   );
   const dispatch = useDispatch();
   const setTimeSpan = useCallback(
-    (payload: TimeSpan): void => {
-      dispatch(timeSpanChanged(payload));
+    (proposedTimeSpan: TimeSpan, limitEndTimeToNow: boolean = true): void => {
+      const timeSpanUpdate = {...proposedTimeSpan};
+      if (
+        limitEndTimeToNow &&
+        timeSpanUpdate.endTimeEpochMilliseconds !== null &&
+        timeSpanUpdate.endTimeEpochMilliseconds > Date.now()
+      ) {
+        timeSpanUpdate.endTimeEpochMilliseconds = null;
+      }
+      dispatch(timeSpanChanged(timeSpanUpdate));
     },
     [dispatch],
   );

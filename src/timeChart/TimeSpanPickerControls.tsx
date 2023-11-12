@@ -1,54 +1,100 @@
-import React, {useCallback} from 'react';
-import {Pressable, StyleSheet, View} from 'react-native';
+import React from 'react';
+import {View} from 'react-native';
 import {TimeSpan} from '../time/types';
 import * as ColorPalette from '../ColorPalette';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {commonStyles} from '../commonStyles';
-import {TimeSpanElement} from '../time/TimeSpanElement';
-import {STANDARD_ELEMENT_HEIGHT, STANDARD_ELEMENT_WIDTH} from '../constants';
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
+import {
+  get24HoursMilliseconds,
+  getDuration,
+  getTimeSpanSincePrevious6AM,
+} from '../time/utils';
 
 export interface TimeSpanPickerControlsProps {
   timeSpan: TimeSpan;
-  setTimeSpan: (timeSpan: TimeSpan) => void;
+  setTimeSpan: (timeSpan: TimeSpan, limitEndTimeToNow?: boolean) => void;
 }
 
+const CHEVRON_SIZE = 40;
+
 export function TimeSpanPickerControls(props: TimeSpanPickerControlsProps) {
-  const {timeSpan} = props;
-  const timeSpanElementStyle = {
-    ...commonStyles.container,
-    ...commonStyles.roundedElementBorder,
-    ...styles.timeSpanElement,
+  const {timeSpan, setTimeSpan} = props;
+  const onChangeCalendarPicker = (_event: DateTimePickerEvent, date?: Date) => {
+    if (!date) {
+      return;
+    }
+    const startTimeEpochMilliseconds = date.getTime();
+    const endTimeEpochMilliseconds =
+      startTimeEpochMilliseconds > getDuration(getTimeSpanSincePrevious6AM())
+        ? startTimeEpochMilliseconds + get24HoursMilliseconds()
+        : null;
+    setTimeSpan({
+      startTimeEpochMilliseconds,
+      endTimeEpochMilliseconds,
+    });
   };
-  const openCalendarPicker = useCallback(() => {
-    
-  }, []);
+  const scrollTimeSpanBack = (timeSpan: TimeSpan): TimeSpan => {
+    const updatedTimeSpan: TimeSpan = {
+      startTimeEpochMilliseconds:
+        timeSpan.startTimeEpochMilliseconds - get24HoursMilliseconds(),
+      endTimeEpochMilliseconds:
+        (timeSpan.endTimeEpochMilliseconds ?? Date.now()) -
+        get24HoursMilliseconds(),
+    };
+    return updatedTimeSpan;
+  };
+  const scrollTimeSpanForward = (timeSpan: TimeSpan): TimeSpan => {
+    if (timeSpan.endTimeEpochMilliseconds === null) {
+      return {...timeSpan};
+    }
+    const updatedEndTime =
+      timeSpan.endTimeEpochMilliseconds + get24HoursMilliseconds();
+    let updatedTimeSpan: TimeSpan = {
+      startTimeEpochMilliseconds:
+        timeSpan.startTimeEpochMilliseconds + get24HoursMilliseconds(),
+      endTimeEpochMilliseconds: updatedEndTime,
+    };
+    if (updatedEndTime > Date.now()) {
+      updatedTimeSpan = {...timeSpan, endTimeEpochMilliseconds: null};
+    }
+    return updatedTimeSpan;
+  };
+  const shouldDisallowScrollTimeSpanForward = (() => {
+    const nextTimeSpan = scrollTimeSpanForward(timeSpan);
+    return nextTimeSpan.endTimeEpochMilliseconds === null;
+  })();
   return (
     <View
       style={{
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
       }}>
       <MaterialCommunityIcons
+        onPress={() => setTimeSpan(scrollTimeSpanBack(timeSpan))}
         name="chevron-left"
         color={ColorPalette.OffWhite_RGBSerialized}
-        size={40}
+        size={CHEVRON_SIZE}
       />
-      <Pressable onPress={openCalendarPicker}>
-        <TimeSpanElement style={timeSpanElementStyle} timeSpan={timeSpan} />
-      </Pressable>
-      <MaterialCommunityIcons
-        name="chevron-right"
-        color={ColorPalette.OffWhite_RGBSerialized}
-        size={40}
+      <DateTimePicker
+        value={new Date(timeSpan.startTimeEpochMilliseconds)}
+        display="default"
+        mode="date"
+        onChange={onChangeCalendarPicker}
+        themeVariant="dark"
       />
+      {shouldDisallowScrollTimeSpanForward ? (
+        <View style={{width: CHEVRON_SIZE}} />
+      ) : (
+        <MaterialCommunityIcons
+          onPress={() => setTimeSpan(scrollTimeSpanForward(timeSpan))}
+          name="chevron-right"
+          color={ColorPalette.OffWhite_RGBSerialized}
+          size={CHEVRON_SIZE}
+        />
+      )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  timeSpanElement: {
-    width: STANDARD_ELEMENT_WIDTH,
-    height: STANDARD_ELEMENT_HEIGHT,
-    padding: 10,
-  },
-});

@@ -80,6 +80,10 @@ export function getOneWeekTimeSpanExcludingToday(): TimeSpan {
   };
 }
 
+export function get24HoursMilliseconds() {
+  return 1000 * 60 * 60 * 24;
+}
+
 export function getDefaultTimeSpan(): TimeSpan {
   return getTimeSpanSincePrevious6AM();
 }
