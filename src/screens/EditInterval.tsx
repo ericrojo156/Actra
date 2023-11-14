@@ -39,6 +39,7 @@ function DateTimePicker(props: DateTimePickerProps) {
         mode={'datetime'}
         value={date}
         onChange={onChange}
+        maximumDate={new Date()}
       />
     </View>
   );
@@ -71,7 +72,7 @@ export function EditInterval(
       dispatch(
         feedbackMessageInvoked({
           feedbackType: 'error',
-          message: translate('Start-time-cannot-be-after-end-time'),
+          message: translate('Start-time-must-be-before-end-time'),
           undoAction: null,
         }),
       );

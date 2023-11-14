@@ -44,10 +44,7 @@ const englishDict: LanguageDict = new Map<string, string>([
   ['Time-Chart', 'Time Chart'],
   ['Activities-List', 'Activities List'],
   ['Untracked-Time', 'Untracked Time'],
-  [
-    'Start-time-cannot-be-after-end-time',
-    'Start time cannot be after end time',
-  ],
+  ['Start-time-must-be-before-end-time', 'Start time must be before end time'],
 ]);
 
 const languages = new Map<Locale, LanguageDict>([['en-US', englishDict]]);

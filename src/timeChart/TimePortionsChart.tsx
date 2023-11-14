@@ -18,9 +18,7 @@ import {useTimeSpan, useTimeSpanRealTimeDurationMs} from './useTimeSpan';
 const CHART_HEIGHT = 600;
 const CHART_WIDTH = STANDARD_ELEMENT_WIDTH;
 
-export interface TimePortionsChartProps {
-  timeSpan: TimeSpan;
-}
+export type TimePortionsChartProps = TimeSpan;
 
 interface TimePortionElementProps extends TimePortion {
   isTopElement: boolean;
@@ -75,8 +73,8 @@ function TimePortionElement(props: TimePortionElementProps) {
   );
 }
 
-export function TimePortionsChart(props: TimePortionsChartProps) {
-  const {timeSpan} = props;
+export const TimePortionsChart = React.memo((props: TimePortionsChartProps) => {
+  const timeSpan = props;
   const {timePortions} = useTimePortions(timeSpan);
   const timePortionsList: TimePortion[] = useMemo(
     () => [...timePortions.values()],
@@ -96,7 +94,7 @@ export function TimePortionsChart(props: TimePortionsChartProps) {
       ))}
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   timePortionElement: {
