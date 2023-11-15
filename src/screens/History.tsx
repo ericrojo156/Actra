@@ -79,7 +79,7 @@ function History(
             alignItems: 'center',
             padding: SPACE_BETWEEN_ELEMENTS * 2,
           }}>
-          <HistoryTimeDisplay intervals={unsortedIntervals} />
+          <HistoryTimeDisplay intervals={intervalsSortedNewestFirst} />
           <View
             style={{
               position: 'absolute',
