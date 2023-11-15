@@ -15,6 +15,8 @@ import {useRealTimeDuration} from '../time/useRealTimeDuration';
 import {useIntervals} from '../interval/useIntervals';
 import {getTrimmedIntervalsWithinTimeSpan} from '../timeChart/useTimePortions';
 import {reverseArray} from '../utils/array';
+import TimerButton from '../activity/TimerButton';
+import {SPACE_BETWEEN_ELEMENTS} from '../constants';
 
 const getTotalAccumulatedTimeMs = (intervals: Interval[]) => {
   const totalDuration = intervals.reduce(
@@ -70,7 +72,22 @@ function History(
             {historyLabel}
           </Text>
         </View>
-        <HistoryTimeDisplay intervals={unsortedIntervals} />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: SPACE_BETWEEN_ELEMENTS * 2,
+          }}>
+          <HistoryTimeDisplay intervals={unsortedIntervals} />
+          <View
+            style={{
+              position: 'absolute',
+              transform: [{translateX: 160}, {translateY: -30}],
+            }}>
+            <TimerButton id={parentActivityId} />
+          </View>
+        </View>
         <IntervalsList
           parentActivityId={parentActivityId}
           intervals={intervalsSortedNewestFirst}
