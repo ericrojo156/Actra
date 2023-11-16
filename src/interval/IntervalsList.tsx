@@ -114,5 +114,6 @@ const styles = StyleSheet.create({
   intervalsListContainer: {
     display: 'flex',
     alignItems: 'center',
+    height: 600,
   },
 });
