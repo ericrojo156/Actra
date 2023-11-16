@@ -18,8 +18,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import ChartIcon from '../assets/ChartIcon';
 import {RouteProp, ParamListBase} from '@react-navigation/native';
 
-const LIST_PIXELS_HEIGHT_WITH_TOP_BANNER = 620;
-const LIST_PIXELS_HEIGHT_WITHOUT_TOP_BANNER = 700;
+const LIST_PIXELS_HEIGHT_WITH_TOP_BANNER = 570;
+const LIST_PIXELS_HEIGHT_WITHOUT_TOP_BANNER = 640;
 
 function ActivitiesListScreen() {
   const {activities, getSubactivities, getActivity, canAddSubactivities} =
