@@ -7,9 +7,10 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import {
+  calculateTimeUntilNext7AM,
   get24HoursMilliseconds,
   getDuration,
-  getTimeSpanSincePrevious6AM,
+  getTimeSpanSincePrevious7AM,
 } from '../time/utils';
 
 export interface TimeSpanPickerControlsProps extends TimeSpan {
@@ -35,7 +36,7 @@ export const TimeSpanPickerControls = React.memo(
       }
       const startTimeEpochMilliseconds = date.getTime();
       const endTimeEpochMilliseconds =
-        startTimeEpochMilliseconds > getDuration(getTimeSpanSincePrevious6AM())
+        startTimeEpochMilliseconds > getDuration(getTimeSpanSincePrevious7AM())
           ? startTimeEpochMilliseconds + get24HoursMilliseconds()
           : null;
       setTimeSpan({
@@ -48,7 +49,8 @@ export const TimeSpanPickerControls = React.memo(
         startTimeEpochMilliseconds:
           timeSpan.startTimeEpochMilliseconds - get24HoursMilliseconds(),
         endTimeEpochMilliseconds:
-          (timeSpan.endTimeEpochMilliseconds ?? Date.now()) -
+          (timeSpan.endTimeEpochMilliseconds ??
+            Date.now() + calculateTimeUntilNext7AM()) -
           get24HoursMilliseconds(),
       };
       return updatedTimeSpan;
@@ -64,15 +66,17 @@ export const TimeSpanPickerControls = React.memo(
           timeSpan.startTimeEpochMilliseconds + get24HoursMilliseconds(),
         endTimeEpochMilliseconds: updatedEndTime,
       };
-      if (updatedEndTime > Date.now()) {
-        updatedTimeSpan = {...timeSpan, endTimeEpochMilliseconds: null};
+      const todayTimeSpan = getTimeSpanSincePrevious7AM();
+      if (
+        updatedTimeSpan.endTimeEpochMilliseconds !== null &&
+        updatedTimeSpan.endTimeEpochMilliseconds >= Date.now()
+      ) {
+        return todayTimeSpan;
       }
       return updatedTimeSpan;
     };
-    const shouldDisallowScrollTimeSpanForward = (() => {
-      const nextTimeSpan = scrollTimeSpanForward(timeSpan);
-      return nextTimeSpan.endTimeEpochMilliseconds === null;
-    })();
+    const shouldDisallowScrollTimeSpanForward =
+      timeSpan.endTimeEpochMilliseconds === null;
     return (
       <View
         style={{

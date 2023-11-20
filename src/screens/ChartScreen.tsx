@@ -8,6 +8,7 @@ import {
 import {TimePortionsChart} from '../timeChart/TimePortionsChart';
 import {TimeSpanPickerControls} from '../timeChart/TimeSpanPickerControls';
 import {TimeDisplay} from '../time/TimeDisplay';
+import {TimeSpanElement} from '../time/TimeSpanElement';
 
 function ChartScreen() {
   const {timeSpan, setTimeSpan} = useTimeSpan();
@@ -20,8 +21,10 @@ function ChartScreen() {
         <TimeDisplay milliseconds={timeSpanDisplayMs} />
         <View style={{paddingTop: 10}} />
         <TimePortionsChart {...timeSpan} />
-        <View style={{paddingTop: 10}} />
         <TimeSpanPickerControls {...timeSpan} setTimeSpan={setTimeSpan} />
+        <View style={{paddingTop: 10, paddingBottom: 10, alignItems: 'center'}}>
+          <TimeSpanElement showDate={false} timeSpan={timeSpan} />
+        </View>
       </View>
     </GradientBackground>
   );

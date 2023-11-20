@@ -19,8 +19,10 @@ export const TimeDisplay = React.memo(function (props: MillisecondsProps) {
   return <Text style={styles.textStyle}>{timeDisplayString}</Text>;
 });
 
-export const DateTimeDisplay = React.memo(function (props: MillisecondsProps) {
-  const {milliseconds} = props;
+export const DateTimeDisplay = React.memo(function (
+  props: {showDate?: boolean} & MillisecondsProps,
+) {
+  const {milliseconds, showDate = true} = props;
   const {toDateTimeString} = useTimeString();
   const {translate} = useTranslation();
   if (milliseconds === null) {
@@ -33,8 +35,12 @@ export const DateTimeDisplay = React.memo(function (props: MillisecondsProps) {
   const {date, time} = toDateTimeString(milliseconds);
   return (
     <View>
-      <Text style={{...styles.textStyle, fontSize: 15}}>{date}</Text>
-      <Text style={{...styles.textStyle, fontSize: 15}}>{time}</Text>
+      {showDate && (
+        <Text style={{...styles.textStyle, fontSize: 15}}>{date}</Text>
+      )}
+      <Text style={{...styles.textStyle, fontSize: showDate ? 15 : 19}}>
+        {time}
+      </Text>
     </View>
   );
 });

@@ -4,17 +4,27 @@ import RightArrow from '../../assets/RightArrow';
 import {DateTimeDisplay} from './TimeDisplay';
 import {TimeSpan} from './types';
 
-export const TimeSpanElement = React.memo(
-  (props: {timeSpan: TimeSpan; style?: StyleProp<ViewStyle>}) => {
-    const {timeSpan, style = {}} = props;
-    return (
-      <View style={style}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <DateTimeDisplay milliseconds={timeSpan.startTimeEpochMilliseconds} />
-          <RightArrow />
-          <DateTimeDisplay milliseconds={timeSpan.endTimeEpochMilliseconds} />
-        </View>
+interface TimeSpanElementProps {
+  timeSpan: TimeSpan;
+  style?: StyleProp<ViewStyle>;
+  showDate?: boolean;
+}
+
+export const TimeSpanElement = React.memo((props: TimeSpanElementProps) => {
+  const {timeSpan, style = {}, showDate = true} = props;
+  return (
+    <View style={style}>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <DateTimeDisplay
+          showDate={showDate}
+          milliseconds={timeSpan.startTimeEpochMilliseconds}
+        />
+        <RightArrow />
+        <DateTimeDisplay
+          showDate={showDate}
+          milliseconds={timeSpan.endTimeEpochMilliseconds}
+        />
       </View>
-    );
-  },
-);
+    </View>
+  );
+});

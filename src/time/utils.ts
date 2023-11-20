@@ -34,34 +34,59 @@ export function millisecondsToTime(milliseconds: number): {
   return timeObject;
 }
 
-export function calculateMillisecondsSince6AM(): number {
+export function calculateMillisecondsSince7AM(): number {
   // Get the current date and time
   const now = new Date();
 
-  // Check if the current time is between 12:00 AM and 6:00 AM
-  if (now.getHours() >= 0 && now.getHours() < 6) {
-    // If it's between 12:00 AM and 6:00 AM, calculate time since 6 AM of the previous day
+  // Check if the current time is between 12:00 AM and 7:00 AM
+  if (now.getHours() >= 0 && now.getHours() < 7) {
+    // If it's between 12:00 AM and76:00 AM, calculate time since 7 AM of the previous day
     const previousDay = new Date(now);
     previousDay.setDate(now.getDate() - 1);
-    previousDay.setHours(6, 0, 0, 0);
+    previousDay.setHours(7, 0, 0, 0);
 
     const millisecondsSince6AM: number = now.getTime() - previousDay.getTime();
 
     return millisecondsSince6AM;
   } else {
-    // If it's after 6:00 AM, calculate time since 6 AM today
+    // If it's after 7:00 AM, calculate time since 7 AM today
     const today = new Date(now);
-    today.setHours(6, 0, 0, 0);
+    today.setHours(7, 0, 0, 0);
 
-    const millisecondsSince6AM: number = now.getTime() - today.getTime();
+    const millisecondsSince7AM: number = now.getTime() - today.getTime();
 
-    return millisecondsSince6AM;
+    return millisecondsSince7AM;
   }
 }
 
-export function getTimeSpanSincePrevious6AM(): TimeSpan {
+export function calculateTimeUntilNext7AM(): number {
+  // Get the current date and time
+  const now = new Date();
+
+  // Check if the current time is before 7 AM
+  if (now.getHours() < 7) {
+    // If it's before 7 AM, calculate time until 7 AM today
+    const next7AM = new Date(now);
+    next7AM.setHours(7, 0, 0, 0);
+
+    const millisecondsUntil7AM: number = next7AM.getTime() - now.getTime();
+
+    return millisecondsUntil7AM;
+  } else {
+    // If it's after 7 AM, calculate time until 7 AM of the next day
+    const nextDay = new Date(now);
+    nextDay.setDate(now.getDate() + 1);
+    nextDay.setHours(7, 0, 0, 0);
+
+    const millisecondsUntil7AM: number = nextDay.getTime() - now.getTime();
+
+    return millisecondsUntil7AM;
+  }
+}
+
+export function getTimeSpanSincePrevious7AM(): TimeSpan {
   return {
-    startTimeEpochMilliseconds: Date.now() - calculateMillisecondsSince6AM(),
+    startTimeEpochMilliseconds: Date.now() - calculateMillisecondsSince7AM(),
     endTimeEpochMilliseconds: null,
   };
 }
@@ -85,7 +110,7 @@ export function get24HoursMilliseconds() {
 }
 
 export function getDefaultTimeSpan(): TimeSpan {
-  return getTimeSpanSincePrevious6AM();
+  return getTimeSpanSincePrevious7AM();
 }
 
 export interface TimeObject {
